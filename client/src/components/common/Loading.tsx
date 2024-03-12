@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const animate = keyframes`
@@ -27,7 +26,7 @@ const LoadingContainer = styled.div`
 const Loading = () => {
   return (
     <LoadingContainer>
-      <span className='loading'></span>
+      <div className='loading'></div>
     </LoadingContainer>
   );
 };

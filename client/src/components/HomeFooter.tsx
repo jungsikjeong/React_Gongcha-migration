@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   display: flex;
   align-items: center;
   width: 400px;
@@ -50,6 +50,12 @@ const ImgWrapper = styled.div`
     height: 100%;
   }
 `;
+
+const containerVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.5 } },
+};
+
 const MainFooter = () => {
   const [number, setNumber] = useState(0);
   const [images, setImages] = useState([
@@ -82,7 +88,7 @@ const MainFooter = () => {
   };
 
   return (
-    <Container>
+    <Container variants={containerVariants} initial='hidden' animate='visible'>
       <Wrapper>
         <small>공차는 세련되고 전문적인 모습으로 새로워지고 있습니다.</small>
         <ButtonWrap>

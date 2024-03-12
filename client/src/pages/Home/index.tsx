@@ -1,16 +1,16 @@
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
-
 import bgImage from '../../assets/background.jpg';
 import MainFooter from '../../components/HomeFooter';
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   height: 100vh;
   position: relative;
   background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)),
     url(${bgImage});
   background-position: center;
   background-size: cover;
-  overflow-x: hidden;
+  overflow: hidden;
 `;
 
 const BannerTitle = styled.div`
@@ -23,11 +23,12 @@ const BannerTitle = styled.div`
     margin-bottom: 30px;
     letter-spacing: -5px;
     font-weight: bold;
+  }
 
-    .textColor {
-      color: #cf3e58;
-      opacity: 0.8;
-    }
+  .textColor {
+    color: #cf3e58;
+    opacity: 0.8;
+    display: inline-block;
   }
 
   @media (max-width: 768px) {
@@ -47,18 +48,28 @@ const BannerTitle = styled.div`
   }
 `;
 
+const textVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.5 } },
+};
+
 const Home = () => {
   return (
-    <Container>
+    <Container initial='hidden' animate='visible' exit='hidden'>
       <BannerTitle>
-        <h1>
-          <span className='textColor'>Tea</span> 로 시작하는 <br />
-          <span className='textColor'>The</span>
+        <motion.h1 variants={textVariants}>
+          <motion.span className='textColor' variants={textVariants}>
+            Tea
+          </motion.span>
+          로 시작하는 <br />
+          <motion.span className='textColor' variants={textVariants}>
+            The
+          </motion.span>
           기분 좋은 아침!
-        </h1>
-
-        <MainFooter />
+        </motion.h1>
       </BannerTitle>
+
+      <MainFooter />
     </Container>
   );
 };

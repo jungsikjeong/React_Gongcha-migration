@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -5,9 +6,9 @@ import styled from 'styled-components';
 import { FaBars } from 'react-icons/fa';
 import { RiCloseLine } from 'react-icons/ri';
 
-import Button from '../common/Button';
+import Button from '../Common/Button';
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
@@ -15,6 +16,14 @@ const Container = styled.div`
   z-index: 10;
   display: flex;
   padding: 40px 120px;
+
+  @media (max-width: 1024px) {
+    padding: 40px 50px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 30px;
+  }
 
   .login-btn {
     &::after {
@@ -30,10 +39,6 @@ const Container = styled.div`
     &:hover::after {
       width: 100%;
     }
-  }
-
-  @media (max-width: 768px) {
-    padding: 10px 30px;
   }
 `;
 
@@ -115,7 +120,7 @@ const DesktopNavbar = styled.div`
   }
 `;
 
-const Ul = styled.ul`
+const Ul = styled(motion.ul)`
   margin-left: 50px;
   font-weight: bold;
 
@@ -127,6 +132,18 @@ const Ul = styled.ul`
   }
 
   li {
+    &::before {
+      content: '';
+      position: absolute;
+      top: -65px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      width: 1px;
+      height: 70px;
+      background-color: #bbb;
+    }
+
     &::after {
       content: '';
       width: 0;
@@ -143,7 +160,8 @@ const Ul = styled.ul`
   }
 `;
 
-const Li = styled.li`
+const Li = styled(motion.li)`
+  position: relative;
   display: inline-block;
   padding: 8px 25px;
   color: #fff;
@@ -200,9 +218,25 @@ const LoginButton = styled(Button)`
   }
 `;
 
+const containerVariants = {
+  hidden: { opacity: 0, y: -50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
+const ulVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.3 } },
+};
+
+const liVariants = {
+  hidden: { opacity: 0, y: -50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+};
+
 const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [menuActive, setMenuActive] = useState(true);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [menuActive, setMenuActive] = useState<boolean>(true);
+  const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
 
   const onShowMenu = () => {
     setMenuOpen(true);
@@ -215,7 +249,7 @@ const Header = () => {
   };
 
   return (
-    <Container>
+    <Container variants={containerVariants} initial='hidden' animate='visible'>
       <Wrapper>
         <Logo>
           <Link to='/'>
@@ -236,24 +270,19 @@ const Header = () => {
 
         {/*데스크탑 사이즈에서 메뉴 활성화 */}
         <DesktopNavbar>
-          <Ul>
+          <Ul variants={ulVariants} initial='hidden' animate='visible'>
             <Link to='/'>
-              <Li>HOME</Li>
+              <Li variants={liVariants}>HOME</Li>
             </Link>
             <Link to='/about'>
-              <Li>ABOUT</Li>
-            </Link>
-            <Link to='/recipe'>
-              <Li>RECIPE</Li>
+              <Li variants={liVariants}>ABOUT</Li>
             </Link>
             <Link to='/postList'>
-              <Li>POSTS</Li>
+              <Li variants={liVariants}>POSTS</Li>
             </Link>
           </Ul>
 
-          <Link to='/login'>
-            <LoginButton className='login-btn'>SIGN IN</LoginButton>
-          </Link>
+          <LoginButton className='login-btn'>SIGN IN</LoginButton>
         </DesktopNavbar>
 
         {/* 모바일 사이즈에서 메뉴 활성화 */}
@@ -271,16 +300,11 @@ const Header = () => {
               <Link to='/about'>
                 <Li>ABOUT</Li>
               </Link>
-              <Link to='/recipe'>
-                <Li>RECIPE</Li>
-              </Link>
               <Link to='/postList'>
                 <Li>POSTS</Li>
               </Link>
 
-              <Link to='/login'>
-                <Li>SIGN IN</Li>
-              </Link>
+              <Li>SIGN IN</Li>
             </Ul>
           </MobileNavbar>
         )}

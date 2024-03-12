@@ -15,7 +15,9 @@ const ScreenFrames = keyframes`
  }
 `;
 
-const Container = styled.div<{ $path: string }>`
+const Container = styled.div``;
+
+const Wrapper = styled.div<{ $path: string }>`
   animation: ${({ $path }) =>
     $path === '/'
       ? 'none'
@@ -32,9 +34,9 @@ const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
 
   return (
-    <Container $path={location.pathname}>
+    <Container>
       <Header />
-      {children}
+      <Wrapper $path={location.pathname}>{children}</Wrapper>
     </Container>
   );
 };
