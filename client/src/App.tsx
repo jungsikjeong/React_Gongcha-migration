@@ -1,10 +1,13 @@
 // import { RecoilRoot } from 'recoil';
+import Layout from './components/Layouts';
 import Router from './components/Router';
 
 const App = () => {
   return (
     <>
-      <Router />
+      <Layout>
+        <Router />
+      </Layout>
     </>
   );
 };

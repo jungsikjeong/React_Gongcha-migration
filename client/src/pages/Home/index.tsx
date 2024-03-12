@@ -1,21 +1,21 @@
 import styled from 'styled-components';
 
 import bgImage from '../../assets/background.jpg';
-import Header from '../../components/Header';
 import MainFooter from '../../components/HomeFooter';
 
 const Container = styled.div`
   height: 100vh;
+  position: relative;
   background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)),
     url(${bgImage});
   background-position: center;
   background-size: cover;
   overflow-x: hidden;
-  position: relative;
 `;
 
 const BannerTitle = styled.div`
   margin: 80px 130px;
+  margin-top: 15rem;
   color: #fff;
 
   h1 {
@@ -31,10 +31,17 @@ const BannerTitle = styled.div`
   }
 
   @media (max-width: 768px) {
-    margin: 80px 0 80px 0;
+    margin: 15rem 0 80px 30px;
 
     h1 {
       font-size: 50px;
+      letter-spacing: -5px;
+    }
+  }
+
+  @media (max-width: 390px) {
+    h1 {
+      font-size: 42px;
       letter-spacing: -5px;
     }
   }
@@ -43,7 +50,6 @@ const BannerTitle = styled.div`
 const Home = () => {
   return (
     <Container>
-      <Header />
       <BannerTitle>
         <h1>
           <span className='textColor'>Tea</span> 로 시작하는 <br />
