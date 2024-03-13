@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const StyledButton = styled.button`
   border: 0;
@@ -6,41 +6,27 @@ const StyledButton = styled.button`
   color: #fff;
   font-weight: bold;
   font-size: 17px;
-  background: rgba(0, 0, 0, 0);
-  font-weight: bold;
+  width: 100%;
   cursor: pointer;
-
-  ${(props: any) =>
-    props.imageChange &&
-    css`
-      width: 100%;
-      margin-top: 10px;
-      padding: 3px;
-      background: #00b9f6;
-    `}
-
-  ${(props: any) =>
-    props.profileBtn &&
-    css`
-      width: 100%;
-      margin-top: 10px;
-      padding: 3px;
-      background: #04aaff;
-    `}
-
-
-  ${(props: any) =>
-    props.logoutBtn &&
-    css`
-      width: 100%;
-      margin-top: 10px;
-      padding: 3px;
-      background: red;
-    `}
 `;
 
-const Button = (props: any) => {
-  return <StyledButton {...props} />;
+interface IButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  type: 'submit' | 'button' | 'reset';
+}
+
+const Button = ({
+  children,
+  onClick,
+  type = 'button',
+  ...props
+}: IButtonProps) => {
+  return (
+    <StyledButton type={type ? type : 'button'} onClick={onClick} {...props}>
+      {children}
+    </StyledButton>
+  );
 };
 
 export default Button;

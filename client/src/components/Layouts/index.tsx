@@ -1,6 +1,9 @@
 import styled, { css, keyframes } from 'styled-components';
 
 import { useLocation } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { authModalState } from '../../atom/authModalAtoms';
+import AuthModal from '../AuthModal';
 import Header from '../Header';
 
 // 페이지 전환효과
@@ -26,15 +29,16 @@ const Wrapper = styled.div<{ $path: string }>`
         `};
 `;
 
-interface LayoutProps {
+interface ILayoutProps {
   children: React.ReactNode;
 }
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children }: ILayoutProps) => {
   const location = useLocation();
-
+  const isAuthModal = useRecoilValue(authModalState);
   return (
     <Container>
+      {isAuthModal && <AuthModal />}
       <Header />
       <Wrapper $path={location.pathname}>{children}</Wrapper>
     </Container>

@@ -1,14 +1,20 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import { useSwiper } from 'swiper/react';
 
 import Alert from '../Common/Alert';
+import Button from '../Common/Button';
+import ErrorText from '../Common/ErrorText';
 
-const LoginContainer = styled.div``;
+const Container = styled.div`
+  padding: 0 2rem;
+  height: 100%;
+  position: relative;
+`;
 
 const Wrapper = styled.div`
-  margin-top: 5rem;
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,107 +22,107 @@ const Wrapper = styled.div`
 `;
 
 const Form = styled.form`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 25%;
-
   @media (max-width: 768px) {
-    width: 70%;
+    width: 60%;
   }
-
-  @media (max-width: 1024px) {
-    width: 70%;
-  }
-
-  input {
-    width: 100%;
-    font-size: 16px;
-    border: 0;
-    border-radius: 5px;
-    outline: 0;
-    padding: 10px 15px;
-    margin-top: 15px;
-    color: #000;
-  }
-
   span {
     color: #fff;
     font-size: 20px;
   }
 `;
 
-const Button = styled.button`
+const Input = styled.input`
   width: 100%;
-  border: none;
+  font-size: 16px;
+  border: 0;
+  border-radius: 5px;
+  outline: 0;
+  padding: 10px 15px;
+  margin-top: 15px;
+  color: #000;
+`;
+
+const LoginButton = styled(Button)<{ disabled: boolean }>`
+  margin-top: 15px;
   border-radius: 4px;
   font-size: 1rem;
   font-weight: bold;
   padding: 0.5rem 1rem;
-  color: white;
-  outline: none;
-  cursor: pointer;
-
-  background: red;
+  color: #eee;
+  background: ${({ disabled }) => (disabled ? 'red' : 'tomato')};
+  opacity: ${({ disabled }) => (disabled ? '1' : '.5')};
+  transition: all 0.2s ease;
 `;
 
-const SLink = styled(Link)`
+const RegisterButton = styled(Button)`
   margin-top: 5px;
   background: #c1575f;
   text-align: center;
-  width: 100%;
-  border: none;
   border-radius: 4px;
   font-size: 1rem;
-  font-weight: bold;
   padding: 0.5rem 1rem;
-  color: white;
-  outline: none;
-  cursor: pointer;
 `;
 
+interface ILoginTypes {
+  email: string;
+  password: string;
+}
+
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const swiper = useSwiper();
 
-  const { email, password } = formData;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<ILoginTypes>();
 
-  const onChange = (e: any) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const onSubmit = async (e: any) => {
-    e.preventDefault();
-  };
+  const onSubmit: SubmitHandler<ILoginTypes> = (data) => console.log(data);
 
   return (
-    <LoginContainer>
+    <Container>
       <Alert />
       <Wrapper>
-        <Form onSubmit={onSubmit}>
-          <input
-            autoComplete='email'
-            name='email'
-            value={email}
-            onChange={(e) => onChange(e)}
-            placeholder='Email@admin.com'
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Input
+            autoComplete='off'
+            placeholder='email@example.com'
+            {...register('email', {
+              required: true,
+              pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            })}
           />
-          <input
-            autoComplete='new-password'
+          {errors.email && (
+            <ErrorText text='올바른 형식의 이메일을 입력해주세요!' />
+          )}
+          <Input
+            autoComplete='off'
             type='password'
-            name='password'
-            value={password}
-            onChange={(e) => onChange(e)}
-            placeholder='Password'
+            placeholder='password...'
+            {...register('password', {
+              required: true,
+              minLength: 6,
+              maxLength: 8,
+            })}
           />
-          <Button style={{ marginTop: '15px' }}>sign in</Button>
+          {errors.password && (
+            <ErrorText text='비밀번호는 6~8자로 작성해주세요!' />
+          )}
+          <LoginButton disabled={isValid} type='submit'>
+            로그인
+          </LoginButton>
           <span>or</span>
-          <SLink to='/register'> sign up </SLink>
+          <RegisterButton onClick={() => swiper.slideNext()} type='button'>
+            회원가입
+          </RegisterButton>
         </Form>
       </Wrapper>
-    </LoginContainer>
+    </Container>
   );
 };
 
