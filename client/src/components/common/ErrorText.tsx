@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
 const Text = styled.div`
-  padding-top: 0.5rem;
   color: #ef4b3f;
-  background-color: rgba(0, 0, 0, 0.8);
+  width: 100%;
   letter-spacing: -1px;
+  margin-top: 1rem;
+  font-size: 15px;
 `;
 
 interface IErrorText {

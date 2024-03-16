@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = function (req, res, next) {
   // 헤더에서 토큰 가져 오기
-  const token = req.header('x-auth-token');
+  const token = req.header('Authorization');
 
   // 토큰 확인
   if (!token) {

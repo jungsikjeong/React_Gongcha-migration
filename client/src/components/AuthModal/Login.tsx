@@ -1,6 +1,7 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { useSwiper } from 'swiper/react';
+import { emailValidation, passwordValidation } from '../../utils/validation';
 
 import Alert from '../Common/Alert';
 import Button from '../Common/Button';
@@ -27,45 +28,61 @@ const Form = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  @media (max-width: 768px) {
-    width: 60%;
-  }
-  span {
-    color: #fff;
-    font-size: 20px;
-  }
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ iserror: string }>`
   width: 100%;
-  font-size: 16px;
-  border: 0;
+  border: none;
+  box-shadow: ${({ iserror }) =>
+    iserror ? ' 0 0 10px tomato' : ' 0 0 10px #bbb'};
   border-radius: 5px;
   outline: 0;
-  padding: 10px 15px;
+  padding: 8px;
   margin-top: 15px;
-  color: #000;
+  color: black;
+  font-size: 15px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:focus {
+    box-shadow: 0 0 10px #007bff;
+  }
 `;
 
 const LoginButton = styled(Button)<{ disabled: boolean }>`
   margin-top: 15px;
+  width: 100%;
   border-radius: 4px;
   font-size: 1rem;
   font-weight: bold;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0;
   color: #eee;
-  background: ${({ disabled }) => (disabled ? 'red' : 'tomato')};
-  opacity: ${({ disabled }) => (disabled ? '1' : '.5')};
+  background: #ef4b3f;
+  opacity: ${({ disabled }) => (disabled ? '.5' : '1')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${({ disabled }) => (disabled ? '' : '#ed2a1c')};
+  }
 `;
 
-const RegisterButton = styled(Button)`
-  margin-top: 5px;
-  background: #c1575f;
-  text-align: center;
-  border-radius: 4px;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
+const AuthWrapper = styled.div`
+  padding-top: 1rem;
+  color: #bbb;
+  font-size: 12px;
+
+  .auth-text {
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid #bbb;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    &:hover {
+      color: white;
+      border-bottom: 1px solid white;
+    }
+  }
 `;
 
 interface ILoginTypes {
@@ -91,35 +108,30 @@ const Login = () => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Input
             autoComplete='off'
-            placeholder='email@example.com'
-            {...register('email', {
-              required: true,
-              pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            })}
+            {...register('email', emailValidation)}
+            placeholder='이메일'
+            iserror={errors?.email ? 'true' : ''}
           />
-          {errors.email && (
-            <ErrorText text='올바른 형식의 이메일을 입력해주세요!' />
-          )}
           <Input
             autoComplete='off'
             type='password'
-            placeholder='password...'
-            {...register('password', {
-              required: true,
-              minLength: 6,
-              maxLength: 8,
-            })}
+            placeholder='비밀번호'
+            iserror={errors?.password ? 'true' : ''}
+            {...register('password', passwordValidation)}
           />
-          {errors.password && (
-            <ErrorText text='비밀번호는 6~8자로 작성해주세요!' />
+          {Object.values(errors).length !== 0 && (
+            <ErrorText text={Object.values(errors)[0].message} />
           )}
-          <LoginButton disabled={isValid} type='submit'>
+          <LoginButton disabled={Object.keys(errors).length > 0} type='submit'>
             로그인
           </LoginButton>
-          <span>or</span>
-          <RegisterButton onClick={() => swiper.slideNext()} type='button'>
-            회원가입
-          </RegisterButton>
+
+          <AuthWrapper>
+            아이디가 없으시나요?...&nbsp;
+            <span className='auth-text' onClick={() => swiper.slideNext()}>
+              회원가입하러 가기
+            </span>
+          </AuthWrapper>
         </Form>
       </Wrapper>
     </Container>

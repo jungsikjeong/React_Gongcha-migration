@@ -6,7 +6,6 @@ const config = require('./key');
 const connectDB = async () => {
   try {
     await mongoose.connect(config.mongoURI, {});
-
     console.log('MongoDB Connected...');
   } catch (err) {
     console.error(err.message);

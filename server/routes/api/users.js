@@ -17,11 +17,12 @@ const upload = require('../../middleware/upload');
 router.post(
   '/',
   [
-    check('name', '닉네임을 확인해주세요😥 (최대 5글자)')
+    check('nickname', '닉네임을 확인해주세요😥 (2~5글자)')
       .not()
       .isEmpty()
       .isLength({
-        max: 5,
+        min: 2,
+        max: 6,
       }),
     check('email', '유효한 이메일을 입력해주세요😥').isEmail(),
     check('password', '6자 이상의 비밀번호를 입력해주세요😥').isLength({
@@ -34,8 +35,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
-
+    const { nickname, email, password } = req.body;
     try {
       // 사용자가 있는지 확인
       let user = await User.findOne({ email });
@@ -53,7 +53,7 @@ router.post(
       });
 
       user = new User({
-        name,
+        nickname,
         email,
         avatar,
         password,
@@ -63,11 +63,10 @@ router.post(
       const salt = await bcrypt.genSalt(10);
 
       user.password = await bcrypt.hash(password, salt);
-
+      console.log(user);
       await user.save();
 
       // Return jsonwebtoken
-      // 원래는 로그인에쓰이지만, 회원가입하자마자 바로 로그인 할 수 있게하려고 회원가입에쓰임
       const payload = {
         user: {
           id: user.id,

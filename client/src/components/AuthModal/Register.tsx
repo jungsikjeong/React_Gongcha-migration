@@ -1,7 +1,14 @@
-import PropTypes from 'prop-types';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { useSwiper } from 'swiper/react';
+
+import { postRegister } from '../../api/auth';
+import {
+  emailValidation,
+  nicknameValidation,
+  password2Validation,
+  passwordValidation,
+} from '../../utils/validation';
 
 import Alert from '../Common/Alert';
 import Button from '../Common/Button';
@@ -22,28 +29,35 @@ const Wrapper = styled.div`
 `;
 
 const Form = styled.form`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  @media (max-width: 768px) {
-    width: 60%;
-  }
-  input {
-    width: 100%;
-    font-size: 16px;
-    border: 0;
-    border-radius: 5px;
-    outline: 0;
-    padding: 10px 15px;
-    margin-top: 15px;
-    color: black;
-  }
 
-  span {
+  .or {
     color: #fff;
     font-size: 20px;
+  }
+`;
+
+const Input = styled.input<{ iserror: string }>`
+  width: 100%;
+  border: none;
+  box-shadow: ${({ iserror }) =>
+    iserror ? ' 0 0 10px tomato' : ' 0 0 10px #bbb'};
+  border-radius: 5px;
+  outline: 0;
+  padding: 8px;
+  margin-top: 15px;
+  color: black;
+  font-size: 15px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:focus {
+    box-shadow: 0 0 10px #007bff;
   }
 `;
 
@@ -53,21 +67,33 @@ const SignUpButton = styled(Button)<{ disabled: boolean }>`
   border-radius: 4px;
   font-size: 1rem;
   font-weight: bold;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0;
   color: #eee;
-  background: ${({ disabled }) => (disabled ? 'red' : 'tomato')};
-  opacity: ${({ disabled }) => (disabled ? '1' : '.5')};
+  background: #ef4b3f;
+  opacity: ${({ disabled }) => (disabled ? '.5' : '1')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${({ disabled }) => (disabled ? '' : '#ed2a1c')};
+  }
 `;
 
-const LoginButton = styled(Button)`
-  margin-top: 5px;
-  background: #c1575f;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  color: white;
-  cursor: pointer;
+const AuthWrapper = styled.div`
+  padding-top: 1rem;
+  color: #bbb;
+  font-size: 12px;
+
+  .auth-text {
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid #bbb;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    &:hover {
+      color: white;
+      border-bottom: 1px solid white;
+    }
+  }
 `;
 
 interface IRegisterTypes {
@@ -84,87 +110,72 @@ const Register = () => {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<IRegisterTypes>();
 
-  const onSubmit: SubmitHandler<IRegisterTypes> = (data) => console.log(data);
-  const password = watch('password');
+  const onSubmit: SubmitHandler<IRegisterTypes> = async (
+    data: IRegisterTypes
+  ) => {
+    await postRegister(data);
+  };
 
+  const password = watch('password');
+  // 007bff
   return (
     <Container>
       <Alert />
       <Wrapper>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <input
+          <Input
+            type='text'
             autoComplete='off'
-            placeholder='닉네임 입력을 입력해주세요'
-            {...register('nickname', {
-              required: true,
-              minLength: 2,
-              maxLength: 6,
-              pattern: /^[가-힣a-zA-Z0-9]+$/,
-            })}
+            placeholder='닉네임'
+            iserror={errors?.nickname ? 'true' : ''}
+            {...register('nickname', nicknameValidation)}
           />
-          {errors.nickname && errors.nickname.type === 'pattern' && (
-            <ErrorText text='닉네임은 한글, 알파벳, 숫자만 입력해주세요!' />
-          )}
-          {errors.nickname && errors.nickname.type !== 'pattern' && (
-            <ErrorText text='닉네임은 2~6글자만 입력해주세요!' />
-          )}
-          <input
+
+          <Input
             autoComplete='off'
-            placeholder='email@example.com'
-            {...register('email', {
-              required: true,
-              pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            })}
-          />{' '}
-          {errors.email && (
-            <ErrorText text='올바른 형식의 이메일을 입력해주세요!' />
-          )}
-          <input
+            placeholder='이메일'
+            iserror={errors?.email ? 'true' : ''}
+            {...register('email', emailValidation)}
+          />
+
+          <Input
             autoComplete='off'
             type='password'
-            placeholder='비밀번호를 입력해주세요'
-            {...register('password', {
-              required: true,
-              minLength: 6,
-              maxLength: 8,
-            })}
+            placeholder='비밀번호'
+            iserror={errors?.password ? 'true' : ''}
+            {...register('password', passwordValidation)}
           />
-          {errors.password && (
-            <ErrorText text='비밀번호는 6~8자로 작성해주세요!' />
-          )}
-          <input
+
+          <Input
             autoComplete='off'
             type='password'
-            placeholder='비밀번호를 재입력해주세요'
-            {...register('password2', {
-              required: true,
-              minLength: 6,
-              maxLength: 8,
-              validate: (value) =>
-                value === password || '비밀번호가 일치하지 않습니다.',
-            })}
+            placeholder='비밀번호 확인'
+            className='input-last'
+            iserror={errors?.password2 ? 'true' : ''}
+            {...register('password2', password2Validation(password))}
           />
-          {errors.password2 && <ErrorText text={errors.password2.message} />}
-          <SignUpButton disabled={isValid} type='submit'>
-            회원가입
+
+          {Object.values(errors).length !== 0 && (
+            <ErrorText text={Object.values(errors)[0].message} />
+          )}
+
+          <SignUpButton disabled={Object.keys(errors).length > 0} type='submit'>
+            가입하기
           </SignUpButton>
-          <span>or</span>
-          <LoginButton onClick={() => swiper.slideNext()} type='button'>
-            로그인
-          </LoginButton>
+
+          <AuthWrapper>
+            이미 회원이신가요?...&nbsp;
+            <span className='auth-text' onClick={() => swiper.slideNext()}>
+              로그인하러 가기
+            </span>
+          </AuthWrapper>
         </Form>
       </Wrapper>
     </Container>
   );
-};
-
-Register.propTypes = {
-  isAuthenticated: PropTypes.bool,
-  setAlert: PropTypes.func,
-  register: PropTypes.func,
 };
 
 export default Register;
