@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { IoClose } from 'react-icons/io5';
 
 import { useSetRecoilState } from 'recoil';
-import { authModalState } from '../../atom/authModalAtoms';
+import { authModalState } from '../../atom/auth-modal-atoms';
 
 import Login from './Login';
 import Register from './Register';

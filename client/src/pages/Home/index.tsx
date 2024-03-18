@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import bgImage from '../../assets/background.jpg';
-import MainFooter from '../../components/HomeFooter';
+import MainFooter from '../../components/home-footer';
 
 const Container = styled(motion.div)`
   height: 100vh;
@@ -56,6 +56,7 @@ const textVariants = {
 const Home = () => {
   return (
     <Container initial='hidden' animate='visible' exit='hidden'>
+      {/* <LikeEffect /> */}
       <BannerTitle>
         <motion.h1 variants={textVariants}>
           <motion.span className='textColor' variants={textVariants}>

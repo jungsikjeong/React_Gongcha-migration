@@ -4,7 +4,7 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const { check, validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 const User = require('../../models/User');
 const Post = require('../../models/Post');
@@ -17,16 +17,19 @@ const upload = require('../../middleware/upload');
 router.post(
   '/',
   [
-    check('nickname', '닉네임을 확인해주세요😥 (2~5글자)')
+    body('nickname', '닉네임을 확인해주세요! (2~6글자)')
       .not()
       .isEmpty()
-      .isLength({
-        min: 2,
-        max: 6,
-      }),
-    check('email', '유효한 이메일을 입력해주세요😥').isEmail(),
-    check('password', '6자 이상의 비밀번호를 입력해주세요😥').isLength({
+      .isLength({ min: 2, max: 6 }),
+    body('email', '유효한 이메일을 입력해주세요!').isEmail(),
+    body('password', '6자 이상의 비밀번호를 입력해주세요!').isLength({
       min: 6,
+    }),
+    body('password2').custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error('비밀번호가 일치하지 않습니다.');
+      }
+      return true;
     }),
   ],
   async (req, res) => {
@@ -35,16 +38,23 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { nickname, email, password } = req.body;
+    const { nickname, email, password, password2 } = req.body;
     try {
       // 사용자가 있는지 확인
-      let user = await User.findOne({ email });
+      let user = await User.findOne({ $or: [{ email }, { nickname }] });
 
       if (user) {
-        res
-          .status(400)
-          .json({ errors: [{ msg: '사용자가 이미 존재합니다.' }] });
+        if (user.email === email) {
+          return res.status(400).json({
+            errors: [{ type: 'email', msg: '이미 사용중인 이메일입니다.' }],
+          });
+        } else if (user.nickname === nickname) {
+          return res.status(400).json({
+            errors: [{ type: 'nickname', msg: '이미 사용중인 닉네임입니다.' }],
+          });
+        }
       }
+
       // 사용자 Gravatar 가져 오기
       const avatar = gravatar.url(email, {
         s: '200',
@@ -63,7 +73,7 @@ router.post(
       const salt = await bcrypt.genSalt(10);
 
       user.password = await bcrypt.hash(password, salt);
-      console.log(user);
+
       await user.save();
 
       // Return jsonwebtoken
@@ -79,7 +89,10 @@ router.post(
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
-          res.json({ token });
+          return res.json({
+            token,
+            user: { nickname: user.nickname, email: user.email },
+          });
         }
       );
     } catch (err) {

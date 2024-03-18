@@ -2,82 +2,31 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
-  user: {
+  author: {
     type: Schema.Types.ObjectId,
-    ref: 'user',
+    ref: 'User',
+    required: true,
   },
-  text: {
+
+  title: { type: String, required: true },
+
+  content: {
     type: String,
     required: true,
   },
-  name: {
-    type: String,
-  },
-  avatar: {
-    type: String,
-  },
+
   image: {
     type: String,
   },
-  likes: [
-    {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'user',
-      },
-    },
-  ],
-  comments: [
-    {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'user',
-      },
-      text: {
-        type: String,
-        required: true,
-      },
-      date: {
-        type: Date,
-        default: Date.now,
-      },
-      likes: [
-        {
-          user: {
-            type: Schema.Types.ObjectId,
-            ref: 'user',
-          },
-        },
-      ],
 
-      commentsStep: [
-        {
-          user: {
-            type: Schema.Types.ObjectId,
-            ref: 'user',
-          },
-          text: {
-            type: String,
-            required: true,
-          },
-
-          date: {
-            type: Date,
-            default: Date.now,
-          },
-
-          likes: [
-            {
-              user: {
-                type: Schema.Types.ObjectId,
-                ref: 'user',
-              },
-            },
-          ],
-        },
-      ],
-    },
-  ],
+  postLikeCount: {
+    type: Number,
+    default: 0,
+  },
+  commentsCount: {
+    type: Number,
+    default: 0,
+  },
   date: {
     type: Date,
     default: Date.now,

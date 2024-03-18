@@ -1,11 +1,19 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { useSwiper } from 'swiper/react';
-import { emailValidation, passwordValidation } from '../../utils/validation';
+import { authModalState } from '../../atom/auth-modal-atoms';
 
-import Alert from '../Common/Alert';
-import Button from '../Common/Button';
-import ErrorText from '../Common/ErrorText';
+import { postRegister } from '../../api/auth';
+import {
+  emailValidation,
+  nicknameValidation,
+  password2Validation,
+  passwordValidation,
+} from '../../utils/validation';
+
+import Button from '../common/Button';
+import ErrorText from '../common/error-text';
 
 const Container = styled.div`
   padding: 0 2rem;
@@ -17,7 +25,6 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
@@ -28,13 +35,18 @@ const Form = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  .or {
+    color: #fff;
+    font-size: 20px;
+  }
 `;
 
-const Input = styled.input<{ iserror: string }>`
+const Input = styled.input<{ $iserror: string }>`
   width: 100%;
   border: none;
-  box-shadow: ${({ iserror }) =>
-    iserror ? ' 0 0 10px tomato' : ' 0 0 10px #bbb'};
+  box-shadow: ${({ $iserror }) =>
+    $iserror ? ' 0 0 10px tomato' : ' 0 0 10px #bbb'};
   border-radius: 5px;
   outline: 0;
   padding: 8px;
@@ -50,7 +62,7 @@ const Input = styled.input<{ iserror: string }>`
   }
 `;
 
-const LoginButton = styled(Button)<{ disabled: boolean }>`
+const SignUpButton = styled(Button)<{ disabled: boolean }>`
   margin-top: 15px;
   width: 100%;
   border-radius: 4px;
@@ -85,51 +97,92 @@ const AuthWrapper = styled.div`
   }
 `;
 
-interface ILoginTypes {
+interface IRegisterTypes {
   email: string;
+  nickname: string;
   password: string;
+  password2: string;
 }
 
-const Login = () => {
+const Register = () => {
+  const setAuthModalState = useSetRecoilState(authModalState);
+
   const swiper = useSwiper();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<ILoginTypes>();
+    watch,
+    setError,
+    formState: { errors },
+  } = useForm<IRegisterTypes>();
 
-  const onSubmit: SubmitHandler<ILoginTypes> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<IRegisterTypes> = async (
+    data: IRegisterTypes
+  ) => {
+    const res: any = await postRegister(data);
+
+    if (res.status === 400) {
+      setError(res.type, {
+        message: res.msg,
+      });
+    }
+
+    if (res.status === 200) {
+      setAuthModalState(false);
+    }
+  };
+
+  const password = watch('password');
 
   return (
     <Container>
-      <Alert />
       <Wrapper>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Input
-            autoComplete='off'
-            {...register('email', emailValidation)}
-            placeholder='이메일'
-            iserror={errors?.email ? 'true' : ''}
+            type='text'
+            autoComplete='on'
+            placeholder='닉네임'
+            $iserror={errors?.nickname ? 'true' : ''}
+            {...register('nickname', nicknameValidation)}
           />
+
           <Input
-            autoComplete='off'
+            autoComplete='on'
+            placeholder='이메일'
+            $iserror={errors?.email ? 'true' : ''}
+            {...register('email', emailValidation)}
+          />
+
+          <Input
+            autoComplete='on'
             type='password'
             placeholder='비밀번호'
-            iserror={errors?.password ? 'true' : ''}
+            $iserror={errors?.password ? 'true' : ''}
             {...register('password', passwordValidation)}
           />
+
+          <Input
+            autoComplete='on'
+            type='password'
+            placeholder='비밀번호 확인'
+            className='input-last'
+            $iserror={errors?.password2 ? 'true' : ''}
+            {...register('password2', password2Validation(password))}
+          />
+
           {Object.values(errors).length !== 0 && (
             <ErrorText text={Object.values(errors)[0].message} />
           )}
-          <LoginButton disabled={Object.keys(errors).length > 0} type='submit'>
-            로그인
-          </LoginButton>
+
+          <SignUpButton disabled={Object.keys(errors).length > 0} type='submit'>
+            가입하기
+          </SignUpButton>
 
           <AuthWrapper>
-            아이디가 없으시나요?...&nbsp;
+            이미 회원이신가요?...&nbsp;
             <span className='auth-text' onClick={() => swiper.slideNext()}>
-              회원가입하러 가기
+              로그인하러 가기
             </span>
           </AuthWrapper>
         </Form>
@@ -138,4 +191,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

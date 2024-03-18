@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-  name: {
+  nickname: {
     type: String,
     required: true,
   },
@@ -17,18 +17,19 @@ const UserSchema = new mongoose.Schema({
   avatar: {
     type: String,
   },
+  commentCount: {
+    type: Number,
+    default: 0,
+  },
+  postCount: {
+    type: Number,
+    default: 0,
+  },
 
   date: {
     type: Date,
     default: Date.now,
   },
-
-  posts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'post',
-    },
-  ],
 });
 
 module.exports = mongoose.model('user', UserSchema);

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import './likeEffect.css';
+import './like-effect.css';
 
 const Container = styled.div`
   overflow: hidden;

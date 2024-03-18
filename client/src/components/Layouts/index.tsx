@@ -2,9 +2,9 @@ import styled, { css, keyframes } from 'styled-components';
 
 import { useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { authModalState } from '../../atom/authModalAtoms';
-import AuthModal from '../AuthModal';
-import Header from '../Header';
+import { authModalState } from '../../atom/auth-modal-atoms';
+import AuthModal from '../auth-modal';
+import Header from '../header';
 
 // 페이지 전환효과
 const ScreenFrames = keyframes`
@@ -36,6 +36,7 @@ interface ILayoutProps {
 const Layout = ({ children }: ILayoutProps) => {
   const location = useLocation();
   const isAuthModal = useRecoilValue(authModalState);
+
   return (
     <Container>
       {isAuthModal && <AuthModal />}

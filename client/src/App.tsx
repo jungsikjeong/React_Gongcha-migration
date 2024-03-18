@@ -1,8 +1,10 @@
-// import { RecoilRoot } from 'recoil';
-import Layout from './components/Layouts';
-import Router from './components/Router';
+import Layout from './components/layouts';
+import Router from './components/router';
 
 const App = () => {
+  // const userInfo = useRecoilValueLoadable(getUserInfo);
+  // console.log(userInfo);
+
   return (
     <>
       <Layout>

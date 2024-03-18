@@ -1,11 +1,17 @@
-// any 타입 임시
-const Alert = ({ alerts }: any) =>
-  alerts !== null &&
-  alerts?.length > 0 &&
-  alerts?.map((alert: any) => (
-    <div key={alert.id} className={`alert alert-${alert.alertType}`}>
-      {alert.msg}
+import { IAlertAtoms } from '../../interface/alert';
+
+interface IAlert {
+  alert: IAlertAtoms;
+}
+
+const Alert = ({ alert }: IAlert) => {
+  return (
+    <div>
+      {alert !== null && alert?.text !== '' && (
+        <div className={`alert alert-${alert.alertType}`}>{alert?.text}</div>
+      )}
     </div>
-  ));
+  );
+};
 
 export default Alert;

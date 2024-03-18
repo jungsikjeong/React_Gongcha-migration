@@ -9,10 +9,6 @@ connectDB();
 
 app.use(express.json({ extended: false }));
 
-app.get('/api/hello', (req, res) => {
-  res.send(`Hello, ${req.query.person}!`);
-});
-
 // Define Routes
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/users', require('./routes/api/users'));

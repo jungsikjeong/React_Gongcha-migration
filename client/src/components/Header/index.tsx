@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { authModalState } from '../../atom/authModalAtoms';
+import { authModalState } from '../../atom/auth-modal-atoms';
 
 import { FaBars } from 'react-icons/fa';
 
-import DesktopNavbar from './DesktopNavbar';
-import MobileNavbar from './MobileNavbar';
+import DesktopNavbar from './desktop-navbar/desktop-navbar';
+import MobileNavbar from './mobile-navbar';
 
 const Container = styled(motion.div)`
   position: absolute;
@@ -17,7 +17,6 @@ const Container = styled(motion.div)`
   left: 0;
   right: 0;
   z-index: 10;
-  display: flex;
   padding: 40px 120px;
 
   @media (max-width: 1024px) {
@@ -82,7 +81,6 @@ const containerVariants = {
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
   const setAuthModalState = useSetRecoilState(authModalState);
 
   const handleShowMenu = () => {
