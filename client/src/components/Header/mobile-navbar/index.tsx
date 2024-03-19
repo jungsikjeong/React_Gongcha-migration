@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { RiCloseLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
+import MobileUser from './mobile-user';
+
 const Container = styled(motion.div)`
   display: flex;
   flex: 1;
@@ -46,37 +48,6 @@ const Ul = styled(motion.ul)`
     display: flex;
     flex-direction: column;
   }
-
-  li {
-    &::before {
-      content: '';
-      position: absolute;
-      top: -65px;
-      left: 0;
-      right: 0;
-      margin: auto;
-      width: 1px;
-      height: 70px;
-      background-color: #bbb;
-      @media (max-width: 1024px) {
-        display: none;
-      }
-    }
-
-    &::after {
-      content: '';
-      width: 0;
-      height: 2px;
-      background: #cf3e58;
-      display: block;
-      margin: auto;
-      transition: 0.5s;
-    }
-
-    &:hover::after {
-      width: 100%;
-    }
-  }
 `;
 
 const Li = styled(motion.li)`
@@ -85,11 +56,39 @@ const Li = styled(motion.li)`
   padding: 8px 25px;
   color: #fff;
   cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -65px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 1px;
+    height: 70px;
+    background-color: #bbb;
+    @media (max-width: 1024px) {
+      display: none;
+    }
+  }
+
+  &::after {
+    content: '';
+    width: 0;
+    height: 2px;
+    background: #cf3e58;
+    display: block;
+    margin: auto;
+    transition: 0.5s;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
 `;
 
 interface IMobileNavbar {
-  //   handleCloseMenu: () => void;
-  handleCloseMenu: any;
+  handleCloseMenu: (e: React.MouseEvent) => void;
 }
 
 const MobileNavbar = ({ handleCloseMenu }: IMobileNavbar) => {
@@ -116,20 +115,11 @@ const MobileNavbar = ({ handleCloseMenu }: IMobileNavbar) => {
         <Link to='/about' onClick={handleCloseMenu}>
           <Li>ABOUT</Li>
         </Link>
-        <Link to='/postList' onClick={handleCloseMenu}>
+        <Link to='/posts' onClick={handleCloseMenu}>
           <Li>POSTS</Li>
         </Link>
 
-        <span>
-          <Li
-            onClick={(e) => {
-              handleCloseMenu(e);
-            }}
-            data-id='sign In'
-          >
-            SIGN IN
-          </Li>
-        </span>
+        <MobileUser />
       </Ul>
     </Container>
   );

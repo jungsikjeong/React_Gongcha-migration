@@ -53,7 +53,7 @@ const textVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.5 } },
 };
 
-const Home = () => {
+const HomePage = () => {
   return (
     <Container initial='hidden' animate='visible' exit='hidden'>
       <BannerTitle>
@@ -74,4 +74,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;

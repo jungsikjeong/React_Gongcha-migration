@@ -85,7 +85,7 @@ const DesktopNavbar = () => {
         <Link to='/about'>
           <Li variants={liVariants}>ABOUT</Li>
         </Link>
-        <Link to='/postList'>
+        <Link to='/posts'>
           <Li variants={liVariants}>POSTS</Li>
         </Link>
 

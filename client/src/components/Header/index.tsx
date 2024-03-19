@@ -8,7 +8,7 @@ import { authModalState } from '../../atom/auth-modal-atoms';
 
 import { FaBars } from 'react-icons/fa';
 
-import DesktopNavbar from './desktop-navbar/desktop-navbar';
+import DesktopNavbar from './desktop-navbar';
 import MobileNavbar from './mobile-navbar';
 
 const Container = styled(motion.div)`

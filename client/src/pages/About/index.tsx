@@ -51,7 +51,7 @@ const Section = styled.div<{ $bgurl: string }>`
   }
 `;
 
-const About = () => {
+const AboutPage = () => {
   return (
     <AboutContainer>
       <Section $bgurl={'./images/about/about-img01.jpg'}>
@@ -134,4 +134,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default AboutPage;
