@@ -56,7 +56,6 @@ const textVariants = {
 const Home = () => {
   return (
     <Container initial='hidden' animate='visible' exit='hidden'>
-      {/* <LikeEffect /> */}
       <BannerTitle>
         <motion.h1 variants={textVariants}>
           <motion.span className='textColor' variants={textVariants}>

@@ -91,7 +91,11 @@ router.post(
           if (err) throw err;
           return res.json({
             token,
-            user: { nickname: user.nickname, email: user.email },
+            user: {
+              nickname: user.nickname,
+              email: user.email,
+              avatar: user.avatar,
+            },
           });
         }
       );

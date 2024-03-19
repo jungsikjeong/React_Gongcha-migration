@@ -2,9 +2,10 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { useSwiper } from 'swiper/react';
-import { authModalState } from '../../atom/auth-modal-atoms';
 
 import { postRegister } from '../../api/auth';
+import { authModalState } from '../../atom/auth-modal-atoms';
+import { welcomeState } from '../../atom/welcome-atoms';
 import {
   emailValidation,
   nicknameValidation,
@@ -12,6 +13,7 @@ import {
   passwordValidation,
 } from '../../utils/validation';
 
+import { authState } from '../../atom/auth-atoms';
 import Button from '../common/Button';
 import ErrorText from '../common/error-text';
 
@@ -106,6 +108,8 @@ interface IRegisterTypes {
 
 const Register = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
+  const setWelcomeState = useSetRecoilState(welcomeState);
+  const setUserInfo = useSetRecoilState(authState);
 
   const swiper = useSwiper();
 
@@ -129,7 +133,11 @@ const Register = () => {
     }
 
     if (res.status === 200) {
+      const user = JSON.parse(localStorage.getItem('user') as string);
+
+      setUserInfo(user);
       setAuthModalState(false);
+      setWelcomeState(true);
     }
   };
 

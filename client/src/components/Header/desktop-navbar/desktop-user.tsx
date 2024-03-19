@@ -61,6 +61,7 @@ const LoginButton = styled(Button)`
 
 const DesktopUser = () => {
   const userInfo = useRecoilValue(authState);
+  console.log(userInfo);
   // 모달창 닫기
   const setAuthModalState = useSetRecoilState(authModalState);
   // const userInfo = useRecoilValueLoadable(getUserInfo);
