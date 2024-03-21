@@ -38,6 +38,9 @@ const Wrapper = styled.div`
 
 const Logo = styled.div`
   color: #fff;
+  @media (max-width: 768px) {
+    visibility: hidden;
+  }
 
   h1 {
     font-weight: bold;
@@ -62,15 +65,6 @@ const MobileMenuOpen = styled(motion.div)`
   }
   @media (max-width: 768px) {
     font-size: 22px;
-  }
-`;
-
-const SLink = styled(Link)`
-  font-size: 13px;
-  font-weight: 900;
-
-  @media (max-width: 1024px) {
-    display: block;
   }
 `;
 

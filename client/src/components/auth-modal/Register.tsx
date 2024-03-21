@@ -14,7 +14,7 @@ import {
 } from '../../utils/validation';
 
 import { authState } from '../../atom/auth-atoms';
-import Button from '../common/Button';
+import Button from '../common/button';
 import ErrorText from '../common/error-text';
 
 const Container = styled.div`

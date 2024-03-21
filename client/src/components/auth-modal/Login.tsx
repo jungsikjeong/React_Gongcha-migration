@@ -8,7 +8,7 @@ import { emailValidation, passwordValidation } from '../../utils/validation';
 import { postLogin } from '../../api/auth';
 import { authState } from '../../atom/auth-atoms';
 
-import Button from '../common/Button';
+import Button from '../common/button';
 import ErrorText from '../common/error-text';
 
 const Container = styled.div`

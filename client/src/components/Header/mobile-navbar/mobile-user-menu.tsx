@@ -6,7 +6,9 @@ import styled from 'styled-components';
 import { authState } from '../../../atom/auth-atoms';
 import { IUserInfo } from '../../../interface/auth';
 
-const Container = styled.div``;
+const Container = styled.div`
+  margin-top: 1rem;
+`;
 
 const Image = styled.img`
   width: 50px;
@@ -38,8 +40,7 @@ const Menu = styled.ul`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background-color: rgba(0, 0, 0, 0.6);
-  background-color: goldenrod;
+  background-color: #d30e0e;
 `;
 
 const Item = styled.li`

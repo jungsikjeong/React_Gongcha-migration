@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { authModalState } from '../../../atom/auth-modal-atoms';
 
 import { authState } from '../../../atom/auth-atoms';
-import Button from '../../common/Button';
+import Button from '../../common/button';
 import DesktopUserMenu from './desktop-user-menu';
 
 const Container = styled.div``;

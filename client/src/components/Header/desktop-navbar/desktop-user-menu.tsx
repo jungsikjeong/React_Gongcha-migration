@@ -1,6 +1,6 @@
 import { motion, stagger, useAnimate } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { authState } from '../../../atom/auth-atoms';
@@ -24,11 +24,12 @@ const UserWrapper = styled(motion.div)`
   cursor: pointer;
 `;
 
-const Menu = styled.ul`
+const Menu = styled.ul<{ $pathname: string }>`
   margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: ${({ $pathname }) =>
+    $pathname === '/' ? 'rgba(0, 0, 0, 0.6)' : '#d30e0e'};
 `;
 
 const Item = styled.li`
@@ -76,6 +77,8 @@ function useMenuAnimation(isOpen: boolean) {
 }
 
 const DesktopUserMenu = ({ userInfo }: { userInfo: IUserInfo }) => {
+  const location = useLocation();
+
   const [isOpen, setIsOpen] = useState(false);
   const scope = useMenuAnimation(isOpen);
   const setUserInfo = useSetRecoilState(authState);
@@ -117,6 +120,7 @@ const DesktopUserMenu = ({ userInfo }: { userInfo: IUserInfo }) => {
           <p>{userInfo.nickname}</p>
         </UserWrapper>
         <Menu
+          $pathname={location.pathname}
           style={{
             pointerEvents: isOpen ? 'auto' : 'none',
             clipPath: 'inset(10% 50% 90% 50% round 10px)',
