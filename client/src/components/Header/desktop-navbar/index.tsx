@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
+import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -67,25 +68,34 @@ const ulVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.3 } },
 };
-
 const liVariants = {
   hidden: { opacity: 0, y: -50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  write: { y: -100, transition: { duration: 0.5 } },
 };
 
 const DesktopNavbar = () => {
   const location = useLocation();
+  const controls = useAnimation();
+
+  useEffect(() => {
+    if (location.pathname === '/write') {
+      controls.start('write');
+    } else {
+      controls.start('visible');
+    }
+  }, [location.pathname, controls]);
 
   return (
     <Container>
-      <Ul variants={ulVariants} initial='hidden' animate='visible'>
-        <Link to='/'>
+      <Ul variants={ulVariants} initial='hidden' animate={controls}>
+        <Link to='/' onClick={() => window.scrollTo(0, 0)}>
           <Li variants={liVariants}>HOME</Li>
         </Link>
-        <Link to='/about'>
+        <Link to='/about' onClick={() => window.scrollTo(0, 0)}>
           <Li variants={liVariants}>ABOUT</Li>
         </Link>
-        <Link to='/posts'>
+        <Link to='/posts' onClick={() => window.scrollTo(0, 0)}>
           <Li variants={liVariants}>POSTS</Li>
         </Link>
 

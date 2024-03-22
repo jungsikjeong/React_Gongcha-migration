@@ -6,11 +6,13 @@ import { SlHeart, SlSpeech } from 'react-icons/sl';
 
 import styled from 'styled-components';
 
+import { Link } from 'react-router-dom';
+import PostDetailImages from '../post-detail-images';
 import CommentList from './comment-list';
 
 const Container = styled.div`
-  max-width: 335px;
-  width: 100%;
+  /* max-width: 335px; */
+  min-width: 335px;
   background-color: black;
 `;
 
@@ -18,7 +20,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  /* border-bottom: 1px solid #1c2b33; */
   border-bottom: 1px solid rgb(38, 38, 38);
 
   .icon {
@@ -39,11 +40,20 @@ const ContentsWrap = styled.ul`
   overflow-y: scroll;
   padding: 16px;
   scrollbar-width: none;
+  background-color: black;
+
+  @media (max-width: 768px) {
+    height: 150px;
+    padding-top: 0;
+  }
 `;
 
 const ContentsItem = styled.li`
   display: flex;
   align-items: start;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const Image = styled.img`
@@ -61,6 +71,11 @@ const Post = styled.div`
   font-size: 14px;
   line-height: 18px;
   gap: 5px;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    font-size: 12px;
+  }
 `;
 
 const Tag = styled.span`
@@ -69,10 +84,9 @@ const Tag = styled.span`
 
 const Footer = styled.div`
   width: 100%;
-  height: 100%;
   border-top: 1px solid rgb(38, 38, 38);
   padding: 6px 16px 8px;
-
+  background-color: black;
   span {
     cursor: pointer;
     padding-top: 6px;
@@ -80,6 +94,10 @@ const Footer = styled.div`
     color: rgb(245, 245, 245);
     line-height: 18px;
     font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
   }
 `;
 
@@ -97,12 +115,15 @@ const Section = styled.section`
   .section-icons {
     cursor: pointer;
   }
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 0.2rem 0;
+  }
 `;
 
 const Form = styled.form`
   display: flex;
   height: 100%;
-
   border-top: 1px solid rgb(38, 38, 38);
   margin-top: 1rem;
   padding-top: 0.875rem;
@@ -127,12 +148,17 @@ const Textarea = styled.textarea`
 const PostBtn = styled.div`
   flex-shrink: 0;
   font-size: 14px;
-
   color: rgb(179, 219, 255);
   opacity: 0.5;
 `;
 
-const PostDetailContents = () => {
+const MoreBtn = styled.div`
+  color: rgb(168, 168, 168);
+  font-size: 12px;
+  cursor: pointer;
+`;
+
+const PostDetailContents = ({ isMobile }: any) => {
   const test = false;
 
   return (
@@ -150,12 +176,30 @@ const PostDetailContents = () => {
         </div>
       </Header>
 
+      {isMobile && <PostDetailImages />}
+
       <ContentsWrap>
         <ContentsItem>
-          <Image
-            src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-            alt=''
-          />
+          {isMobile ? (
+            <Section>
+              <div className='section-icons'>
+                {test ? <FcLike /> : <SlHeart />}
+              </div>
+
+              <div className='section-icons'>
+                <SlSpeech />
+              </div>
+
+              <div className='bookmark section-icons'>
+                {test ? <FaBookmark /> : <CiBookmark />}
+              </div>
+            </Section>
+          ) : (
+            <Image
+              src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
+              alt=''
+            />
+          )}
 
           <Post>
             <b>일이삼사오육</b> 너무 행복했고 너무 너무 좋았습니다.
@@ -167,18 +211,25 @@ const PostDetailContents = () => {
             <Tag>#광고</Tag>
           </Post>
         </ContentsItem>
-
-        <CommentList />
-        <CommentList />
-        <CommentList />
-        <CommentList />
-        <CommentList />
-        <CommentList />
-        <CommentList />
-        <CommentList />
-        <CommentList />
-        <CommentList />
-        <CommentList />
+        {isMobile ? (
+          <Link to='/commentList'>
+            <MoreBtn>댓글 42개 모두 보기</MoreBtn>
+          </Link>
+        ) : (
+          <>
+            <CommentList />
+            <CommentList />
+            <CommentList />
+            <CommentList />
+            <CommentList />
+            <CommentList />
+            <CommentList />
+            <CommentList />
+            <CommentList />
+            <CommentList />
+            <CommentList />
+          </>
+        )}
       </ContentsWrap>
       <Footer>
         <Section>

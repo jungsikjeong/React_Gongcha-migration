@@ -52,7 +52,8 @@ const posts = Array.from({ length: 20 }, (_, index) => ({
   _id: index + 1,
   title: `Post ${index + 1}`,
   text: `Content of Post ${index + 1}`,
-  image: 'https://picsum.photos/250/250',
+  image:
+    'https://image.xportsnews.com/contents/images/upload/article/2020/1111/mb_1605070416816998.jpg',
 }));
 
 const PostsPage = () => {

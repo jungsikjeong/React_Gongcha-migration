@@ -30,9 +30,14 @@ const Post = styled.div`
   gap: 5px;
 `;
 
-const CommentLike = styled.div`
+const LikeBtn = styled.div`
   cursor: pointer;
   margin-top: 9px;
+  padding-left: 0.875rem;
+  @media screen and (max-width: 1024px) {
+    padding-left: 0.5rem;
+    padding-left: 0;
+  }
 `;
 
 const Bottom = styled.div`
@@ -62,7 +67,7 @@ const CommentList = () => {
           </Bottom>
         </Post>
 
-        <CommentLike>{test ? <FcLike /> : <SlHeart />}</CommentLike>
+        <LikeBtn>{test ? <FcLike /> : <SlHeart />}</LikeBtn>
       </Wrapper>
     </CommentsList>
   );

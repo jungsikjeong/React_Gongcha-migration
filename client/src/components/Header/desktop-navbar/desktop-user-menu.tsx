@@ -6,11 +6,15 @@ import styled from 'styled-components';
 import { authState } from '../../../atom/auth-atoms';
 import { IUserInfo } from '../../../interface/auth';
 
-const Container = styled.div``;
+const Container = styled.div`
+  position: fixed;
+  top: 4.6rem;
+  right: 0;
+`;
 
 const Image = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   overflow: hidden;
   border-radius: 50%;
   object-fit: cover;
@@ -22,6 +26,7 @@ const UserWrapper = styled(motion.div)`
   color: #fff;
   gap: 10px;
   cursor: pointer;
+  font-size: 14px;
 `;
 
 const Menu = styled.ul<{ $pathname: string }>`
