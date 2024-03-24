@@ -15,7 +15,7 @@ const Router = () => {
         <Route path='/about' element={<AboutPage />} />
         <Route path='/posts' element={<PostsPage />} />
         <Route path='/write' element={<WritePage />} />
-        <Route path='/commentList' element={<CommentListPage />} />
+        <Route path='/:id/commentList' element={<CommentListPage />} />
 
         {/* 경로 외에 곳으로 갔을때 */}
         <Route path='*' element={<NotFound />} />

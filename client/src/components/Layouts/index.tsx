@@ -1,10 +1,11 @@
+import { useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import { authModalState } from '../../atom/auth-modal-atoms';
 
 import AuthModal from '../auth-modal';
-import Header from '../header';
+import Navbar from '../navbar';
 import Welcome from '../welcome';
 
 const Container = styled.div``;
@@ -16,13 +17,14 @@ interface ILayoutProps {
 }
 
 const Layout = ({ children }: ILayoutProps) => {
+  const location = useLocation();
   const isAuthModal = useRecoilValue(authModalState);
 
   return (
     <Container>
       <Welcome />
       {isAuthModal && <AuthModal />}
-      <Header />
+      {location.pathname !== '/:id/commentList' && <Navbar />}
       <Wrapper>{children}</Wrapper>
     </Container>
   );

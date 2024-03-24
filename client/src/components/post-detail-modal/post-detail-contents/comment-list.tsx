@@ -1,5 +1,6 @@
 import { FcLike } from 'react-icons/fc';
 import { SlHeart } from 'react-icons/sl';
+import { useLocation } from 'react-router-dom';
 
 import styled from 'styled-components';
 
@@ -21,22 +22,26 @@ const Image = styled.img`
   margin-right: 10px;
 `;
 
-const Post = styled.div`
+const Post = styled.div<{ $ispathname: boolean }>`
   width: 100%;
-  max-width: 335px;
+  max-width: ${({ $ispathname }) => ($ispathname ? '500px' : '335px')};
   font-size: 14px;
   line-height: 18px;
   color: rgb(245, 245, 245);
-  gap: 5px;
+
+  @media (max-width: 768px) {
+    /* max-width: 100%; */
+  }
 `;
 
 const LikeBtn = styled.div`
   cursor: pointer;
   margin-top: 9px;
   padding-left: 0.875rem;
-  @media screen and (max-width: 1024px) {
+
+  @media (max-width: 768px) {
+    font-size: 12px;
     padding-left: 0.5rem;
-    padding-left: 0;
   }
 `;
 
@@ -51,6 +56,7 @@ const Bottom = styled.div`
 `;
 
 const CommentList = () => {
+  const location = useLocation();
   const test = false;
   return (
     <CommentsList>
@@ -60,7 +66,7 @@ const CommentList = () => {
           alt=''
         />
 
-        <Post>
+        <Post $ispathname={location.pathname.includes('/commentList')}>
           <b>일이삼사오육</b> 너무 행복했고 너무 너무 좋았습니다.
           <Bottom>
             <span>좋아요 1개</span> <span>답글 달기</span>

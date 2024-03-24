@@ -6,6 +6,8 @@ import { SlHeart, SlSpeech } from 'react-icons/sl';
 
 import styled from 'styled-components';
 
+import CommentForm from 'components/comment-form';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import PostDetailImages from '../post-detail-images';
 import CommentList from './comment-list';
@@ -159,7 +161,14 @@ const MoreBtn = styled.div`
 `;
 
 const PostDetailContents = ({ isMobile }: any) => {
+  const commentRef = useRef<HTMLTextAreaElement | null>(null);
   const test = false;
+
+  const handleCommentFocus = () => {
+    if (commentRef.current) {
+      commentRef.current.focus();
+    }
+  };
 
   return (
     <Container>
@@ -186,9 +195,11 @@ const PostDetailContents = ({ isMobile }: any) => {
                 {test ? <FcLike /> : <SlHeart />}
               </div>
 
-              <div className='section-icons'>
-                <SlSpeech />
-              </div>
+              <Link to='/:id/commentList'>
+                <div className='section-icons'>
+                  <SlSpeech />
+                </div>
+              </Link>
 
               <div className='bookmark section-icons'>
                 {test ? <FaBookmark /> : <CiBookmark />}
@@ -212,7 +223,7 @@ const PostDetailContents = ({ isMobile }: any) => {
           </Post>
         </ContentsItem>
         {isMobile ? (
-          <Link to='/commentList'>
+          <Link to='/:id/commentList'>
             <MoreBtn>댓글 42개 모두 보기</MoreBtn>
           </Link>
         ) : (
@@ -235,7 +246,7 @@ const PostDetailContents = ({ isMobile }: any) => {
         <Section>
           <div className='section-icons'>{test ? <FcLike /> : <SlHeart />}</div>
 
-          <div className='section-icons'>
+          <div className='section-icons' onClick={handleCommentFocus}>
             <SlSpeech />
           </div>
 
@@ -246,10 +257,11 @@ const PostDetailContents = ({ isMobile }: any) => {
 
         <span>좋아요 9.4만개</span>
 
-        <Form>
-          <Textarea placeholder='댓글 달기...' />
+        <CommentForm />
+        {/* <Form>
+          <Textarea placeholder='댓글 달기...' ref={commentRef} />
           <PostBtn>게시</PostBtn>
-        </Form>
+        </Form> */}
       </Footer>
     </Container>
   );

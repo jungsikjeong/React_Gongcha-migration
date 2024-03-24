@@ -1,12 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 
-import { useEffect, useState } from 'react';
+import FlexBox from 'components/common/flex-box';
 import PostDetailContents from './post-detail-contents';
+import PostDetailHeader from './post-detail-header';
 import PostDetailImages from './post-detail-images';
 
 const Container = styled(motion.div)`
@@ -31,17 +33,12 @@ const Container = styled(motion.div)`
   }
 `;
 
-const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
-const Wrapper = styled.div<{ boxheight: number }>`
+const Wrapper = styled.div<{ $boxheight: number }>`
   max-width: calc(100% - 64px - 64px);
   max-height: calc(100vh - 40px);
   width: 100%;
-  height: ${({ boxheight }) => `${boxheight}px`};
+  height: ${({ $boxheight }) => `${$boxheight}px`};
+
   display: flex;
   justify-content: center;
   transition: all 0.3s ease;
@@ -105,16 +102,16 @@ const PostDetailModal = ({ selectedId }: { selectedId: number | null }) => {
   return (
     <AnimatePresence>
       <Container layoutId={`item-motion-${selectedId}`}>
-        <Wrapper boxheight={boxHeight}>
+        <Wrapper $boxheight={boxHeight}>
           <Close onClick={() => setPostDetailModal(false)}>
             <IoMdClose />
           </Close>
 
           {isMobile ? (
-            <Box>
-              <div>gkdl</div>
+            <FlexBox $direction='column'>
+              <PostDetailHeader />
               <PostDetailContents isMobile={isMobile} />
-            </Box>
+            </FlexBox>
           ) : (
             <>
               <PostDetailImages />
