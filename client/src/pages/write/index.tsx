@@ -1,35 +1,87 @@
+import { useState } from 'react';
+import ReactQuill from 'react-quill';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import FileForm from '../../components/write-post/file-form';
+import { postImageUpload } from 'api/file-upload';
+import { fileObjectState } from 'atom/file-object-atoms';
+import 'react-quill/dist/quill.snow.css';
+
+import PostDetailHeader from 'components/common/post-detail-header';
+import FileForm from 'components/file-form';
 
 const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background-color: black;
   color: rgb(245, 245, 245);
   min-height: 100vh;
 `;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  max-width: 500px;
+  margin: 0 auto;
+`;
+const StyledQuillWrapper = styled.div`
+  padding: 0 1rem;
+  padding-top: 1rem;
 
-const Form = styled.form``;
+  .quill {
+    border: 1px solid rgb(38, 38, 38);
+    border-radius: 5px;
+    background-color: transparent;
+    color: white;
+  }
+  .ql-container {
+    border: none;
+  }
+  .ql-editor {
+    min-height: 150px;
+    max-height: 150px;
+  }
 
-const TextArea = styled.textarea`
-  resize: none;
-  background-color: transparent;
-  width: 200px;
-  height: 200px;
+  // placeholder
+  .quill > .ql-container > .ql-editor.ql-blank::before {
+    font-style: normal;
+    font-size: 14px;
+    color: gray;
+  }
 `;
 
 const WritePage = () => {
+  const [value, setValue] = useState('');
+  const fileObject = useRecoilValue(fileObjectState);
+
+  const modules = {
+    toolbar: false,
+  };
+
+  const onSubmit = async () => {
+    const formData = new FormData();
+
+    fileObject.forEach((file, index) => {
+      formData.append(`files`, file);
+    });
+
+    await postImageUpload({ formData });
+  };
+
   return (
     <Container>
       <Wrapper>
+        <PostDetailHeader text={'게시물 작성'} />
         <FileForm />
-        <Form>
-          <TextArea placeholder='오늘 어떤 공차를 하셨나요?   (최소 25글자로 작성해주세요)' />
-        </Form>
+        <StyledQuillWrapper>
+          <ReactQuill
+            placeholder='당신의 공차를 공유하고 소개해주세요!'
+            theme='snow'
+            modules={modules}
+            value={value}
+            onChange={setValue}
+          />
+
+          <button style={{ color: 'white' }} onClick={onSubmit}>
+            전송
+          </button>
+        </StyledQuillWrapper>
       </Wrapper>
     </Container>
   );

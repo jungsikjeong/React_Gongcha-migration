@@ -8,25 +8,22 @@ const PostSchema = new Schema({
     required: true,
   },
 
-  title: { type: String, required: true },
-
   content: {
     type: String,
-    required: true,
   },
 
-  image: {
-    type: String,
-  },
+  images: [{ type: String, required: true }],
 
   postLikeCount: {
     type: Number,
     default: 0,
   },
+
   commentsCount: {
     type: Number,
     default: 0,
   },
+
   date: {
     type: Date,
     default: Date.now,

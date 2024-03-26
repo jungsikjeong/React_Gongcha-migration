@@ -9,7 +9,7 @@ const { body, validationResult } = require('express-validator');
 const User = require('../../models/User');
 const Post = require('../../models/Post');
 const auth = require('../../middleware/auth');
-const upload = require('../../middleware/upload');
+const upload = require('../../utils/file-upload');
 
 // @route   POST api/users (회원가입)
 // @desc    Register user

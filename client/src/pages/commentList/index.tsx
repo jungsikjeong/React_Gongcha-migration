@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 import CommentForm from 'components/comment-form';
+import PostDetailHeader from 'components/common/post-detail-header';
 import CommentList from 'components/post-detail-modal/post-detail-contents/comment-list';
-import PostDetailHeader from 'components/post-detail-modal/post-detail-header';
 
 const Container = styled.div`
   min-width: 335px;
@@ -63,7 +63,7 @@ const CommentListPage = () => {
   return (
     <Container>
       <Wrapper>
-        <PostDetailHeader />
+        <PostDetailHeader text='게시물' />
         <ContentsList>
           <ContentsItem>
             <Image

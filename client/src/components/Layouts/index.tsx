@@ -24,7 +24,8 @@ const Layout = ({ children }: ILayoutProps) => {
     <Container>
       <Welcome />
       {isAuthModal && <AuthModal />}
-      {location.pathname !== '/:id/commentList' && <Navbar />}
+      {!location.pathname.includes('/commentList') &&
+        location.pathname !== '/write' && <Navbar />}
       <Wrapper>{children}</Wrapper>
     </Container>
   );

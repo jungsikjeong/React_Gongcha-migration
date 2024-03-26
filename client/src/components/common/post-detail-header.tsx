@@ -16,13 +16,16 @@ const IconBox = styled.div`
   cursor: pointer;
 `;
 
-const PostDetailHeader = () => {
+const PostDetailHeader = ({ text }: { text: string }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const setPostDetailModal = useSetRecoilState(postDetailModalStatus);
 
   const handleGoBack = () => {
-    if (location.pathname.includes('/commentList')) {
+    if (
+      location.pathname.includes('/commentList') ||
+      location.pathname === '/write'
+    ) {
       navigate(-1);
     } else {
       setPostDetailModal(false);
@@ -46,7 +49,7 @@ const PostDetailHeader = () => {
       </IconBox>
 
       <Typography tag={'p'} fontWeight='bold' fontSize='16px'>
-        게시물
+        {text}
       </Typography>
 
       <div></div>

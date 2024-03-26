@@ -1,76 +1,76 @@
 const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
+
 const auth = require('../../middleware/auth');
+const { imageUpload } = require('../../middleware/file-upload');
 
 const Post = require('../../models/Post');
 const User = require('../../models/User');
-const upload = require('../../middleware/upload');
 
 // @route   POST api/posts/upload
 // @desc    게시물 이미지 업로드
 // @access  Private
-router.post('/upload', async (req, res) => {
-  // 프론트 에서 가져온 이미지를 저장을 해준다.
-  upload.imageUpload(req, res, (err) => {
-    if (err) {
-      return res.json({ success: false, err });
-    }
-    if (!req.file) return res.send('Please upload a file');
+router.post(
+  '/upload',
+  auth,
+  (req, res, next) => {
+    imageUpload.array('files', 5)(req, res, function (err) {
+      if (err) {
+        if (err?.code === 'LIMIT_UNEXPECTED_FILE') {
+          return res
+            .status(400)
+            .json({ msg: '파일은 최대 다섯개까지만 올려주세요.' });
+        }
 
-    return res.json({
-      success: true,
-      filePath: res.req.file.location,
-      fileName: res.req.file.originalname,
+        return res.status(400).json({ msg: err });
+      }
+
+      if (!req.files || req.files.length === 0) {
+        return res
+          .status(400)
+          .json({ msg: '이미지를 하나 이상 업로드해주세요.' });
+      }
+
+      next();
     });
-  });
-});
+  },
+  (req, res) => {
+    res.status(201).json(req.files.map((file) => file.location));
+  }
+);
 
 // @route   POST api/posts
 // @desc    게시물 작성
 // @access  Private
-router.post(
-  '/',
-  [
-    auth,
-    [
-      check('text', '최소 25글자를 입력해주세요').not().isEmpty().isLength({
-        min: 25,
-        max: 100,
-      }),
-    ],
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+router.post('/', auth, async (req, res) => {
+  const { content, imagePaths } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+
+    if (!imagePaths) {
+      return res.status(400).json({ msg: '이미지를 먼저 업로드해주세요' });
     }
 
-    const { text, image } = req.body;
-
-    try {
-      const user = await User.findById(req.user.id).select('-password');
-
+    if (imagePaths) {
       const newPost = new Post({
-        text: text,
-        name: user.name,
+        content: content || '',
+        name: user.nickname,
         avatar: user.avatar,
-        image: image ? image : '',
-        user: req.user.id,
+        images: imagePaths,
+        author: req.user.id,
       });
-
-      user.posts.push(newPost);
-      await user.save();
 
       const post = await newPost.save();
 
       res.json(post);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
     }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
-);
+});
 
 // @route   GET api/posts
 // @desc    모든 게시물 가져 오기

@@ -7,8 +7,8 @@ import styled from 'styled-components';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 
 import FlexBox from 'components/common/flex-box';
+import PostDetailHeader from '../common/post-detail-header';
 import PostDetailContents from './post-detail-contents';
-import PostDetailHeader from './post-detail-header';
 import PostDetailImages from './post-detail-images';
 
 const Container = styled(motion.div)`
@@ -109,7 +109,7 @@ const PostDetailModal = ({ selectedId }: { selectedId: number | null }) => {
 
           {isMobile ? (
             <FlexBox $direction='column'>
-              <PostDetailHeader />
+              <PostDetailHeader text='게시물' />
               <PostDetailContents isMobile={isMobile} />
             </FlexBox>
           ) : (
