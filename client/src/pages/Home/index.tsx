@@ -1,13 +1,12 @@
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-import bgImage from '../../assets/background.jpg';
 import MainFooter from '../../components/home-footer';
 
 const Container = styled(motion.div)`
   height: 100vh;
   position: relative;
   background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)),
-    url(${bgImage});
+    url('./images/background.jpg');
   background-position: center;
   background-size: cover;
   overflow: hidden;

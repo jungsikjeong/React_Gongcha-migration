@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { fileObjectState } from 'atom/file-object-atoms';
 import { dataURItoFile } from 'components/uitls/dataURItoFile';
-import useImageCompress from 'hook/useImageCompress';
+import useImageCompress from 'hook/use-image-compress';
 
 import ImgSwiper from 'components/img-swiper';
 

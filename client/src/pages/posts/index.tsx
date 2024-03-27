@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 
-import defaultImage from '../../assets/default3.png';
 import PostDetailModal from '../../components/post-detail-modal';
 
 const Container = styled.div`
@@ -80,7 +79,7 @@ const PostsPage = () => {
             {post.image ? (
               <Image src={post.image} alt='' />
             ) : (
-              <Image src={defaultImage} alt='' />
+              <Image src={''} alt='' />
             )}
             <Figcaption>{post.text}</Figcaption>
           </Figure>
