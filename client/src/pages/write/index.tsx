@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ReactQuill from 'react-quill';
+import { toast } from 'react-toastify';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
@@ -55,13 +56,17 @@ const WritePage = () => {
   };
 
   const onSubmit = async () => {
-    const formData = new FormData();
+    if (fileObject.length === 0 || null) {
+      return toast.error('이미지를 하나 이상 업로드해주세요!');
+    } else {
+      const formData = new FormData();
 
-    fileObject.forEach((file, index) => {
-      formData.append(`files`, file);
-    });
+      fileObject.forEach((file, index) => {
+        formData.append(`files`, file);
+      });
 
-    await postImageUpload({ formData });
+      await postImageUpload({ formData });
+    }
   };
 
   return (

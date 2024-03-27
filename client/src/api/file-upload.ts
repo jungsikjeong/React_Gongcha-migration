@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import instance from './instance';
 
 export const postImageUpload = async ({ formData }: { formData: FormData }) => {
@@ -11,6 +12,8 @@ export const postImageUpload = async ({ formData }: { formData: FormData }) => {
 
     return res;
   } catch (error: any) {
-    console.log(error);
+    const message = error?.response?.data?.msg;
+
+    toast.error(message || '다시 시도해주세요');
   }
 };
