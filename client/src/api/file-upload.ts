@@ -3,14 +3,17 @@ import instance from './instance';
 
 export const postImageUpload = async ({ formData }: { formData: FormData }) => {
   try {
-    const res = await instance.post('/api/posts/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    console.log(res);
+    const { data } = await instance.post<string[]>(
+      '/api/posts/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
 
-    return res;
+    return data;
   } catch (error: any) {
     const message = error?.response?.data?.msg;
 

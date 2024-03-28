@@ -5,14 +5,18 @@ const instance = axios.create({
   timeout: 2500,
   headers: {
     'Content-Type': 'application/json',
+    withCredential: true,
   },
 });
 
 instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
+
     if (token) {
-      config.headers.Authorization = token;
+      config.headers['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete config.headers['Authorization'];
     }
     return config;
   },

@@ -44,21 +44,21 @@ router.post(
 // @desc    게시물 작성
 // @access  Private
 router.post('/', auth, async (req, res) => {
-  const { content, imagePaths } = req.body;
+  const { content, images } = req.body;
 
   try {
     const user = await User.findById(req.user.id).select('-password');
 
-    if (!imagePaths) {
+    if (!images) {
       return res.status(400).json({ msg: '이미지를 먼저 업로드해주세요' });
     }
 
-    if (imagePaths) {
+    if (images) {
       const newPost = new Post({
         content: content || '',
         name: user.nickname,
         avatar: user.avatar,
-        images: imagePaths,
+        images: images,
         author: req.user.id,
       });
 

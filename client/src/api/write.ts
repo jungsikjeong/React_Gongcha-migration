@@ -1,18 +1,17 @@
-import { FileObjectType } from 'interface/file-object-type';
 import instance from './instance';
 
 interface IPostWrite {
   value: string;
-  fileObject: FileObjectType;
+  fileInfo: string[];
 }
 
-export const postWrite = async ({ value, fileObject }: IPostWrite) => {
+export const postWrite = async ({ value, fileInfo }: IPostWrite) => {
   try {
     const res = await instance.post('/api/posts', {
       content: value,
-      images: fileObject,
+      images: fileInfo,
     });
-    console.log(res);
+
     return res;
   } catch (error: any) {
     console.log(error);
