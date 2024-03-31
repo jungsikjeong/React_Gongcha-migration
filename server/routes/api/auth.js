@@ -15,7 +15,7 @@ router.get('/', auth, async (req, res) => {
   try {
     // req.user.id는 auth(미들웨어)의 req.user에서 가져오는것임
     const user = await User.findById(req.user.id).select('-password');
-
+    console.log(user);
     res.json(user);
   } catch (err) {
     console.error(err.message);
@@ -73,17 +73,16 @@ router.post(
       jwt.sign(
         payload,
         process.env.JWT_SECRET,
-        { expiresIn: 360000 },
+        { expiresIn: 60 },
         (err, token) => {
           if (err) throw err;
 
           return res.json({
             token,
-            user: {
-              nickname: user.nickname,
-              email: user.email,
-              avatar: user.avatar,
-            },
+            id: user._id,
+            nickname: user.nickname,
+            email: user.email,
+            avatar: user.avatar,
           });
         }
       );

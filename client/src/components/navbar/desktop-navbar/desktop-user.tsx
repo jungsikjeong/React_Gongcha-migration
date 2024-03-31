@@ -1,9 +1,10 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { authModalState } from '../../../atom/auth-modal-atoms';
 
-import { authState } from '../../../atom/auth-atoms';
+import { useUser } from 'components/auth-modal/hook/auth/use-user';
+
 import Button from '../../common/button';
 import DesktopUserMenu from './desktop-user-menu';
 
@@ -60,15 +61,16 @@ const LoginButton = styled(Button)`
 `;
 
 const DesktopUser = () => {
-  const userInfo = useRecoilValue(authState);
+  const { user } = useUser();
+
   // 모달창
   const setAuthModalState = useSetRecoilState(authModalState);
 
   return (
     <Container>
       <Wrapper>
-        {userInfo ? (
-          <DesktopUserMenu userInfo={userInfo} />
+        {user ? (
+          <DesktopUserMenu userInfo={user} />
         ) : (
           <LoginButton onClick={() => setAuthModalState(true)} type='button'>
             SIGN IN

@@ -1,13 +1,11 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { useSwiper } from 'swiper/react';
-import { authModalState } from '../../atom/auth-modal-atoms';
 import { emailValidation, passwordValidation } from '../../utils/validation';
 
-import { postLogin } from '../../api/auth';
-import { authState } from '../../atom/auth-atoms';
+import { ILogin } from 'interface/auth';
 
+import usePostSignIn from 'components/auth-modal/hook/auth/use-signin';
 import Button from '../common/button';
 import ErrorText from '../common/error-text';
 
@@ -89,16 +87,8 @@ const AuthWrapper = styled.div`
   }
 `;
 
-interface ILoginTypes {
-  email: string;
-  password: string;
-}
-
 const Login = () => {
   const swiper = useSwiper();
-
-  const setAuthModalState = useSetRecoilState(authModalState);
-  const setUserInfo = useSetRecoilState(authState);
 
   const {
     register,
@@ -106,23 +96,12 @@ const Login = () => {
     setError,
 
     formState: { errors },
-  } = useForm<ILoginTypes>();
+  } = useForm<ILogin>();
 
-  const onSubmit: SubmitHandler<ILoginTypes> = async (data: ILoginTypes) => {
-    const res: any = await postLogin(data);
+  const { mutate, isPending } = usePostSignIn(setError);
 
-    if (res.status === 400) {
-      setError(res.type, {
-        message: res.msg,
-      });
-    }
-
-    if (res.status === 200) {
-      const user = JSON.parse(localStorage.getItem('user') as string);
-      setUserInfo(user);
-
-      setAuthModalState(false);
-    }
+  const onSubmit: SubmitHandler<ILogin> = async (data: ILogin) => {
+    mutate(data);
   };
 
   return (
@@ -145,8 +124,15 @@ const Login = () => {
           {Object.values(errors).length !== 0 && (
             <ErrorText text={Object.values(errors)[0].message} />
           )}
-          <LoginButton disabled={Object.keys(errors).length > 0} type='submit'>
-            로그인
+          <LoginButton
+            disabled={Object.keys(errors).length > 0 || isPending}
+            type='submit'
+          >
+            {isPending ? (
+              <img src='./spinner.gif' alt='loading' className='spinner' />
+            ) : (
+              <>로그인</>
+            )}
           </LoginButton>
 
           <AuthWrapper>

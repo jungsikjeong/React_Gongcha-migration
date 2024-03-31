@@ -1,12 +1,19 @@
-export interface IRegister {
+export interface IUserInfo {
+  id: string;
   nickname: string;
   email: string;
+  avatar: string;
+  token: string;
+}
+
+export interface IRegister {
+  email: string;
+  nickname: string;
   password: string;
   password2: string;
 }
 
-export interface IUserInfo {
-  nickname: string;
+export interface ILogin {
   email: string;
-  avatar: string;
+  password: string;
 }

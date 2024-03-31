@@ -86,16 +86,15 @@ router.post(
       jwt.sign(
         payload,
         process.env.JWT_SECRET,
-        { expiresIn: 360000 },
+        { expiresIn: 60 },
         (err, token) => {
           if (err) throw err;
           return res.json({
             token,
-            user: {
-              nickname: user.nickname,
-              email: user.email,
-              avatar: user.avatar,
-            },
+            id: user._id,
+            nickname: user.nickname,
+            email: user.email,
+            avatar: user.avatar,
           });
         }
       );

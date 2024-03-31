@@ -1,11 +1,7 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { useSwiper } from 'swiper/react';
 
-import { postRegister } from '../../api/auth';
-import { authModalState } from '../../atom/auth-modal-atoms';
-import { welcomeState } from '../../atom/welcome-atoms';
 import {
   emailValidation,
   nicknameValidation,
@@ -13,7 +9,9 @@ import {
   passwordValidation,
 } from '../../utils/validation';
 
-import { authState } from '../../atom/auth-atoms';
+import usePostSignUp from 'components/auth-modal/hook/auth/use-signup';
+import { IRegister } from 'interface/auth';
+
 import Button from '../common/button';
 import ErrorText from '../common/error-text';
 
@@ -99,18 +97,7 @@ const AuthWrapper = styled.div`
   }
 `;
 
-interface IRegisterTypes {
-  email: string;
-  nickname: string;
-  password: string;
-  password2: string;
-}
-
 const Register = () => {
-  const setAuthModalState = useSetRecoilState(authModalState);
-  const setWelcomeState = useSetRecoilState(welcomeState);
-  const setUserInfo = useSetRecoilState(authState);
-
   const swiper = useSwiper();
 
   const {
@@ -119,26 +106,12 @@ const Register = () => {
     watch,
     setError,
     formState: { errors },
-  } = useForm<IRegisterTypes>();
+  } = useForm<IRegister>();
 
-  const onSubmit: SubmitHandler<IRegisterTypes> = async (
-    data: IRegisterTypes
-  ) => {
-    const res: any = await postRegister(data);
+  const { mutate, isPending } = usePostSignUp(setError);
 
-    if (res.status === 400) {
-      setError(res.type, {
-        message: res.msg,
-      });
-    }
-
-    if (res.status === 200) {
-      const user = JSON.parse(localStorage.getItem('user') as string);
-
-      setUserInfo(user);
-      setAuthModalState(false);
-      setWelcomeState(true);
-    }
+  const onSubmit: SubmitHandler<IRegister> = async (data: IRegister) => {
+    mutate(data);
   };
 
   const password = watch('password');
@@ -184,7 +157,11 @@ const Register = () => {
           )}
 
           <SignUpButton disabled={Object.keys(errors).length > 0} type='submit'>
-            가입하기
+            {isPending ? (
+              <img src='./spinner.gif' alt='loading' className='spinner' />
+            ) : (
+              <>가입하기</>
+            )}
           </SignUpButton>
 
           <AuthWrapper>

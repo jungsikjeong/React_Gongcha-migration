@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 module.exports = function (req, res, next) {
   // 헤더에서 토큰 가져 오기
-
   const token = req.header('Authorization')
     ? req.header('Authorization').split(' ')[1]
     : null;

@@ -42,3 +42,8 @@ button {
 /* Global Styles */
 :root {
 }
+
+.spinner {
+  width: 25px;
+  height: 25px;
+}

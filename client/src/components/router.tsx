@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import { PrivateRoute } from './private-route';
 
 import AboutPage from '../pages/about';
 import CommentListPage from '../pages/commentList';
@@ -6,7 +7,6 @@ import HomePage from '../pages/home';
 import PostsPage from '../pages/posts';
 import WritePage from '../pages/write';
 import NotFound from './not-found';
-import { PrivateRoute } from './private-route';
 
 const Router = () => {
   return (

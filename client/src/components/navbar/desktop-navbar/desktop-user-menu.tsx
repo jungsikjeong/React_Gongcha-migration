@@ -1,9 +1,8 @@
+import { useSignOut } from 'components/auth-modal/hook/auth/use-sign-out';
 import { motion, stagger, useAnimate } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { authState } from '../../../atom/auth-atoms';
 import { IUserInfo } from '../../../interface/auth';
 
 const Container = styled.div`
@@ -83,18 +82,12 @@ function useMenuAnimation(isOpen: boolean) {
 
 const DesktopUserMenu = ({ userInfo }: { userInfo: IUserInfo }) => {
   const location = useLocation();
+  const signOut = useSignOut();
 
   const [isOpen, setIsOpen] = useState(false);
   const scope = useMenuAnimation(isOpen);
-  const setUserInfo = useSetRecoilState(authState);
 
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const onLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    setUserInfo(null);
-  };
 
   useEffect(() => {
     const handleOutsideClose = (e: MouseEvent) => {
@@ -141,7 +134,7 @@ const DesktopUserMenu = ({ userInfo }: { userInfo: IUserInfo }) => {
               🔒 마이페이지
             </Link>
           </Item>
-          <Item onClick={onLogout}>🖐 로그아웃</Item>
+          <Item onClick={signOut}>🖐 로그아웃</Item>
         </Menu>
       </div>
     </Container>
