@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useUser } from './auth-modal/hook/auth/use-user';
+import { useUser } from '../hook/auth/use-user';
 
 export const PrivateRoute = () => {
   const { user } = useUser();

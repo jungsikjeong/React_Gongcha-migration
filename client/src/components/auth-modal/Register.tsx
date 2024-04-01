@@ -9,7 +9,7 @@ import {
   passwordValidation,
 } from '../../utils/validation';
 
-import usePostSignUp from 'components/auth-modal/hook/auth/use-signup';
+import usePostSignUp from 'hook/auth/use-signup';
 import { IRegister } from 'interface/auth';
 
 import Button from '../common/button';

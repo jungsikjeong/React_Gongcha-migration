@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const path = require('path');
 
@@ -7,6 +8,7 @@ const app = express();
 
 connectDB();
 
+app.use(cookieParser());
 app.use(express.json({ extended: false }));
 
 // Define Routes

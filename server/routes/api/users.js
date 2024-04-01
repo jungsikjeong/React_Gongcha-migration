@@ -11,6 +11,8 @@ const Post = require('../../models/Post');
 const auth = require('../../middleware/auth');
 const upload = require('../../middleware/file-upload');
 
+const generateAccessToken = require('../../utils/generate-access-token');
+
 // @route   POST api/users (회원가입)
 // @desc    Register user
 // @access  Public
@@ -83,21 +85,20 @@ router.post(
         },
       };
 
-      jwt.sign(
-        payload,
-        process.env.JWT_SECRET,
-        { expiresIn: 60 },
-        (err, token) => {
-          if (err) throw err;
-          return res.json({
-            token,
-            id: user._id,
-            nickname: user.nickname,
-            email: user.email,
-            avatar: user.avatar,
-          });
-        }
-      );
+      const token = generateAccessToken({ payload });
+      const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+      res.cookie('refreshToken', refreshToken, {
+        maxAge: 3 * 24 * 60 * 60 * 1000, // 만료시간 3일
+        httpOnly: true,
+      });
+
+      return res.json({
+        token,
+        id: user._id,
+        nickname: user.nickname,
+        email: user.email,
+        avatar: user.avatar,
+      });
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');

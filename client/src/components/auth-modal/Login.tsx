@@ -5,7 +5,7 @@ import { emailValidation, passwordValidation } from '../../utils/validation';
 
 import { ILogin } from 'interface/auth';
 
-import usePostSignIn from 'components/auth-modal/hook/auth/use-signin';
+import usePostSignIn from 'hook/auth/use-signin';
 import Button from '../common/button';
 import ErrorText from '../common/error-text';
 

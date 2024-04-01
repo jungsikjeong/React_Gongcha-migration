@@ -1,5 +1,5 @@
-import { useSignOut } from 'components/auth-modal/hook/auth/use-sign-out';
 import { motion, stagger, useAnimate } from 'framer-motion';
+import { useSignOut } from 'hook/auth/use-sign-out';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';

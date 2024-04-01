@@ -18,6 +18,7 @@ module.exports = function (req, res, next) {
 
     // console.log('decoded:', decoded);
     req.user = decoded.user;
+    req.token = token;
 
     next();
   } catch (err) {

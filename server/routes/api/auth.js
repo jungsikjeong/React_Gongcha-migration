@@ -8,6 +8,8 @@ const { body, validationResult } = require('express-validator');
 const User = require('../../models/User');
 const auth = require('../../middleware/auth');
 
+const generateAccessToken = require('../../utils/generate-access-token');
+
 // @route   GET api/auth
 // @desc    user by token
 // @access  Private
@@ -15,8 +17,11 @@ router.get('/', auth, async (req, res) => {
   try {
     // req.user.id는 auth(미들웨어)의 req.user에서 가져오는것임
     const user = await User.findById(req.user.id).select('-password');
-    console.log(user);
-    res.json(user);
+    // 임시
+    const newUser = { ...user._doc };
+    newUser.token = req.token;
+
+    res.json(newUser);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -70,27 +75,62 @@ router.post(
         },
       };
 
-      jwt.sign(
-        payload,
-        process.env.JWT_SECRET,
-        { expiresIn: 60 },
-        (err, token) => {
-          if (err) throw err;
+      const token = generateAccessToken({ payload });
+      const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+      res.cookie('refreshToken', refreshToken, {
+        maxAge: 3 * 24 * 60 * 60 * 1000, // 만료시간 3일
+        httpOnly: true,
+      });
 
-          return res.json({
-            token,
-            id: user._id,
-            nickname: user.nickname,
-            email: user.email,
-            avatar: user.avatar,
-          });
-        }
-      );
+      return res.json({
+        token,
+        id: user._id,
+        nickname: user.nickname,
+        email: user.email,
+        avatar: user.avatar,
+      });
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');
     }
   }
 );
+
+// @route   GET api/auth/refresh
+// @desc    user by refresh token
+// @access  Private
+router.get('/refresh', (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.sendStatus(401);
+
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      async (err, user) => {
+        const userInfo = await User.findById(user.user.id);
+
+        if (err) return res.sendStatus(403);
+
+        const payload = {
+          user: {
+            id: user.id,
+          },
+        };
+        const accessToken = generateAccessToken({ payload });
+
+        res.json({
+          id: user.user.id,
+          nickname: userInfo.nickname,
+          email: userInfo.email,
+          avatar: userInfo.avatar,
+          token: accessToken,
+        });
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 module.exports = router;

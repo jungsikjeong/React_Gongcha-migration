@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { authModalState } from '../../../atom/auth-modal-atoms';
 
-import { useUser } from 'components/auth-modal/hook/auth/use-user';
+import { useUser } from 'hook/auth/use-user';
 import Button from '../../common/button';
 import MobileUserMenu from './mobile-user-menu';
 
