@@ -73,7 +73,7 @@ const containerVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-const Header = () => {
+const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const setAuthModalState = useSetRecoilState(authModalState);
 
@@ -139,4 +139,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Navbar;
