@@ -1,5 +1,7 @@
 import ImageCropper from 'components/common/image-cropper';
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { IoClose } from 'react-icons/io5';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -9,24 +11,44 @@ import useImageCompress from 'hook/use-image-compress';
 
 import ImgSwiper from 'components/img-swiper';
 
-const Container = styled.div`
-  padding: 0 1rem;
-`;
+const Container = styled.div``;
 
 const Wrapper = styled.div``;
 
 const UploadButton = styled.button`
-  width: 100%;
-  height: 100%;
-  padding: 0.5rem 0;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
   color: #afe4f8;
   border: 1px solid rgb(38, 38, 38);
-  margin-top: 1rem;
+`;
+
+const Img = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  aspect-ratio: auto 1/1;
 `;
 
 const Cover = styled.div`
   text-align: center;
-  padding-top: 1rem;
+`;
+
+const CloseButton = styled(motion.button)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  bottom: 0;
+  font-size: 20px;
+  color: white;
+  background-color: black;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  z-index: 10;
+  transition: all 0.3s ease;
+  &:hover {
+    box-shadow: 0 0 5px black;
+  }
 `;
 
 const FileForm = () => {
@@ -74,7 +96,18 @@ const FileForm = () => {
   return (
     <Container>
       <Wrapper>
-        {compressedImages.length !== 0 && !isCompressLoading ? (
+        {compressedImages.length === 1 && !isCompressLoading ? (
+          <div style={{ position: 'relative' }}>
+            <CloseButton
+              onClick={() => handleCompressImageDelete(0)}
+              whileTap={{ scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+            >
+              <IoClose />
+            </CloseButton>
+            <Img src={compressedImages[0]} alt='compressed image' />
+          </div>
+        ) : compressedImages.length > 1 && !isCompressLoading ? (
           <ImgSwiper
             images={compressedImages}
             handleCompressImageDelete={handleCompressImageDelete}
@@ -84,7 +117,7 @@ const FileForm = () => {
         )}
 
         <ImageCropper onCrop={handleUploadImage} aspectRatio={1 / 1}>
-          <UploadButton>📷 공차 첨부하기</UploadButton>
+          <UploadButton>📷</UploadButton>
         </ImageCropper>
       </Wrapper>
     </Container>

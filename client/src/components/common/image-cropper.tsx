@@ -23,7 +23,7 @@ const BackDrop = styled.div`
   backdrop-filter: blur(8px);
 `;
 
-const Modal = styled.div`
+const Wrapper = styled.div`
   z-index: 2;
   background: #ffffff;
   overflow: hidden;
@@ -131,7 +131,7 @@ const ImageCropper = ({
       {image && (
         <Container>
           <BackDrop />
-          <Modal>
+          <Wrapper>
             <h3 className='title'>이미지 편집하기</h3>
             <ContentWrapper>
               <Content>
@@ -156,7 +156,7 @@ const ImageCropper = ({
                 적용하기
               </button>
             </Footer>
-          </Modal>
+          </Wrapper>
         </Container>
       )}
     </>

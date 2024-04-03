@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 
 import FlexBox from 'components/common/flex-box';
-import PostDetailHeader from '../common/post-detail-header';
+import PostDetailHeader from '../common/post-header';
 import PostDetailContents from './post-detail-contents';
 import PostDetailImages from './post-detail-images';
 

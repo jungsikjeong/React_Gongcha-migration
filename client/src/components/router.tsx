@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { PrivateRoute } from './private-route';
 
 import AboutPage from '../pages/about';
-import CommentListPage from '../pages/commentList';
+import CommentListPage from '../pages/comment-list';
 import HomePage from '../pages/home';
 import PostsPage from '../pages/posts';
 import WritePage from '../pages/write';
