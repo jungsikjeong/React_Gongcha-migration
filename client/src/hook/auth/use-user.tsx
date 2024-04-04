@@ -3,6 +3,7 @@ import instance from 'api/instance';
 import { IUserInfo } from 'interface/auth';
 import { useEffect } from 'react';
 import { userKey } from 'react-query-key/auth.keys';
+import { Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as userLocalStorage from './user.localstorage';
 
@@ -25,6 +26,7 @@ const fetchUserInfo = async () => {
       } catch (refreshError) {
         if (error?.response?.status === 401) {
           toast.warning('다시 로그인 해주세요!');
+          Navigate({ to: '/' });
         }
       }
     }

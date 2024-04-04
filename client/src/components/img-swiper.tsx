@@ -5,13 +5,9 @@ import styled from 'styled-components';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import Modal from './modal';
-
-// TODO : 파일 취소하면에러뜨는거 해결, 모달창 해결
-
+// TODO : 파일 취소하면에러뜨는거 해결
 const Container = styled.div`
   width: 100%;
-  position: relative;
   cursor: pointer;
 `;
 
@@ -56,16 +52,8 @@ interface IImgSwiperProps {
 
 const ImgSwiper = ({ images, handleCompressImageDelete }: IImgSwiperProps) => {
   const [selectedImage, setSelectedImage] = useState('');
-  const [modal, setModal] = useState(false);
 
   const swiperRef = useRef<any>(null);
-
-  const handleImagePreview = (src: string) => {
-    if (!modal) {
-      setModal(true);
-      setSelectedImage(src);
-    }
-  };
 
   useEffect(() => {
     // Move swiper to the last slide when images change
@@ -76,7 +64,6 @@ const ImgSwiper = ({ images, handleCompressImageDelete }: IImgSwiperProps) => {
 
   return (
     <Container>
-      {modal && <Modal image={selectedImage} setModal={setModal} />}
       <Swiper ref={swiperRef} spaceBetween={0} slidesPerView={2}>
         {images.map((img, index) => (
           <SwiperSlide key={index}>
@@ -88,11 +75,7 @@ const ImgSwiper = ({ images, handleCompressImageDelete }: IImgSwiperProps) => {
               >
                 <IoClose />
               </CloseButton>
-              <Image
-                src={img}
-                alt='img-preview'
-                onClick={() => handleImagePreview(img)}
-              />
+              <Image src={img} alt='img-preview' />
             </ImageBox>
           </SwiperSlide>
         ))}

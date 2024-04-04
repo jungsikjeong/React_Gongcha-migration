@@ -8,7 +8,6 @@ const useImageCompress = () => {
     if (isLoading) return;
 
     setIsLoading(true);
-
     console.log(`원본 이미지 사이즈 : ${imageFile.size / 1024 / 1024} MB`);
 
     const options = {

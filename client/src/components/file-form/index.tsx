@@ -2,6 +2,7 @@ import ImageCropper from 'components/common/image-cropper';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
+import uuid from 'react-uuid';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -53,17 +54,21 @@ const CloseButton = styled(motion.button)`
 
 const FileForm = () => {
   const [uploadImage, setUploadImage] = useState<string | null>(null);
+  const [uuId, setUuId] = useState<string>('');
   const [compressedImages, setCompressedImages] = useState<string[]>([]);
+
   const { isLoading: isCompressLoading, compressImage } = useImageCompress();
 
   const [fileObject, setFileObject] = useRecoilState(fileObjectState);
 
-  const handleUploadImage = (image: string) => setUploadImage(image);
+  const handleUploadImage = (image: string) => {
+    setUuId(uuid());
+    setUploadImage(image);
+  };
   const handleCompressImage = async () => {
     if (!uploadImage) return;
 
     const imageFile = dataURItoFile(uploadImage);
-
     // Blob객체를 리턴함
     const compressedImage = await compressImage(imageFile);
 
@@ -91,7 +96,7 @@ const FileForm = () => {
     if (uploadImage) {
       handleCompressImage();
     }
-  }, [uploadImage]);
+  }, [uploadImage, uuId]);
 
   return (
     <Container>

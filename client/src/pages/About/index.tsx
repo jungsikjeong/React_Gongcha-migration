@@ -9,11 +9,9 @@ const Section = styled.div<{ $bgurl: string }>`
     url(${(props) => props.$bgurl});
   background-position: center;
   background-size: cover;
-
   background-attachment: fixed;
   overflow-x: hidden;
   height: 30rem;
-
   display: flex;
   justify-content: center;
   align-items: center;

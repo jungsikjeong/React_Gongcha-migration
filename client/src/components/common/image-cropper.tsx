@@ -102,7 +102,7 @@ const ImageCropper = ({
 
     const files = e.target.files;
 
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -113,9 +113,17 @@ const ImageCropper = ({
 
   const getCropData = () => {
     if (typeof cropperRef.current?.cropper !== 'undefined') {
-      onCrop(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+      const dataURL = cropperRef.current.cropper.getCroppedCanvas().toDataURL();
+
+      onCrop(dataURL);
       setImage(null);
     }
+  };
+
+  const handleClick = (
+    event: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) => {
+    (event.target as HTMLButtonElement).value = '';
   };
 
   return (
@@ -126,6 +134,7 @@ const ImageCropper = ({
         multiple
         style={{ display: 'none' }}
         onChange={handleFileChange}
+        onClick={(e) => handleClick(e)}
       />
       <span onClick={handleChildrenClick}>{children}</span>
       {image && (
