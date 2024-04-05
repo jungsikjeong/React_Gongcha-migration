@@ -10,6 +10,7 @@ import * as userLocalStorage from './user.localstorage';
 const fetchUserInfo = async () => {
   try {
     const token = localStorage.getItem(userLocalStorage.USER_LOCAL_STORAGE_KEY);
+
     const res: any = await instance.get('/api/auth', {
       headers: {
         Authorization: `Bearer ${JSON.parse(token as any).token}`,
@@ -21,7 +22,7 @@ const fetchUserInfo = async () => {
     if (error?.response?.status === 401) {
       try {
         const res = await instance.get('/api/auth/refresh');
-
+        console.log('res.data::', res.data);
         return res.data;
       } catch (refreshError) {
         if (error?.response?.status === 401) {

@@ -5,7 +5,6 @@ import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import { postImageUpload } from 'api/file-upload';
-import { postWrite } from 'api/write';
 import { fileObjectState } from 'atom/file-object-atoms';
 import 'react-quill/dist/quill.snow.css';
 
@@ -13,6 +12,7 @@ import Button from 'components/common/button';
 import PostHeader from 'components/common/post-header';
 import FileForm from 'components/file-form';
 import { useNavigate } from 'react-router-dom';
+import usePostWrite from './hook/use-post-write';
 
 const Container = styled.div`
   background-color: black;
@@ -82,6 +82,7 @@ const WritePage = () => {
   const fileObject = useRecoilValue(fileObjectState);
 
   const navigate = useNavigate();
+  const { mutate, isPending } = usePostWrite();
 
   const modules = {
     toolbar: false,
@@ -100,12 +101,7 @@ const WritePage = () => {
       const fileInfo = await postImageUpload({ formData });
 
       if (fileInfo && fileInfo.length !== 0) {
-        const res = await postWrite({ value, fileInfo });
-
-        if (res?.status === 200) {
-          toast.success('게시물이 작성되었습니다.');
-          navigate('/posts');
-        }
+        mutate({ value, fileInfo });
       }
     }
   };

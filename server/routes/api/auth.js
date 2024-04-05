@@ -76,6 +76,7 @@ router.post(
       };
 
       const token = generateAccessToken({ payload });
+
       const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
       res.cookie('refreshToken', refreshToken, {
         maxAge: 3 * 24 * 60 * 60 * 1000, // 만료시간 3일
@@ -102,6 +103,7 @@ router.post(
 router.get('/refresh', (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
+
     if (!refreshToken) return res.sendStatus(401);
 
     jwt.verify(

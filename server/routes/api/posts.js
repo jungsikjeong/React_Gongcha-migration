@@ -52,12 +52,11 @@ router.post('/', auth, async (req, res) => {
     if (!images) {
       return res.status(400).json({ msg: '이미지를 먼저 업로드해주세요' });
     }
-
+    console.log('user:', user);
     if (images) {
       const newPost = new Post({
         content: content || '',
-        name: user.nickname,
-        avatar: user.avatar,
+        author: user._id,
         images: images,
         author: req.user.id,
       });

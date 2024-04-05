@@ -100,7 +100,6 @@ const ImageCropper = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    console.log(e.target.files);
 
     const files = e.target.files;
 
