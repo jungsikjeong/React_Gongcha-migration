@@ -1,6 +1,7 @@
 import 'cropperjs/dist/cropper.css';
 import { useRef, useState } from 'react';
 import { Cropper, ReactCropperElement } from 'react-cropper';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -99,10 +100,15 @@ const ImageCropper = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    console.log(e.target.files);
 
     const files = e.target.files;
 
     if (!files || files.length === 0) return;
+    if (!files[0].type.startsWith('image/')) {
+      toast.warning('이 파일은 이미지가 아닙니다.');
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = () => {
