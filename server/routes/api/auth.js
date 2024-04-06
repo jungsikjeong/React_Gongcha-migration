@@ -77,6 +77,7 @@ router.post(
       const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
       res.cookie('refreshToken', refreshToken, {
         maxAge: 3 * 24 * 60 * 60 * 1000, // 만료시간 3일
+        // maxAge: 10 * 1000,
         httpOnly: true,
       });
 
@@ -110,7 +111,7 @@ router.get('/refresh', (req, res) => {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken)
-      return res.status(401).json({ msg: '리프레시 토큰 없음' });
+      return res.status(401).json({ msg: '리프레시 토큰 만료됨' });
 
     jwt.verify(
       refreshToken,

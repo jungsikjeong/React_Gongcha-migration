@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken, setToken } from 'hook/auth/token.localstorage';
+import { getToken, removeToken, setToken } from 'hook/auth/token.localstorage';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -26,24 +26,34 @@ instance.interceptors.request.use(
   }
 );
 
+let isAlreadyFetchingAccessToken = false;
+
 instance.interceptors.response.use(
   (response) => {
     return response;
   },
   async (error) => {
+    removeToken();
+
     if (error.response.status === 401) {
       try {
-        const res = await axios.get('/api/auth/refresh');
+        if (!isAlreadyFetchingAccessToken) {
+          isAlreadyFetchingAccessToken = true;
+          const res = await axios.get('/api/auth/refresh');
 
-        if (res.status === 200) {
-          setToken(res.data.token);
-          const token = getToken();
+          if (res.status === 200) {
+            setToken(res.data.token);
+            const token = getToken();
 
-          error.config.headers['Authorization'] = `Bearer ${token}`;
-          res.data = res.data.userInfo; // *
-          return res;
+            error.config.headers['Authorization'] = `Bearer ${token}`;
+            res.data = res.data.userInfo; // *
+            isAlreadyFetchingAccessToken = false;
+            return res;
+          }
         }
-      } catch (error) {
+      } catch (error: any) {
+        delete error.config.headers['Authorization'];
+
         console.log('리프레시 에러 :', error);
       }
     }

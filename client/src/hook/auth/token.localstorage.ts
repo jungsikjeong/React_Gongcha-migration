@@ -5,9 +5,9 @@ export function setToken(token: string): void {
 }
 
 export function getToken(): string | undefined {
-  const user = localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY);
+  const token = localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY);
 
-  return user ? JSON.parse(user) : undefined;
+  return token ? JSON.parse(token) : undefined;
 }
 
 export function removeToken(): void {
