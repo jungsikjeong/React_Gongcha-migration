@@ -1,11 +1,5 @@
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import instance from 'api/instance';
-import { fetchRefresh } from 'api/refresh';
 import { authModalState } from 'atom/auth-modal-atoms';
 import { IUserInfo } from 'interface/auth';
 import { useEffect } from 'react';
@@ -17,31 +11,20 @@ interface IFetchUserInfo {
 }
 
 const fetchUserInfo = async ({ setAuthModalState }: IFetchUserInfo) => {
-  try {
-    const res = await instance.get('/api/auth');
+  const res = await instance.get('/api/auth');
 
-    return res.data;
-  } catch (error: any) {
-    if (error?.response?.status === 401) {
-      const data = await fetchRefresh();
-
-      return data || null;
-    }
-  }
+  return res.data;
 };
 
 interface IUseUser {
   user: IUserInfo | null;
-  refetch: (
-    options?: RefetchOptions | undefined
-  ) => Promise<QueryObserverResult<any, Error>>;
 }
 
 export function useUser(): IUseUser {
   const setAuthModalState = useSetRecoilState(authModalState);
   const queryClient = useQueryClient();
 
-  const { data: user, refetch } = useQuery({
+  const { data: user } = useQuery({
     queryKey: [userKey.user],
     queryFn: async () => await fetchUserInfo({ setAuthModalState }),
     staleTime: 1000 * 60 * 10,
@@ -56,6 +39,5 @@ export function useUser(): IUseUser {
 
   return {
     user: user ?? null,
-    refetch,
   };
 }
