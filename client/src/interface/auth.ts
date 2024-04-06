@@ -1,9 +1,12 @@
 export interface IUserInfo {
-  id: string;
-  nickname: string;
-  email: string;
   avatar: string;
-  token: string;
+  commentCount: number;
+  date: string;
+  email: string;
+  nickname: string;
+  postCount: number;
+  __v: number;
+  _id: string;
 }
 
 export interface IRegister {

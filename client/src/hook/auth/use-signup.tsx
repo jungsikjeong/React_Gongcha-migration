@@ -5,15 +5,17 @@ import { welcomeState } from 'atom/welcome-atoms';
 import { IRegister } from 'interface/auth';
 import { userKey } from 'react-query-key/auth.keys';
 import { useSetRecoilState } from 'recoil';
+import { setToken } from './token.localstorage';
 
 const postRegister = async (body: IRegister) => {
-  const { data } = await instance.post('/api/users', body);
+  const res = await instance.post('/api/users', body);
 
-  return data;
+  return res.data;
 };
 
 const usePostSignUp = (setError: any) => {
   const queryClient = useQueryClient();
+
   const setAuthModalState = useSetRecoilState(authModalState);
   const setWelcomeState = useSetRecoilState(welcomeState);
 
@@ -22,7 +24,9 @@ const usePostSignUp = (setError: any) => {
     mutationKey: ['sign-up'],
 
     onSuccess: (data) => {
-      queryClient.setQueryData([userKey.user], data);
+      queryClient.setQueryData([userKey.user], data.userInfo);
+
+      setToken(data.token);
       setAuthModalState(false);
       setWelcomeState(true);
     },

@@ -92,12 +92,20 @@ router.post(
         httpOnly: true,
       });
 
-      return res.json({
-        token,
-        id: user._id,
+      const userInfo = {
+        _id: user._id,
         nickname: user.nickname,
         email: user.email,
         avatar: user.avatar,
+        commentCount: user.commentCount,
+        postCount: user.postCount,
+        date: user.date,
+        __v: user.__v,
+      };
+
+      return res.json({
+        token,
+        userInfo,
       });
     } catch (err) {
       console.error(err.message);

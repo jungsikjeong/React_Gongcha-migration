@@ -11,7 +11,6 @@ import 'react-quill/dist/quill.snow.css';
 import Button from 'components/common/button';
 import PostHeader from 'components/common/post-header';
 import FileForm from 'components/file-form';
-import { useNavigate } from 'react-router-dom';
 import usePostWrite from './hook/use-post-write';
 
 const Container = styled.div`
@@ -81,7 +80,6 @@ const WritePage = () => {
   const [value, setValue] = useState('');
   const fileObject = useRecoilValue(fileObjectState);
 
-  const navigate = useNavigate();
   const { mutate, isPending } = usePostWrite();
 
   const modules = {

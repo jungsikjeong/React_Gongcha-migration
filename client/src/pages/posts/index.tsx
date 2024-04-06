@@ -5,7 +5,10 @@ import styled from 'styled-components';
 
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 
+import Loading from 'components/common/loading';
+import NotFound from 'components/not-found';
 import PostDetailModal from '../../components/post-detail-modal';
+import UseFetchPosts from './hook/use-fetch-posts';
 
 const Container = styled.div`
   padding-top: 5rem;
@@ -47,13 +50,13 @@ const Figcaption = styled.figcaption`
   color: #999;
 `;
 
-const posts = Array.from({ length: 20 }, (_, index) => ({
-  _id: index + 1,
-  title: `Post ${index + 1}`,
-  text: `Content of Post ${index + 1}`,
-  image:
-    'https://image.xportsnews.com/contents/images/upload/article/2020/1111/mb_1605070416816998.jpg',
-}));
+// const posts = Array.from({ length: 20 }, (_, index) => ({
+//   _id: index + 1,
+//   title: `Post ${index + 1}`,
+//   text: `Content of Post ${index + 1}`,
+//   image:
+//     'https://image.xportsnews.com/contents/images/upload/article/2020/1111/mb_1605070416816998.jpg',
+// }));
 
 const PostsPage = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -61,30 +64,44 @@ const PostsPage = () => {
   const [postDetailModal, setPostDetailModal] = useRecoilState(
     postDetailModalStatus
   );
+  const { data: posts, isLoading } = UseFetchPosts();
+  console.log(posts);
 
+  if (posts?.length === 0) {
+    return <NotFound text={'아직 작성된 게시글이 없습니다..'} />;
+  }
   return (
     <Container>
-      <AnimatePresence>
-        {postDetailModal && <PostDetailModal selectedId={selectedId} />}
-      </AnimatePresence>
-      <Wrapper>
-        {posts.map((post: any, index: number) => (
-          <Figure
-            onClick={() => {
-              setPostDetailModal(true);
-              setSelectedId(index);
-            }}
-            layoutId={`item-motion-${index}`}
-          >
-            {post.image ? (
-              <Image src={post.image} alt='' />
-            ) : (
-              <Image src={''} alt='' />
-            )}
-            <Figcaption>{post.text}</Figcaption>
-          </Figure>
-        ))}
-      </Wrapper>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <AnimatePresence>
+            {postDetailModal && <PostDetailModal selectedId={selectedId} />}
+          </AnimatePresence>
+
+          <Wrapper>
+            {posts?.map((post: any, index: number) => (
+              <Figure
+                onClick={() => {
+                  setPostDetailModal(true);
+                  setSelectedId(index);
+                }}
+                layoutId={`item-motion-${index}`}
+              >
+                {post.images ? (
+                  <Image src={post.images[0]} alt='post-img' />
+                ) : (
+                  <Image src={''} alt='' />
+                )}
+                <Figcaption
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                ></Figcaption>
+              </Figure>
+            ))}
+          </Wrapper>
+        </>
+      )}
     </Container>
   );
 };

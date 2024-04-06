@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 
 const LoadingContainer = styled.div`
-  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,8 +16,7 @@ const Image = styled.div`
   width: 300px;
   height: 200px;
   padding: 2rem 3rem;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3)),
-    url('./loading.gif');
+  background-image: url('./loading.gif');
   background-position: center;
   background-size: cover;
   overflow: hidden;

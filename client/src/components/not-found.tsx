@@ -9,6 +9,7 @@ const NotFoundContainer = styled.div`
   flex-direction: column;
   background-color: black;
   color: rgb(245, 245, 245);
+  white-space: pre-line;
 `;
 
 const Text = styled.div`
@@ -41,22 +42,35 @@ const GoBack = styled.div`
   }
 `;
 
-const NotFound = () => {
+interface INotFound {
+  text?: string;
+}
+
+const NotFound = ({ text }: INotFound) => {
   const navigate = useNavigate();
+
   const goBack = () => {
     navigate(-1);
   };
 
   return (
     <NotFoundContainer>
-      <Text>
-        <span className='longshadow'>
-          4<span className='o'>0</span>4
-        </span>
-        <span>Not Found...</span>
-      </Text>
+      {!text ? (
+        <>
+          <Text>
+            <span className='longshadow'>
+              4<span className='o'>0</span>4
+            </span>
+            <span>Not Found...</span>
+          </Text>
 
-      <GoBack onClick={goBack}>Go back</GoBack>
+          <GoBack onClick={goBack}>Go back</GoBack>
+        </>
+      ) : (
+        <>
+          <Text>{text}</Text>
+        </>
+      )}
     </NotFoundContainer>
   );
 };

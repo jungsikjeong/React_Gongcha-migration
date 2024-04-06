@@ -17,11 +17,9 @@ router.get('/', auth, async (req, res) => {
   try {
     // req.user.id는 auth(미들웨어)의 req.user에서 가져오는것임
     const user = await User.findById(req.user.id).select('-password');
-    // 임시
-    const newUser = { ...user._doc };
-    newUser.token = req.token;
+    console.log('user:', user);
 
-    res.json(newUser);
+    res.json(user);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -79,16 +77,25 @@ router.post(
 
       const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
       res.cookie('refreshToken', refreshToken, {
-        maxAge: 3 * 24 * 60 * 60 * 1000, // 만료시간 3일
+        // maxAge: 3 * 24 * 60 * 60 * 1000, // 만료시간 3일
+        maxAge: 10 * 1000,
         httpOnly: true,
       });
 
-      return res.json({
-        token,
-        id: user._id,
+      const userInfo = {
+        _id: user._id,
         nickname: user.nickname,
         email: user.email,
         avatar: user.avatar,
+        commentCount: user.commentCount,
+        postCount: user.postCount,
+        date: user.date,
+        __v: user.__v,
+      };
+
+      return res.json({
+        token,
+        userInfo,
       });
     } catch (err) {
       console.error(err.message);
@@ -104,14 +111,14 @@ router.get('/refresh', (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
 
-    if (!refreshToken) return res.sendStatus(401);
+    if (!refreshToken)
+      return res.status(401).json({ msg: '리프레시 토큰 없음' });
 
     jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
       async (err, user) => {
-        const userInfo = await User.findById(user.user.id);
-
+        const userInfo = await User.findById(user.user.id).select('-password');
         if (err) return res.sendStatus(403);
 
         const payload = {
@@ -119,20 +126,24 @@ router.get('/refresh', (req, res) => {
             id: user.id,
           },
         };
+
         const accessToken = generateAccessToken({ payload });
 
         res.json({
-          id: user.user.id,
-          nickname: userInfo.nickname,
-          email: userInfo.email,
-          avatar: userInfo.avatar,
           token: accessToken,
+          userInfo,
         });
       }
     );
   } catch (error) {
     console.log(error);
   }
+});
+
+router.get('/logout', (req, res) => {
+  // 리프레시 토큰 쿠키 삭제
+  res.clearCookie('refreshToken');
+  res.status(200).send('로그아웃 되었습니다.');
 });
 
 module.exports = router;

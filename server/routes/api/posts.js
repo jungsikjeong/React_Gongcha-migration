@@ -52,7 +52,7 @@ router.post('/', auth, async (req, res) => {
     if (!images) {
       return res.status(400).json({ msg: '이미지를 먼저 업로드해주세요' });
     }
-    console.log('user:', user);
+
     if (images) {
       const newPost = new Post({
         content: content || '',
@@ -79,7 +79,7 @@ router.get('/', async (req, res) => {
     const posts = await Post.find().sort({
       date: -1,
     });
-
+    console.log(posts);
     res.json(posts);
   } catch (err) {
     console.error(err.message);

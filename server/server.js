@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const path = require('path');
+const morgan = require('morgan');
 
 const app = express();
 
@@ -10,6 +11,7 @@ connectDB();
 
 app.use(cookieParser());
 app.use(express.json({ extended: false }));
+app.use(morgan('dev'));
 
 // Define Routes
 app.use('/api/auth', require('./routes/api/auth'));

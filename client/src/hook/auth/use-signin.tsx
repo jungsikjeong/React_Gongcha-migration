@@ -4,15 +4,16 @@ import { authModalState } from 'atom/auth-modal-atoms';
 import { ILogin } from 'interface/auth';
 import { userKey } from 'react-query-key/auth.keys';
 import { useSetRecoilState } from 'recoil';
+import { setToken } from './token.localstorage';
 
 const postLogin = async (body: ILogin) => {
-  const { data } = await instance.post('/api/auth', body);
-
-  return data;
+  const res = await instance.post('/api/auth', body);
+  return res.data;
 };
 
 const usePostSignIn = (setError: any) => {
   const queryClient = useQueryClient();
+
   const setAuthModalState = useSetRecoilState(authModalState); // auth modal 닫음
 
   return useMutation({
@@ -20,7 +21,8 @@ const usePostSignIn = (setError: any) => {
     mutationKey: ['sign-in'],
 
     onSuccess: (data) => {
-      queryClient.setQueryData([userKey.user], data);
+      queryClient.setQueryData([userKey.user], data.userInfo);
+      setToken(data.token);
       setAuthModalState(false);
     },
     onError: (error: any) => {
