@@ -7,11 +7,11 @@ import styled from 'styled-components';
 import { postImageUpload } from 'api/file-upload';
 import { fileObjectState } from 'atom/file-object-atoms';
 import 'react-quill/dist/quill.snow.css';
+import usePostWrite from './hook/use-post-write';
 
 import Button from 'components/common/button';
 import PostHeader from 'components/common/post-header';
 import FileForm from 'components/file-form';
-import usePostWrite from './hook/use-post-write';
 
 const Container = styled.div`
   background-color: black;

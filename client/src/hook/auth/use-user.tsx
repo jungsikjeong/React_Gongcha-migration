@@ -6,18 +6,19 @@ import { userKey } from 'react-query-key/auth.keys';
 
 const fetchUserInfo = async () => {
   const res = await instance.get('/api/auth');
-
+  console.log('res', res.data);
   return res.data;
 };
 
 interface IUseUser {
   user: IUserInfo | null;
+  isLoading: boolean;
 }
 
 export function useUser(): IUseUser {
   const queryClient = useQueryClient();
 
-  const { data: user } = useQuery({
+  const { data: user, isLoading } = useQuery({
     queryKey: [userKey.user],
     queryFn: async () => await fetchUserInfo(),
     staleTime: 1000 * 60 * 10,
@@ -27,10 +28,13 @@ export function useUser(): IUseUser {
   useEffect(() => {
     if (user) {
       queryClient.setQueryData([userKey.user], user);
+    } else {
+      queryClient.setQueryData([userKey.user], null);
     }
   }, [user]);
 
   return {
     user: user ?? null,
+    isLoading,
   };
 }

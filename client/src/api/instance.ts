@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken, removeToken, setToken } from 'hook/auth/token.localstorage';
+import { getToken, setToken } from 'hook/auth/token.localstorage';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -26,30 +26,26 @@ instance.interceptors.request.use(
   }
 );
 
-let isAlreadyFetchingAccessToken = false;
-
 instance.interceptors.response.use(
   (response) => {
     return response;
   },
   async (error) => {
-    removeToken();
+    // removeToken();
 
     if (error.response.status === 401) {
       try {
-        if (!isAlreadyFetchingAccessToken) {
-          isAlreadyFetchingAccessToken = true;
-          const res = await axios.get('/api/auth/refresh');
+        const res = await axios.get('/api/auth/refresh');
 
-          if (res.status === 200) {
-            setToken(res.data.token);
-            const token = getToken();
+        if (res.status === 200) {
+          setToken(res.data.token);
+          const token = getToken();
+          console.log('token:', token);
 
-            error.config.headers['Authorization'] = `Bearer ${token}`;
-            res.data = res.data.userInfo; // *
-            isAlreadyFetchingAccessToken = false;
-            return res;
-          }
+          error.config.headers['Authorization'] = `Bearer ${token}`;
+          res.data = res.data.userInfo;
+
+          return res;
         }
       } catch (error: any) {
         delete error.config.headers['Authorization'];

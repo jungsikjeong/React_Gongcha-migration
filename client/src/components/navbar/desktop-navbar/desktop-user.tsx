@@ -61,7 +61,7 @@ const LoginButton = styled(Button)`
 `;
 
 const DesktopUser = () => {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
 
   // 모달창
   const setAuthModalState = useSetRecoilState(authModalState);
@@ -69,13 +69,14 @@ const DesktopUser = () => {
   return (
     <Container>
       <Wrapper>
-        {user ? (
-          <DesktopUserMenu userInfo={user} />
-        ) : (
-          <LoginButton onClick={() => setAuthModalState(true)} type='button'>
-            SIGN IN
-          </LoginButton>
-        )}
+        {!isLoading &&
+          (user ? (
+            <DesktopUserMenu userInfo={user} />
+          ) : (
+            <LoginButton onClick={() => setAuthModalState(true)} type='button'>
+              SIGN IN
+            </LoginButton>
+          ))}
       </Wrapper>
     </Container>
   );

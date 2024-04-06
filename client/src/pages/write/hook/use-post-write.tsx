@@ -32,7 +32,7 @@ const usePostWrite = () => {
       navigate('/posts');
     },
     onError: (error: any) => {
-      console.log(error);
+      console.log('error:', error);
     },
   });
 };

@@ -118,11 +118,12 @@ router.get('/refresh', (req, res) => {
       process.env.REFRESH_TOKEN_SECRET,
       async (err, user) => {
         const userInfo = await User.findById(user.user.id).select('-password');
+
         if (err) return res.sendStatus(403);
 
         const payload = {
           user: {
-            id: user.id,
+            id: user.user.id,
           },
         };
 
