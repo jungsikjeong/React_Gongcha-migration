@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken, setToken } from 'hook/auth/token.localstorage';
+import { getToken, removeToken, setToken } from 'hook/auth/token.localstorage';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
@@ -31,7 +31,7 @@ instance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    // removeToken();
+    removeToken();
 
     if (error.response.status === 401) {
       try {
@@ -40,7 +40,6 @@ instance.interceptors.response.use(
         if (res.status === 200) {
           setToken(res.data.token);
           const token = getToken();
-          console.log('token:', token);
 
           error.config.headers['Authorization'] = `Bearer ${token}`;
           res.data = res.data.userInfo;

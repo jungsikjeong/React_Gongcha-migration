@@ -18,20 +18,24 @@ interface IUseUser {
 export function useUser(): IUseUser {
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading } = useQuery({
+  const {
+    data: user,
+    error,
+    isLoading,
+  } = useQuery({
     queryKey: [userKey.user],
     queryFn: async () => await fetchUserInfo(),
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 10,
   });
-
+  console.log(error);
   useEffect(() => {
     if (user) {
       queryClient.setQueryData([userKey.user], user);
-    } else {
+    } else if (error) {
       queryClient.setQueryData([userKey.user], null);
     }
-  }, [user]);
+  }, [user, error]);
 
   return {
     user: user ?? null,
