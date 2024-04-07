@@ -28,7 +28,7 @@ export function useUser(): IUseUser {
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 10,
   });
-  console.log(error);
+
   useEffect(() => {
     if (user) {
       queryClient.setQueryData([userKey.user], user);

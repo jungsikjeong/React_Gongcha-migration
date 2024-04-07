@@ -26,6 +26,8 @@ instance.interceptors.request.use(
   }
 );
 
+let isAlreadyFetchingAccessToken = false;
+
 instance.interceptors.response.use(
   (response) => {
     return response;
@@ -35,16 +37,21 @@ instance.interceptors.response.use(
 
     if (error.response.status === 401) {
       try {
-        const res = await axios.get('/api/auth/refresh');
+        if (!isAlreadyFetchingAccessToken) {
+          isAlreadyFetchingAccessToken = true;
 
-        if (res.status === 200) {
-          setToken(res.data.token);
-          const token = getToken();
+          const res = await axios.get('/api/auth/refresh');
 
-          error.config.headers['Authorization'] = `Bearer ${token}`;
-          res.data = res.data.userInfo;
+          if (res.status === 200) {
+            setToken(res.data.token);
+            const token = getToken();
 
-          return res;
+            error.config.headers['Authorization'] = `Bearer ${token}`;
+            res.data = res.data.userInfo;
+            isAlreadyFetchingAccessToken = false;
+
+            return res;
+          }
         }
       } catch (error: any) {
         delete error.config.headers['Authorization'];
