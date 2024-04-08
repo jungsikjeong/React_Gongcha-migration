@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import CommentForm from 'components/comment-form';
+import CommentForm from 'components/comments/comment-form';
+import CommentList from 'components/comments/comment-list';
 import PostHeader from 'components/common/post-header';
-import CommentList from 'components/post-detail-modal/post-detail-contents/comment-list';
 
 const Container = styled.div`
   min-width: 335px;

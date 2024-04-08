@@ -1,16 +1,8 @@
-import { CiBookmark } from 'react-icons/ci';
-import { FaShare } from 'react-icons/fa';
-import { FaBookmark } from 'react-icons/fa6';
-import { FcLike } from 'react-icons/fc';
-import { SlHeart, SlSpeech } from 'react-icons/sl';
-
 import styled from 'styled-components';
 
-import CommentForm from 'components/comment-form';
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
-import PostDetailImages from '../post-detail-images';
-import CommentList from './comment-list';
+import PostDetailContentsMobile from './post-detail-contents-mobile';
+import PostDetailContentsPC from './post-detail-contents-pc';
 
 const Container = styled.div`
   /* max-width: 335px; */
@@ -160,7 +152,12 @@ const MoreBtn = styled.div`
   cursor: pointer;
 `;
 
-const PostDetailContents = ({ isMobile }: any) => {
+interface IPostDetailContents {
+  isMobile: boolean;
+  post: any;
+}
+
+const PostDetailContents = ({ isMobile, post }: IPostDetailContents) => {
   const commentRef = useRef<HTMLTextAreaElement | null>(null);
   const test = false;
 
@@ -171,99 +168,13 @@ const PostDetailContents = ({ isMobile }: any) => {
   };
 
   return (
-    <Container>
-      <Header>
-        <Image
-          src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-          alt=''
-        />
-
-        <User>일이삼사오육</User>
-
-        <div className='icon'>
-          <FaShare />
-        </div>
-      </Header>
-
-      {isMobile && <PostDetailImages />}
-
-      <ContentsWrap>
-        <ContentsItem>
-          {isMobile ? (
-            <Section>
-              <div className='section-icons'>
-                {test ? <FcLike /> : <SlHeart />}
-              </div>
-
-              <Link to='/:id/commentList'>
-                <div className='section-icons'>
-                  <SlSpeech />
-                </div>
-              </Link>
-
-              <div className='bookmark section-icons'>
-                {test ? <FaBookmark /> : <CiBookmark />}
-              </div>
-            </Section>
-          ) : (
-            <Image
-              src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-              alt=''
-            />
-          )}
-
-          <Post>
-            <b>일이삼사오육</b> 너무 행복했고 너무 너무 좋았습니다.
-            여러분이있기에 제가 있었던것 같습니다! 아 너무 좋아 행복해~ 나
-            날아갈것같아~~~~~~~~~~~~~~~~~~ 이야아!!!!!!!!!!!! 푸슈슈슈~~~~~
-            <Tag>#MiuMiu </Tag>
-            <Tag>#MiuCrew </Tag>
-            <Tag>#미우미우 </Tag>
-            <Tag>#광고</Tag>
-          </Post>
-        </ContentsItem>
-        {isMobile ? (
-          <Link to='/:id/commentList'>
-            <MoreBtn>댓글 42개 모두 보기</MoreBtn>
-          </Link>
-        ) : (
-          <>
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-          </>
-        )}
-      </ContentsWrap>
-      <Footer>
-        <Section>
-          <div className='section-icons'>{test ? <FcLike /> : <SlHeart />}</div>
-
-          <div className='section-icons' onClick={handleCommentFocus}>
-            <SlSpeech />
-          </div>
-
-          <div className='bookmark section-icons'>
-            {test ? <FaBookmark /> : <CiBookmark />}
-          </div>
-        </Section>
-
-        <span>좋아요 9.4만개</span>
-
-        <CommentForm />
-        {/* <Form>
-          <Textarea placeholder='댓글 달기...' ref={commentRef} />
-          <PostBtn>게시</PostBtn>
-        </Form> */}
-      </Footer>
-    </Container>
+    <>
+      {isMobile ? (
+        <PostDetailContentsMobile post={post} />
+      ) : (
+        <PostDetailContentsPC post={post} />
+      )}
+    </>
   );
 };
 

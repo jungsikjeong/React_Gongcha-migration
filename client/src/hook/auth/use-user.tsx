@@ -6,7 +6,7 @@ import { userKey } from 'react-query-key/auth.keys';
 
 const fetchUserInfo = async () => {
   const res = await instance.get('/api/auth');
-  console.log('res', res.data);
+
   return res.data;
 };
 

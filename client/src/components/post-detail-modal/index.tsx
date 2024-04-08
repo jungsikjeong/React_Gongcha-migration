@@ -5,11 +5,9 @@ import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
+import UseFetchPostDetail from './hook/use-fetch-post-detail';
 
-import FlexBox from 'components/common/flex-box';
-import PostDetailHeader from '../common/post-header';
 import PostDetailContents from './post-detail-contents';
-import PostDetailImages from './post-detail-images';
 
 const Container = styled(motion.div)`
   position: fixed;
@@ -35,7 +33,7 @@ const Container = styled(motion.div)`
 
 const Wrapper = styled.div<{ $boxheight: number }>`
   max-width: calc(100% - 64px - 64px);
-  max-height: calc(100vh - 40px);
+  max-height: calc(100vh - 150px);
   width: 100%;
   height: ${({ $boxheight }) => `${$boxheight}px`};
 
@@ -59,10 +57,23 @@ const Close = styled.div`
   }
 `;
 
-const PostDetailModal = ({ selectedId }: { selectedId: number | null }) => {
+interface IPostDetailModal {
+  selectedId: number | null;
+  setSelectedId: React.Dispatch<React.SetStateAction<number | null>>;
+  postId: string;
+}
+
+const PostDetailModal = ({
+  selectedId,
+  setSelectedId,
+  postId,
+}: IPostDetailModal) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [boxHeight, setBoxHeight] = useState(window.innerWidth / 1.5);
+
   const setPostDetailModal = useSetRecoilState(postDetailModalStatus);
+
+  const { data, isLoading } = UseFetchPostDetail(postId);
 
   useEffect(() => {
     const handleResize = () => {
@@ -88,6 +99,7 @@ const PostDetailModal = ({ selectedId }: { selectedId: number | null }) => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.keyCode === 27) {
         setPostDetailModal(false);
+        setSelectedId(null);
       }
     };
 
@@ -103,21 +115,16 @@ const PostDetailModal = ({ selectedId }: { selectedId: number | null }) => {
     <AnimatePresence>
       <Container layoutId={`item-motion-${selectedId}`}>
         <Wrapper $boxheight={boxHeight}>
-          <Close onClick={() => setPostDetailModal(false)}>
+          <Close
+            onClick={() => {
+              setPostDetailModal(false);
+              setSelectedId(null);
+            }}
+          >
             <IoMdClose />
           </Close>
 
-          {isMobile ? (
-            <FlexBox $direction='column'>
-              <PostDetailHeader text='게시물' />
-              <PostDetailContents isMobile={isMobile} />
-            </FlexBox>
-          ) : (
-            <>
-              <PostDetailImages />
-              <PostDetailContents isMobile={isMobile} />
-            </>
-          )}
+          <PostDetailContents isMobile={isMobile} post={data} />
         </Wrapper>
       </Container>
     </AnimatePresence>

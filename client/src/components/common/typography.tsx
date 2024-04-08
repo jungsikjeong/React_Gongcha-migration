@@ -14,9 +14,6 @@ const DynamicTypography = styled(
     createElement(tag, props, children)
 )`
   color: rgb(245, 245, 245);
-  :focus {
-    outline: none;
-  }
 `;
 
 const Typography = ({

@@ -34,6 +34,9 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   line-height: 2rem;
+  @media (max-width: 768px) {
+    align-items: flex-start;
+  }
 `;
 
 const Logo = styled.div`

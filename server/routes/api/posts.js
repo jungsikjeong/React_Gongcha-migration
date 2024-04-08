@@ -79,7 +79,7 @@ router.get('/', async (req, res) => {
     const posts = await Post.find().sort({
       date: -1,
     });
-    console.log(posts);
+
     res.json(posts);
   } catch (err) {
     console.error(err.message);
@@ -93,10 +93,7 @@ router.get('/', async (req, res) => {
 // @access  Public
 router.get('/:id', async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id)
-      .populate('user', ['name', 'avatar'])
-      .populate('comments.user', ['name', 'avatar'])
-      .populate('comments.commentsStep.user', ['name', 'avatar']);
+    const post = await Post.findById(req.params.id);
 
     if (!post) {
       return res.status(404).json({ msg: '게시글을 찾을 수 없습니다' });
