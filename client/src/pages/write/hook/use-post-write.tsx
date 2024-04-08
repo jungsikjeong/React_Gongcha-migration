@@ -27,12 +27,17 @@ const usePostWrite = () => {
     mutationKey: ['postWrite'],
 
     onSuccess: (data) => {
-      queryClient.setQueryData([postsKey.posts], data);
+      queryClient.invalidateQueries({
+        queryKey: [postsKey.posts],
+        refetchType: 'all',
+      });
+
       toast.success('게시물이 작성되었습니다.');
       navigate('/posts');
     },
     onError: (error: any) => {
       console.log('error:', error);
+      toast.error('게시물 작성 중 오류가 발생했습니다.');
     },
   });
 };
