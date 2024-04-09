@@ -5,7 +5,7 @@ import { welcomeState } from 'atom/welcome-atoms';
 import { IRegister } from 'interface/auth';
 import { userKey } from 'react-query-key/auth.keys';
 import { useSetRecoilState } from 'recoil';
-import { setToken } from './token.localstorage';
+import { setToken } from '../../utils/token.localstorage';
 
 const postRegister = async (body: IRegister) => {
   const res = await instance.post('/api/users', body);

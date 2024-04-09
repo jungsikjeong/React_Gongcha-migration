@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { getToken } from 'hook/auth/token.localstorage';
 import { useNavigate } from 'react-router-dom';
+import { getToken } from 'utils/token.localstorage';
 
 import { toast } from 'react-toastify';
 

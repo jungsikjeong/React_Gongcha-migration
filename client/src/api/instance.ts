@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken, removeToken, setToken } from 'hook/auth/token.localstorage';
+import { getToken, removeToken, setToken } from 'utils/token.localstorage';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,

@@ -4,7 +4,7 @@ import { authModalState } from 'atom/auth-modal-atoms';
 import { ILogin } from 'interface/auth';
 import { userKey } from 'react-query-key/auth.keys';
 import { useSetRecoilState } from 'recoil';
-import { setToken } from './token.localstorage';
+import { setToken } from '../../utils/token.localstorage';
 
 const postLogin = async (body: ILogin) => {
   const res = await instance.post('/api/auth', body);

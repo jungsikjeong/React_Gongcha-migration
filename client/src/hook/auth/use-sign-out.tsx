@@ -3,7 +3,7 @@ import instance from 'api/instance';
 import { useCallback } from 'react';
 import { userKey } from 'react-query-key/auth.keys';
 import { toast } from 'react-toastify';
-import { removeToken } from './token.localstorage';
+import { removeToken } from '../../utils/token.localstorage';
 
 type IUseSignOut = () => void;
 
