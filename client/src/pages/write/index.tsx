@@ -83,7 +83,6 @@ const WritePage = () => {
   const { mutate, isPending } = usePostWrite();
   const { mutate: fileUpload, data: fileInfo } = usePostFIleUpload();
 
-  console.log(fileInfo);
   const modules = {
     toolbar: false,
   };
