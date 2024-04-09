@@ -3,15 +3,20 @@ import instance from 'api/instance';
 import { IUserInfo } from 'interface/auth';
 import { useEffect } from 'react';
 import { userKey } from 'react-query-key/auth.keys';
+import { toast } from 'react-toastify';
 
 const fetchUserInfo = async () => {
-  const res = await instance.get('/api/auth');
-
+  const res = await instance.get<IUserInfo>('/api/auth');
+  if ('msg' in res) {
+    // 리프레시 토큰 유효기간 만료되면
+    toast.error('로그인을 다시해주세요');
+    return;
+  }
   return res.data;
 };
 
 interface IUseUser {
-  user: IUserInfo | null;
+  user: IUserInfo | null | undefined;
   isLoading: boolean;
 }
 
@@ -38,7 +43,7 @@ export function useUser(): IUseUser {
   }, [user, error]);
 
   return {
-    user: user ?? null,
+    user: user ?? user,
     isLoading,
   };
 }

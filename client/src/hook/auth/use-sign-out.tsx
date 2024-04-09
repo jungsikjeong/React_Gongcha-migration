@@ -18,7 +18,7 @@ export const useSignOut = (): IUseSignOut => {
     await fetchUserLogout();
     queryClient.setQueryData([userKey.user], null);
     removeToken();
-    toast.success('로그아웃 되셨습니다.');
+    toast.info('로그아웃 되셨습니다.');
   }, [queryClient]);
 
   return onSignOut;

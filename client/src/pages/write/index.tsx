@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import ReactQuill from 'react-quill';
 import { toast } from 'react-toastify';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { postImageUpload } from 'api/file-upload';
 import { fileObjectState } from 'atom/file-object-atoms';
 import 'react-quill/dist/quill.snow.css';
+import usePostFIleUpload from './hook/use-post-file-upload';
 import usePostWrite from './hook/use-post-write';
 
 import Button from 'components/common/button';
@@ -78,10 +78,12 @@ const UploadBtn = styled(Button)<{ disabled: boolean }>`
 
 const WritePage = () => {
   const [value, setValue] = useState('');
-  const fileObject = useRecoilValue(fileObjectState);
+  const [fileObject, setFileObject] = useRecoilState(fileObjectState);
 
   const { mutate, isPending } = usePostWrite();
+  const { mutate: fileUpload, data: fileInfo } = usePostFIleUpload();
 
+  console.log(fileInfo);
   const modules = {
     toolbar: false,
   };
@@ -96,10 +98,11 @@ const WritePage = () => {
         formData.append(`files`, file);
       });
 
-      const fileInfo = await postImageUpload({ formData });
+      fileUpload({ formData });
 
       if (fileInfo && fileInfo.length !== 0) {
         mutate({ value, fileInfo });
+        setFileObject([]);
       }
     }
   };

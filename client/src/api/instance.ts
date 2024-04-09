@@ -55,8 +55,8 @@ instance.interceptors.response.use(
         }
       } catch (error: any) {
         delete error.config.headers['Authorization'];
-
-        console.log('리프레시 에러 :', error);
+        // 리프레시 토큰 에러
+        return { msg: error?.response?.data?.msg };
       }
     }
     return Promise.reject(error);
