@@ -1,38 +1,82 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
-const LoadingContainer = styled.div`
-  position: absolute;
+// 로딩 아이콘에 대한 회전 애니메이션 키프레임 정의
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const Container = styled.div`
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: black;
+  flex-direction: column;
+  z-index: 9999;
+`;
+const LoaderWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  /* background-color: #f5f5dc; */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: ${spin} 1s linear infinite;
 `;
 
-const Image = styled.div`
-  width: 300px;
-  height: 200px;
-  padding: 2rem 3rem;
-  background-image: url('./loading.gif');
-  background-position: center;
-  background-size: cover;
-  overflow: hidden;
-  box-shadow: inset 0 8px 32px 0 rgb(255, 255, 255);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+const LoaderIcon = styled.div`
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: white;
+
+  &:nth-child(1) {
+    top: 10px;
+    background-color: tomato;
+  }
+
+  &:nth-child(2) {
+    right: 10px;
+    background-color: #c08457;
+  }
+
+  &:nth-child(3) {
+    bottom: 10px;
+    background-color: #7c3f06;
+  }
+  &:nth-child(4) {
+    left: 10px;
+    background-color: #964b00;
+  }
 `;
 
-const Loading = () => {
+const LoaderText = styled.div`
+  font-size: 18px;
+  color: white;
+`;
+
+function Loading() {
   return (
-    <LoadingContainer>
-      <Image></Image>
-    </LoadingContainer>
+    <Container>
+      <LoaderWrapper>
+        <LoaderIcon />
+        <LoaderIcon />
+        <LoaderIcon />
+        <LoaderIcon />
+      </LoaderWrapper>
+
+      <LoaderText>Gong cha</LoaderText>
+    </Container>
   );
-};
+}
 
 export default Loading;
