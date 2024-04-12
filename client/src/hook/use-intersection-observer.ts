@@ -10,9 +10,7 @@ function useIntersectionObserver(
   };
 
   useEffect(() => {
-    // 관찰할 값
     const node = elementRef?.current;
-    // 현재 브라우저가 옵저버를 지원하는지 체크
     const hasIOSupport = !!window.IntersectionObserver;
 
     if (!node || !hasIOSupport) return;

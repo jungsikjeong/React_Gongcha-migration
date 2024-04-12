@@ -1,14 +1,16 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import useIntersectionObserver from 'hook/use-intersection-observer';
+import { postsKey } from 'react-query-key/post.key';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
+import { fetchPosts } from './hook/use-fetch-posts';
 
 import Loading from 'components/common/loading';
 import NotFound from 'components/not-found';
 import PostDetailModal from '../../components/post-detail-modal';
-import UseFetchPosts from './hook/use-fetch-posts';
 
 const Container = styled.div`
   padding-top: 10rem;
@@ -40,7 +42,11 @@ const Wrapper = styled.div`
   }
 `;
 
-const Card = styled(motion.div)`
+const Box = styled.div`
+  min-height: 1000px;
+`;
+
+const Card = styled.div`
   padding: 0px;
   margin: 15px 10px;
   border-radius: 10px;
@@ -56,51 +62,99 @@ const Image = styled.img`
 `;
 
 const PostsPage = () => {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [postId, setPostId] = useState<string>('');
+
+  const [searchParams, setSearchParams] = useState('test'); // 임시
 
   const [postDetailModal, setPostDetailModal] = useRecoilState(
     postDetailModalStatus
   );
-  const { data: posts, isLoading } = UseFetchPosts();
 
-  if (posts?.length === 0) {
+  const {
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+    isLoading,
+    data,
+  } = useInfiniteQuery({
+    queryKey: [postsKey.posts],
+    queryFn: ({ pageParam = 1 }) => fetchPosts(pageParam, searchParams),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      return lastPage.posts?.length > 0 ? lastPage.page + 1 : undefined;
+    },
+  });
+
+  const ref = useRef<HTMLDivElement | null>(null);
+  const pageRef = useIntersectionObserver(ref, {});
+  const isPageEnd = !!pageRef?.isIntersecting; // 페이지 끝에도달
+
+  const fetchNext = useCallback(async () => {
+    const res = await fetchNextPage();
+
+    if (res.isError) {
+      console.log(res.error);
+    }
+  }, [fetchNextPage]);
+
+  useEffect(() => {
+    let timerId: NodeJS.Timeout | undefined;
+
+    if (isPageEnd && hasNextPage) {
+      timerId = setTimeout(() => {
+        fetchNext();
+      }, 500);
+    }
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [fetchNext, isPageEnd, hasNextPage]);
+
+  if (!isLoading && data?.pages[0].posts.length === 0) {
     return <NotFound text={'아직 작성된 게시글이 없습니다..'} />;
   }
+
   return (
     <Container>
       {isLoading ? (
-        <Loading />
+        <Box>
+          <Loading />
+        </Box>
       ) : (
         <>
-          <AnimatePresence>
-            {postDetailModal && (
-              <PostDetailModal
-                selectedId={selectedId}
-                setSelectedId={setSelectedId}
-                postId={postId}
-              />
-            )}
-          </AnimatePresence>
+          {postDetailModal && <PostDetailModal postId={postId} />}
 
           <Wrapper>
-            {posts?.map((post, index: number) => (
-              <Card
-                className={post.className}
-                key={index}
-                onClick={() => {
-                  setPostDetailModal(true);
-                  setSelectedId(index);
-                  setPostId(post._id);
-                }}
-                layoutId={`item-motion-${index}`}
-              >
-                <Image src={post?.images[0]} />
-              </Card>
-            ))}
+            {data?.pages?.map((page: any) =>
+              page?.posts?.map((post: any) => (
+                <Card
+                  className={post.className}
+                  key={post._id}
+                  onClick={() => {
+                    setPostDetailModal(true);
+                    setPostId(post._id);
+                  }}
+                >
+                  <Image src={post?.images[0]} />
+                </Card>
+              ))
+            )}
           </Wrapper>
         </>
       )}
+
+      {(isFetching || isFetchingNextPage) && <Loading loader={true} />}
+
+      <div
+        ref={ref}
+        style={{
+          height: '40px',
+          width: '100%',
+          marginBottom: '40px',
+        }}
+      />
     </Container>
   );
 };

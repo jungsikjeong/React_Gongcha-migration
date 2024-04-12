@@ -76,11 +76,23 @@ router.post('/', auth, async (req, res) => {
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const posts = await Post.find().sort({
-      date: -1,
-    });
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit);
+    const skipPage = parseInt(page) - 1;
+    const count = await Post.countDocuments(); // 현재 db에 저장된 게시물 갯수
 
-    res.json(posts);
+    const posts = await Post.find()
+      .sort({ date: -1 })
+      .skip(skipPage * 10)
+      .limit(limit)
+      .exec();
+
+    res.json({
+      page: parseInt(page),
+      posts: posts,
+      totalCount: count,
+      totalPage: Math.ceil(count / 10),
+    });
   } catch (err) {
     console.error(err.message);
 
