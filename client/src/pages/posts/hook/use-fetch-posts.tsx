@@ -13,23 +13,37 @@ interface IPostsData {
   postLikeCount: number;
   __v: number;
   _id: string;
+  nextCursor?: any;
+  lastPage?: {
+    nextCursor: any;
+  };
 }
 
-const fetchPosts = async () => {
-  const res = await instance.get<IPostsData[]>('/api/posts');
+// 임시 any
+export const fetchPosts = async (pageParam: any, searchParams: any) => {
+  const res = await instance.get<any>('/api/posts?/page=' + pageParam, {
+    params: {
+      limit: 10,
+      page: pageParam,
+      ...searchParams,
+    },
+  });
 
-  const newData: IPostsData[] | null = [];
-  res?.data.map((item: any) =>
+  const newResData = { ...res?.data };
+
+  const newData: any = [];
+  res?.data?.posts.map((item: any) =>
     newData.push({ ...item, className: cardSizeRandomFn() })
   );
-  console.log(newData);
-  return newData;
+  newResData.posts = newData;
+
+  return newResData;
 };
 
-const UseFetchPosts = () => {
+const UseFetchPosts = (pageParam: any, searchParams: any) => {
   const { data, isLoading } = useQuery({
     queryKey: [postsKey.posts],
-    queryFn: () => fetchPosts(),
+    queryFn: () => fetchPosts(pageParam, searchParams),
     refetchOnWindowFocus: false,
     staleTime: 15000,
   });

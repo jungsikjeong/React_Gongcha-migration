@@ -58,16 +58,10 @@ const Close = styled.div`
 `;
 
 interface IPostDetailModal {
-  selectedId: number | null;
-  setSelectedId: React.Dispatch<React.SetStateAction<number | null>>;
   postId: string;
 }
 
-const PostDetailModal = ({
-  selectedId,
-  setSelectedId,
-  postId,
-}: IPostDetailModal) => {
+const PostDetailModal = ({ postId }: IPostDetailModal) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [boxHeight, setBoxHeight] = useState(window.innerWidth / 1.5);
 
@@ -99,7 +93,6 @@ const PostDetailModal = ({
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.keyCode === 27) {
         setPostDetailModal(false);
-        setSelectedId(null);
       }
     };
 
@@ -113,12 +106,11 @@ const PostDetailModal = ({
   }, []);
   return (
     <AnimatePresence>
-      <Container layoutId={`item-motion-${selectedId}`}>
+      <Container>
         <Wrapper $boxheight={boxHeight}>
           <Close
             onClick={() => {
               setPostDetailModal(false);
-              setSelectedId(null);
             }}
           >
             <IoMdClose />
