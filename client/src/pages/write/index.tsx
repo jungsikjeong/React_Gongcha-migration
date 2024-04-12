@@ -6,9 +6,9 @@ import styled from 'styled-components';
 
 import { fileObjectState } from 'atom/file-object-atoms';
 import 'react-quill/dist/quill.snow.css';
-import usePostFIleUpload from './hook/use-post-file-upload';
 import usePostWrite from './hook/use-post-write';
 
+import { postFileUpload } from 'api/file-upload';
 import Button from 'components/common/button';
 import PostHeader from 'components/common/post-header';
 import FileForm from 'components/file-form';
@@ -80,8 +80,7 @@ const WritePage = () => {
   const [value, setValue] = useState('');
   const [fileObject, setFileObject] = useRecoilState(fileObjectState);
 
-  const { mutate, isPending } = usePostWrite();
-  const { mutate: fileUpload, data: fileInfo } = usePostFIleUpload();
+  const { mutate, isPending: isWriting } = usePostWrite();
 
   const modules = {
     toolbar: false,
@@ -97,7 +96,7 @@ const WritePage = () => {
         formData.append(`files`, file);
       });
 
-      fileUpload({ formData });
+      const fileInfo = await postFileUpload({ formData });
 
       if (fileInfo && fileInfo.length !== 0) {
         mutate({ value, fileInfo });
@@ -129,7 +128,11 @@ const WritePage = () => {
             onClick={onSubmit}
             disabled={fileObject.length === 0}
           >
-            전송
+            {isWriting ? (
+              <img src='./spinner.gif' alt='loading' className='spinner' />
+            ) : (
+              '작성'
+            )}
           </UploadBtn>
         </StyledQuillWrapper>
       </Wrapper>
