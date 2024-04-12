@@ -7,7 +7,7 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { fileObjectState } from 'atom/file-object-atoms';
-import { dataURItoFile } from 'components/uitls/dataURItoFile';
+import { dataURItoFile } from 'components/uitls/data-url-to-file';
 import useImageCompress from 'hook/use-image-compress';
 
 import ImgSwiper from 'components/img-swiper';
