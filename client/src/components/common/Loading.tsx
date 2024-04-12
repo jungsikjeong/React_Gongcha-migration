@@ -6,8 +6,8 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const Container = styled.div`
-  position: fixed;
+const Container = styled.div<{ loader: string }>`
+  position: ${({ loader }) => (loader ? 'static' : 'fixed')};
   top: 0;
   left: 0;
   width: 100%;
@@ -19,6 +19,7 @@ const Container = styled.div`
   flex-direction: column;
   z-index: 9999;
 `;
+
 const LoaderWrapper = styled.div`
   position: relative;
   display: flex;
@@ -64,9 +65,9 @@ const LoaderText = styled.div`
   color: white;
 `;
 
-function Loading() {
+function Loading({ loader = false }) {
   return (
-    <Container>
+    <Container loader={loader ? 'true' : ''}>
       <LoaderWrapper>
         <LoaderIcon />
         <LoaderIcon />
