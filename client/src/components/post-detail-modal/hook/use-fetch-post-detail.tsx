@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import instance from 'api/instance';
+import { PostsDataType } from 'interface/posts';
 import { useEffect } from 'react';
 import { postDetailKey } from 'react-query-key/post.key';
 import { toast } from 'react-toastify';
 
 const fetchPost = async (id: string) => {
-  const res = await instance.get(`/api/posts/${id}`);
+  const res = await instance.get<PostsDataType>(`/api/posts/${id}`);
 
   return res.data;
 };

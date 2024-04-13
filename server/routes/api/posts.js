@@ -83,7 +83,7 @@ router.get('/', async (req, res) => {
 
     const posts = await Post.find()
       .sort({ date: -1 })
-      .skip(skipPage * 10)
+      .skip(skipPage * 20)
       .limit(limit)
       .exec();
 

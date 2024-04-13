@@ -70,6 +70,10 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
   const { data, isLoading } = UseFetchPostDetail(postId);
 
   useEffect(() => {
+    return () => setPostDetailModal(false);
+  }, []);
+
+  useEffect(() => {
     const handleResize = () => {
       setBoxHeight(window.innerWidth / 1.875);
       if (window.innerWidth <= 768) {
@@ -104,6 +108,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, []);
+
   return (
     <AnimatePresence>
       <Container>

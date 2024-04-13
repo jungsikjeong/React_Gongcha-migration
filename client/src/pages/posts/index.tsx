@@ -3,10 +3,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { fetchPosts } from 'api/fetch-posts';
 import useIntersectionObserver from 'hook/use-intersection-observer';
 import { postsKey } from 'react-query-key/post.key';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
-import { fetchPosts } from './hook/use-fetch-posts';
 
 import Loading from 'components/common/loading';
 import NotFound from 'components/not-found';
@@ -127,8 +127,8 @@ const PostsPage = () => {
           {postDetailModal && <PostDetailModal postId={postId} />}
 
           <Wrapper>
-            {data?.pages?.map((page: any) =>
-              page?.posts?.map((post: any) => (
+            {data?.pages?.map((page) =>
+              page?.posts?.map((post) => (
                 <Card
                   className={post.className}
                   key={post._id}

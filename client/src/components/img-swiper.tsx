@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-// TODO : 파일 취소하면에러뜨는거 해결
 const Container = styled.div`
   width: 100%;
   cursor: pointer;

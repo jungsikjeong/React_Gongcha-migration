@@ -1,6 +1,7 @@
+import { PostsDataType } from 'interface/posts';
+import { useRef } from 'react';
 import styled from 'styled-components';
 
-import { useRef } from 'react';
 import PostDetailContentsMobile from './post-detail-contents-mobile';
 import PostDetailContentsPC from './post-detail-contents-pc';
 
@@ -154,7 +155,7 @@ const MoreBtn = styled.div`
 
 interface IPostDetailContents {
   isMobile: boolean;
-  post: any;
+  post: PostsDataType | undefined;
 }
 
 const PostDetailContents = ({ isMobile, post }: IPostDetailContents) => {

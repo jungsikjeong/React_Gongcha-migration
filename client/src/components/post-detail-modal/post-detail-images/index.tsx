@@ -19,7 +19,7 @@ const PostImage = styled.img`
   width: 100%; */
 `;
 
-const PostDetailImages = ({ url }: { url: string[] }) => {
+const PostDetailImages = ({ url }: { url: string[] | undefined }) => {
   return (
     <Container>
       <PostImage

@@ -1,13 +1,12 @@
+import { PostsDataType } from 'interface/posts';
+import { useRef } from 'react';
 import { CiBookmark } from 'react-icons/ci';
 import { FaShare } from 'react-icons/fa';
 import { FaBookmark } from 'react-icons/fa6';
 import { FcLike } from 'react-icons/fc';
 import { SlHeart, SlSpeech } from 'react-icons/sl';
-
-import styled from 'styled-components';
-
-import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 import FlexBox from 'components/common/flex-box';
 import PostHeader from 'components/common/post-header';
@@ -108,7 +107,7 @@ const MoreBtn = styled.div`
 `;
 
 interface IPostDetailContents {
-  post: any;
+  post: PostsDataType | undefined;
 }
 
 const PostDetailContentsMobile = ({ post }: IPostDetailContents) => {
