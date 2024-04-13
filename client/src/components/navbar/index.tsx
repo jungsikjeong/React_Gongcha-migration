@@ -59,6 +59,8 @@ const MobileMenuOpen = styled(motion.div)`
   visibility: hidden;
 
   @media (max-width: 1024px) {
+    position: fixed;
+    right: 3rem;
     visibility: visible;
     display: block;
     color: #fff;
