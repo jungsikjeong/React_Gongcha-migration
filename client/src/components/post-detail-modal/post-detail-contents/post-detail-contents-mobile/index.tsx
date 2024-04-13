@@ -17,22 +17,31 @@ const Container = styled.div`
   background-color: black;
 `;
 
-const Header = styled.div`
+const User = styled.div`
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
   border-bottom: 1px solid rgb(38, 38, 38);
 
+  .user-nickname {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+  }
+
+  .user-image {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    margin-right: 10px;
+  }
+
   .icon {
     margin-left: auto;
     cursor: pointer;
   }
-`;
-
-const User = styled.h2`
-  font-size: 14px;
-  line-height: 18px;
-  font-weight: 600;
 `;
 
 const ContentsWrap = styled.ul`
@@ -55,15 +64,6 @@ const ContentsItem = styled.li`
   @media (max-width: 768px) {
     flex-direction: column;
   }
-`;
-
-const Image = styled.img`
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  margin-right: 10px;
 `;
 
 const Post = styled.div`
@@ -124,18 +124,19 @@ const PostDetailContentsMobile = ({ post }: IPostDetailContents) => {
     <FlexBox $direction='column'>
       <PostHeader text='게시물' />
       <Container>
-        <Header>
-          <Image
+        <User>
+          <img
+            className='user-image'
             src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-            alt=''
+            alt='userImage'
           />
 
-          <User>일이삼사오육</User>
+          <div className='user-nickname'>일이삼사오육</div>
 
           <div className='icon'>
             <FaShare />
           </div>
-        </Header>
+        </User>
 
         <PostDetailImages url={post?.images} />
 

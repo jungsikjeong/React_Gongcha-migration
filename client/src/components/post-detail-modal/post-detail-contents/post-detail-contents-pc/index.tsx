@@ -17,24 +17,32 @@ const Container = styled.div`
   background-color: black;
 `;
 
-const Header = styled.div`
+const User = styled.div`
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
   border-bottom: 1px solid rgb(38, 38, 38);
+
+  .user-nickname {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
+  }
+
+  .user-image {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    margin-right: 10px;
+  }
 
   .icon {
     margin-left: auto;
     cursor: pointer;
   }
 `;
-
-const User = styled.h2`
-  font-size: 14px;
-  line-height: 18px;
-  font-weight: 600;
-`;
-
 const ContentsWrap = styled.ul`
   height: calc(100% - 200px);
   margin: 0;
@@ -49,7 +57,7 @@ const ContentsItem = styled.li`
   align-items: start;
 `;
 
-const Image = styled.img`
+const UserImage = styled.img`
   width: 35px;
   height: 35px;
   border-radius: 50%;
@@ -119,22 +127,22 @@ const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
     <>
       <PostDetailImages url={post?.images} />
       <Container>
-        <Header>
-          <Image
+        <User>
+          <UserImage
             src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-            alt=''
+            alt='userImage'
           />
 
-          <User>일이삼사오육</User>
+          <div className='user-nickname'>일이삼사오육</div>
 
           <div className='icon'>
             <FaShare />
           </div>
-        </Header>
+        </User>
 
         <ContentsWrap>
           <ContentsItem>
-            <Image
+            <UserImage
               src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
               alt=''
             />
