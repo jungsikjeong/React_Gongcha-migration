@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const Form = styled.form`
@@ -32,7 +33,9 @@ const Textarea = styled.textarea`
   }
 `;
 
-const PostBtn = styled.div`
+const PostBtn = styled.div<{ value: string }>`
+  opacity: ${({ value }) => (value ? '1' : '0')};
+  transition: all 0.1s ease;
   flex-shrink: 0;
   font-size: 14px;
   color: rgb(0, 149, 246);
@@ -50,15 +53,20 @@ const Image = styled.img`
 `;
 
 const CommentForm = () => {
+  const [value, setValue] = useState('');
+
   return (
     <Form>
       <Image
         src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
         alt=''
       />
-      <Textarea placeholder={`일이삼사오님으로 댓글 달기...`} />
+      <Textarea
+        placeholder={`일이삼사오님으로 댓글 달기...`}
+        onChange={(e) => setValue(e.target.value)}
+      />
 
-      <PostBtn>게시</PostBtn>
+      <PostBtn value={value?.length !== 0 ? 'true' : ''}>게시</PostBtn>
     </Form>
   );
 };

@@ -174,6 +174,7 @@ const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
             <CommentList />
           </>
         </ContentsWrap>
+
         <Footer>
           <Section>
             <div className='section-icons'>
@@ -196,6 +197,7 @@ const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
               }).slice(1)}
             전
           </Time>
+          {/* 댓글 작성 폼 */}
           <CommentForm />
         </Footer>
       </Container>
