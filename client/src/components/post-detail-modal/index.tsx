@@ -7,7 +7,8 @@ import styled from 'styled-components';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 import UseFetchPostDetail from './hook/use-fetch-post-detail';
 
-import PostDetailContents from './post-detail-contents';
+import PostDetailContentsMobile from './post-detail-contents/post-detail-contents-mobile';
+import PostDetailContentsPC from './post-detail-contents/post-detail-contents-pc';
 
 const Container = styled(motion.div)`
   position: fixed;
@@ -120,7 +121,11 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
             <IoMdClose />
           </Close>
 
-          <PostDetailContents isMobile={isMobile} post={data} />
+          {isMobile ? (
+            <PostDetailContentsMobile post={data} />
+          ) : (
+            <PostDetailContentsPC post={data} />
+          )}
         </Wrapper>
       </Container>
     </AnimatePresence>

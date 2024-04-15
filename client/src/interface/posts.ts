@@ -1,5 +1,11 @@
+type AuthorType = {
+  avatar: string;
+  nickname: string;
+  _id: string;
+};
+
 export type PostsDataType = {
-  author: string;
+  author: AuthorType;
   className?: string;
   commentsCount: number;
   content: string;

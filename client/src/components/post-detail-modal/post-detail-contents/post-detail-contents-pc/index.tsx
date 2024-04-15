@@ -128,12 +128,9 @@ const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
       <PostDetailImages url={post?.images} />
       <Container>
         <User>
-          <UserImage
-            src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-            alt='userImage'
-          />
+          <UserImage src={post?.author?.avatar} alt='userImage' />
 
-          <div className='user-nickname'>일이삼사오육</div>
+          <div className='user-nickname'>{post?.author?.nickname}</div>
 
           <div className='icon'>
             <FaShare />

@@ -1,10 +1,8 @@
 export interface IUserInfo {
   avatar: string;
-  commentCount: number;
   date: string;
   email: string;
   nickname: string;
-  postCount: number;
   __v: number;
   _id: string;
 }

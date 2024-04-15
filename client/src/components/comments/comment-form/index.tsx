@@ -50,7 +50,6 @@ const Image = styled.img`
 `;
 
 const CommentForm = () => {
-  const test = true;
   return (
     <Form>
       <Image
@@ -59,7 +58,7 @@ const CommentForm = () => {
       />
       <Textarea placeholder={`일이삼사오님으로 댓글 달기...`} />
 
-      {test && <PostBtn>게시</PostBtn>}
+      <PostBtn>게시</PostBtn>
     </Form>
   );
 };

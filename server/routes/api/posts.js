@@ -105,7 +105,10 @@ router.get('/', async (req, res) => {
 // @access  Public
 router.get('/:id', async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate('author', [
+      'nickname',
+      'avatar',
+    ]);
 
     if (!post) {
       return res.status(404).json({ msg: '게시글을 찾을 수 없습니다' });
