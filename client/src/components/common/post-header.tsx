@@ -9,6 +9,9 @@ import Typography from 'components/common/typography';
 import styled from 'styled-components';
 
 const Box = styled.div`
+  max-width: 500px;
+
+  margin: 0 auto;
   position: fixed;
   left: 0;
   right: 0;
