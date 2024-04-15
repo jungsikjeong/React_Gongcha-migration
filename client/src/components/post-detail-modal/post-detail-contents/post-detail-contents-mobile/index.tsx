@@ -1,3 +1,5 @@
+import { formatDistance } from 'date-fns';
+import ko from 'date-fns/locale/ko';
 import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
 import { FaShare } from 'react-icons/fa';
@@ -99,10 +101,9 @@ const Section = styled.section`
   }
 `;
 
-const MoreBtn = styled.div`
+const Bottom = styled.div`
   color: rgb(168, 168, 168);
   font-size: 12px;
-  cursor: pointer;
 `;
 
 interface IPostDetailContents {
@@ -163,8 +164,15 @@ const PostDetailContentsMobile = ({ post }: IPostDetailContents) => {
         </ContentsItem>
 
         <Link to={`/${post?._id}/commentList`}>
-          <MoreBtn>댓글 42개 모두 보기</MoreBtn>
+          <Bottom>댓글 42개 모두 보기</Bottom>
         </Link>
+        <Bottom>
+          {post &&
+            formatDistance(new Date(), new Date(post.date), {
+              locale: ko as any,
+            }).slice(1)}
+          전
+        </Bottom>
       </ContentsWrap>
     </Container>
   );

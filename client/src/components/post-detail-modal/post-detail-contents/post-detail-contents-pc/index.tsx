@@ -1,3 +1,5 @@
+import { formatDistance } from 'date-fns';
+import ko from 'date-fns/locale/ko';
 import { PostsDataType } from 'interface/posts';
 import { useRef } from 'react';
 import { CiBookmark } from 'react-icons/ci';
@@ -109,6 +111,11 @@ const Section = styled.section`
   }
 `;
 
+const Time = styled.div`
+  color: rgb(168, 168, 168);
+  font-size: 12px;
+`;
+
 interface IPostDetailContents {
   post: PostsDataType | undefined;
 }
@@ -181,9 +188,14 @@ const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
               {test ? <FaBookmark /> : <CiBookmark />}
             </div>
           </Section>
-
-          <span>좋아요 9.4만개</span>
-
+          <span>좋아요 9.4만개</span> <br />
+          <Time>
+            {post &&
+              formatDistance(new Date(), new Date(post.date), {
+                locale: ko as any,
+              }).slice(1)}
+            전
+          </Time>
           <CommentForm />
         </Footer>
       </Container>
