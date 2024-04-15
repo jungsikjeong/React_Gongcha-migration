@@ -36,7 +36,6 @@ const Wrapper = styled.div<{ $boxheight: number }>`
   max-height: calc(100vh - 150px);
   width: 100%;
   height: ${({ $boxheight }) => `${$boxheight}px`};
-
   display: flex;
   justify-content: center;
   transition: all 0.3s ease;
@@ -75,10 +74,10 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setBoxHeight(window.innerWidth / 1.875);
       if (window.innerWidth <= 768) {
         setIsMobile(true);
       } else {
+        setBoxHeight(window.innerWidth / 1.875);
         setIsMobile(false);
       }
     };

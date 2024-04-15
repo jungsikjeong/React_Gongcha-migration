@@ -1,5 +1,4 @@
 import { PostsDataType } from 'interface/posts';
-import { useRef } from 'react';
 import { CiBookmark } from 'react-icons/ci';
 import { FaShare } from 'react-icons/fa';
 import { FaBookmark } from 'react-icons/fa6';
@@ -8,7 +7,6 @@ import { SlHeart, SlSpeech } from 'react-icons/sl';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import FlexBox from 'components/common/flex-box';
 import PostHeader from 'components/common/post-header';
 import PostDetailImages from 'components/post-detail-modal/post-detail-images';
 
@@ -21,7 +19,7 @@ const User = styled.div`
   display: flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  border-bottom: 1px solid rgb(38, 38, 38);
+  padding-top: 3.5rem;
 
   .user-nickname {
     font-size: 14px;
@@ -30,8 +28,8 @@ const User = styled.div`
   }
 
   .user-image {
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
@@ -111,70 +109,61 @@ interface IPostDetailContents {
 }
 
 const PostDetailContentsMobile = ({ post }: IPostDetailContents) => {
-  const commentRef = useRef<HTMLTextAreaElement | null>(null);
   const test = false;
 
-  const handleCommentFocus = () => {
-    if (commentRef.current) {
-      commentRef.current.focus();
-    }
-  };
-
   return (
-    <FlexBox $direction='column'>
+    <Container>
       <PostHeader text='게시물' />
-      <Container>
-        <User>
-          <img
-            className='user-image'
-            src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-            alt='userImage'
-          />
+      <User>
+        <img
+          className='user-image'
+          src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
+          alt='userImage'
+        />
 
-          <div className='user-nickname'>일이삼사오육</div>
+        <div className='user-nickname'>일이삼사오육</div>
 
-          <div className='icon'>
-            <FaShare />
-          </div>
-        </User>
+        <div className='icon'>
+          <FaShare />
+        </div>
+      </User>
 
-        <PostDetailImages url={post?.images} />
+      <PostDetailImages url={post?.images} />
 
-        <ContentsWrap>
-          <ContentsItem>
-            <Section>
+      <ContentsWrap>
+        <ContentsItem>
+          <Section>
+            <div className='section-icons'>
+              {test ? <FcLike /> : <SlHeart />}
+            </div>
+
+            <Link to='/:id/commentList'>
               <div className='section-icons'>
-                {test ? <FcLike /> : <SlHeart />}
+                <SlSpeech />
               </div>
+            </Link>
 
-              <Link to='/:id/commentList'>
-                <div className='section-icons'>
-                  <SlSpeech />
-                </div>
-              </Link>
+            <div className='bookmark section-icons'>
+              {test ? <FaBookmark /> : <CiBookmark />}
+            </div>
+          </Section>
 
-              <div className='bookmark section-icons'>
-                {test ? <FaBookmark /> : <CiBookmark />}
-              </div>
-            </Section>
+          <Post>
+            <b>일이삼사오육</b> 너무 행복했고 너무 너무 좋았습니다.
+            여러분이있기에 제가 있었던것 같습니다! 아 너무 좋아 행복해~ 나
+            날아갈것같아~~~~~~~~~~~~~~~~~~ 이야아!!!!!!!!!!!! 푸슈슈슈~~~~~
+            <Tag>#MiuMiu </Tag>
+            <Tag>#MiuCrew </Tag>
+            <Tag>#미우미우 </Tag>
+            <Tag>#광고</Tag>
+          </Post>
+        </ContentsItem>
 
-            <Post>
-              <b>일이삼사오육</b> 너무 행복했고 너무 너무 좋았습니다.
-              여러분이있기에 제가 있었던것 같습니다! 아 너무 좋아 행복해~ 나
-              날아갈것같아~~~~~~~~~~~~~~~~~~ 이야아!!!!!!!!!!!! 푸슈슈슈~~~~~
-              <Tag>#MiuMiu </Tag>
-              <Tag>#MiuCrew </Tag>
-              <Tag>#미우미우 </Tag>
-              <Tag>#광고</Tag>
-            </Post>
-          </ContentsItem>
-
-          <Link to={`/${post?._id}/commentList`}>
-            <MoreBtn>댓글 42개 모두 보기</MoreBtn>
-          </Link>
-        </ContentsWrap>
-      </Container>
-    </FlexBox>
+        <Link to={`/${post?._id}/commentList`}>
+          <MoreBtn>댓글 42개 모두 보기</MoreBtn>
+        </Link>
+      </ContentsWrap>
+    </Container>
   );
 };
 

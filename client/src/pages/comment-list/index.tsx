@@ -10,6 +10,7 @@ const Container = styled.div`
   background-color: black;
   color: #fff;
   z-index: 20;
+  padding-top: 3rem;
 `;
 
 const Wrapper = styled.div`

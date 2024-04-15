@@ -8,11 +8,27 @@ import FlexBox from 'components/common/flex-box';
 import Typography from 'components/common/typography';
 import styled from 'styled-components';
 
+const Box = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+
+  &::before {
+    background-color: rgb(54, 54, 54);
+    bottom: -1px;
+    content: '';
+    height: 1px;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+`;
+
 const IconBox = styled.div`
   color: white;
   font-size: 1.5rem;
   z-index: 10;
-
   cursor: pointer;
 `;
 
@@ -33,27 +49,33 @@ const PostHeader = ({ text }: { text: string }) => {
   };
 
   return (
-    <FlexBox
-      $alignItems='center'
-      $justifyContent='space-between'
-      $background='black'
-      $padding='5px 16px'
-      style={{ borderBottom: '1px solid rgb(38, 38, 38)' }}
-    >
-      <IconBox
-        onClick={() => {
-          handleGoBack();
-        }}
+    <Box>
+      <FlexBox
+        $alignItems='center'
+        $justifyContent='space-between'
+        $background='black'
+        $padding='5px 16px'
+        style={
+          {
+            // borderBottom: '1px solid rgb(38, 38, 38)',
+          }
+        }
       >
-        <IoChevronBackSharp />
-      </IconBox>
+        <IconBox
+          onClick={() => {
+            handleGoBack();
+          }}
+        >
+          <IoChevronBackSharp />
+        </IconBox>
 
-      <Typography tag={'p'} fontWeight='bold' fontSize='16px'>
-        {text}
-      </Typography>
+        <Typography tag={'p'} fontWeight='bold' fontSize='16px'>
+          {text}
+        </Typography>
 
-      <div></div>
-    </FlexBox>
+        <div></div>
+      </FlexBox>
+    </Box>
   );
 };
 
