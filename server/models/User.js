@@ -17,14 +17,6 @@ const UserSchema = new mongoose.Schema({
   avatar: {
     type: String,
   },
-  commentCount: {
-    type: Number,
-    default: 0,
-  },
-  postCount: {
-    type: Number,
-    default: 0,
-  },
 
   date: {
     type: Date,
