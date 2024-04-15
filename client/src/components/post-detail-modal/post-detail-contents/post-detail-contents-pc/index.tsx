@@ -139,15 +139,13 @@ const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
 
         <ContentsWrap>
           <ContentsItem>
-            <UserImage
-              src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-              alt=''
-            />
+            <UserImage src={post?.author?.avatar} alt='userImage' />
 
             <Post>
-              <b>일이삼사오육</b> 너무 행복했고 너무 너무 좋았습니다.
-              여러분이있기에 제가 있었던것 같습니다! 아 너무 좋아 행복해~ 나
-              날아갈것같아~~~~~~~~~~~~~~~~~~ 이야아!!!!!!!!!!!! 푸슈슈슈~~~~~
+              <b>{post?.author?.nickname}</b>{' '}
+              <div
+                dangerouslySetInnerHTML={{ __html: post?.content || '' }}
+              ></div>
               <Tag>#MiuMiu </Tag>
               <Tag>#MiuCrew </Tag>
               <Tag>#미우미우 </Tag>

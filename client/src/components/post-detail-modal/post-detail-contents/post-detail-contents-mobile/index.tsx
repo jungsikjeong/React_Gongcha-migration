@@ -12,6 +12,7 @@ import PostDetailImages from 'components/post-detail-modal/post-detail-images';
 
 const Container = styled.div`
   min-width: 335px;
+  width: 100%;
   background-color: black;
 `;
 
@@ -114,22 +115,21 @@ const PostDetailContentsMobile = ({ post }: IPostDetailContents) => {
   return (
     <Container>
       <PostHeader text='게시물' />
+
       <User>
         <img
           className='user-image'
-          src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
+          src={post?.author?.avatar}
           alt='userImage'
         />
 
-        <div className='user-nickname'>일이삼사오육</div>
+        <div className='user-nickname'>{post?.author?.nickname}</div>
 
         <div className='icon'>
           <FaShare />
         </div>
       </User>
-
       <PostDetailImages url={post?.images} />
-
       <ContentsWrap>
         <ContentsItem>
           <Section>
@@ -149,9 +149,12 @@ const PostDetailContentsMobile = ({ post }: IPostDetailContents) => {
           </Section>
 
           <Post>
-            <b>일이삼사오육</b> 너무 행복했고 너무 너무 좋았습니다.
-            여러분이있기에 제가 있었던것 같습니다! 아 너무 좋아 행복해~ 나
-            날아갈것같아~~~~~~~~~~~~~~~~~~ 이야아!!!!!!!!!!!! 푸슈슈슈~~~~~
+            <b>좋아요 24개</b>
+            <br />
+            <b>{post?.author?.nickname}</b>
+            <div
+              dangerouslySetInnerHTML={{ __html: post?.content || '' }}
+            ></div>
             <Tag>#MiuMiu </Tag>
             <Tag>#MiuCrew </Tag>
             <Tag>#미우미우 </Tag>
