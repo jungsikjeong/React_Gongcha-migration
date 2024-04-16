@@ -1,4 +1,7 @@
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+
+import UseFetchPostDetail from 'components/post-detail-modal/hook/use-fetch-post-detail';
 
 import CommentForm from 'components/comments/comment-form';
 import CommentList from 'components/comments/comment-list';
@@ -61,20 +64,22 @@ const Tag = styled.span`
 `;
 
 const CommentListPage = () => {
+  let { id } = useParams();
+
+  const { data } = UseFetchPostDetail(id as string);
+
   return (
     <Container>
       <Wrapper>
         <PostHeader text='게시물' />
         <ContentsList>
           <ContentsItem>
-            <Image
-              src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-              alt=''
-            />
+            <Image src={data?.author?.avatar} alt='' />
             <Post>
-              <b>일이삼사오육</b> 너무 행복했고 너무 너무 좋았습니다.
-              여러분이있기에 제가 있었던것 같습니다! 아 너무 좋아 행복해~ 나
-              날아갈것같아~~~~~~~~~~~~~~~~~~ 이야아!!!!!!!!!!!! 푸슈슈슈~~~~~
+              <b>{data?.author?.nickname}</b> 너무 행복했고 너무 너무
+              좋았습니다. 여러분이있기에 제가 있었던것 같습니다! 아 너무 좋아
+              행복해~ 나 날아갈것같아~~~~~~~~~~~~~~~~~~ 이야아!!!!!!!!!!!!
+              푸슈슈슈~~~~~
               <Tag>#MiuMiu </Tag>
               <Tag>#MiuCrew </Tag>
               <Tag>#미우미우 </Tag>
@@ -99,7 +104,7 @@ const CommentListPage = () => {
           <CommentList />
         </ContentsList>
 
-        <CommentForm />
+        <CommentForm post={data} />
       </Wrapper>
     </Container>
   );

@@ -86,7 +86,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
     postDetailModalStatus
   );
 
-  const { data, isLoading } = UseFetchPostDetail(postId);
+  const { data } = UseFetchPostDetail(postId);
 
   const divRef = useRef<HTMLDivElement>(null);
 

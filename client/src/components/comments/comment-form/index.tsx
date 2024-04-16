@@ -1,3 +1,4 @@
+import { PostsDataType } from 'interface/posts';
 import { useState } from 'react';
 import styled from 'styled-components';
 
@@ -52,17 +53,14 @@ const Image = styled.img`
   margin-right: 10px;
 `;
 
-const CommentForm = () => {
+const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
   const [value, setValue] = useState('');
 
   return (
     <Form>
-      <Image
-        src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-        alt=''
-      />
+      <Image src={post?.author?.avatar} alt='' />
       <Textarea
-        placeholder={`일이삼사오님으로 댓글 달기...`}
+        placeholder={`${post?.author?.nickname}님으로 댓글 달기...`}
         onChange={(e) => setValue(e.target.value)}
       />
 

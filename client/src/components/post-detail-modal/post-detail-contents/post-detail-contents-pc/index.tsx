@@ -198,7 +198,7 @@ const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
             전
           </Time>
           {/* 댓글 작성 폼 */}
-          <CommentForm />
+          <CommentForm post={post} />
         </Footer>
       </Container>
     </>
