@@ -56,12 +56,14 @@ const ContentsWrap = styled.ul`
   @media (max-width: 768px) {
     height: 150px;
     padding-top: 0;
+    overflow-y: initial;
   }
 `;
 
 const ContentsItem = styled.li`
   display: flex;
   align-items: start;
+
   @media (max-width: 768px) {
     flex-direction: column;
   }
