@@ -128,7 +128,7 @@ const ImageCropper = ({
   const handleClick = (
     event: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => {
-    (event.target as HTMLButtonElement).value = '';
+    (event.target as HTMLInputElement).value = '';
   };
 
   return (
