@@ -58,7 +58,6 @@ router.post('/', auth, async (req, res) => {
         content: content || '',
         author: user._id,
         images: images,
-        author: req.user.id,
       });
 
       const post = await newPost.save();

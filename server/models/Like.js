@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 
 const LikeSchema = new mongoose.Schema({
-  authorId: {
+  author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
   },
-  postId: {
+  post: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'post',
     required: true,
   },
-  commentId: {
+  comment: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'comment',
     required: false,

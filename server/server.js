@@ -17,6 +17,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/posts', require('./routes/api/posts'));
+app.use('/api/comment', require('./routes/api/comment'));
 
 //이것을 사용하여 노드 js 서버에있는 이미지를 클라이언트에 표시(react js)
 //https://stackoverflow.com/questions/48914987/send-image-path-from-node-js-express-server-to-react-client

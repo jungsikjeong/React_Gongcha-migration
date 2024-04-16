@@ -3,15 +3,10 @@ import instance from 'api/instance';
 import { IUserInfo } from 'interface/auth';
 import { useEffect } from 'react';
 import { userKey } from 'react-query-key/auth.keys';
-import { toast } from 'react-toastify';
 
 const fetchUserInfo = async () => {
   const res = await instance.get<IUserInfo>('/api/auth');
-  if ('msg' in res) {
-    // 리프레시 토큰 유효기간 만료되면
-    toast.error('로그인을 다시해주세요');
-    return;
-  }
+
   return res.data;
 };
 

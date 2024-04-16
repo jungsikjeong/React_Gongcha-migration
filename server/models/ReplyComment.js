@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 
 const ReplyComment = new mongoose.Schema({
-  parentCommentId: {
+  parentComment: {
     type: mongoose.Schema.Types.ObjectId,
     required: 'comment',
   },
 
-  authorId: {
+  author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
   },
-  content: {
+  contents: {
     type: String,
     required: true,
   },

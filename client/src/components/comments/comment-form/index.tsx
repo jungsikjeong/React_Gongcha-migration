@@ -1,6 +1,9 @@
+import { useUser } from 'hook/auth/use-user';
 import { PostsDataType } from 'interface/posts';
 import { useState } from 'react';
 import styled from 'styled-components';
+
+import usePostComment from './hook/use-post-comment';
 
 const Form = styled.form`
   display: flex;
@@ -11,6 +14,10 @@ const Form = styled.form`
   border-top: 1px solid rgb(38, 38, 38);
   margin-top: 1.5rem;
   padding: 0.875rem 0.1rem;
+  .spinner {
+    width: 25px;
+    height: 25px;
+  }
   @media (max-width: 768px) {
     padding: 0 1rem;
     padding-top: 0.875rem;
@@ -34,7 +41,8 @@ const Textarea = styled.textarea`
   }
 `;
 
-const PostBtn = styled.div<{ value: string }>`
+const PostBtn = styled.button<{ value: string }>`
+  visibility: ${({ value }) => (value ? 'visible' : 'hidden')};
   opacity: ${({ value }) => (value ? '1' : '0')};
   transition: all 0.1s ease;
   flex-shrink: 0;
@@ -54,18 +62,44 @@ const Image = styled.img`
 `;
 
 const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
-  const [value, setValue] = useState('');
+  const { user } = useUser();
+
+  const [contents, setContents] = useState('');
+  const { mutate, isPending } = usePostComment();
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (post?._id) {
+      mutate({ contents, postId: post._id });
+      setContents('');
+    }
+  };
 
   return (
-    <Form>
-      <Image src={post?.author?.avatar} alt='' />
-      <Textarea
-        placeholder={`${post?.author?.nickname}님으로 댓글 달기...`}
-        onChange={(e) => setValue(e.target.value)}
-      />
+    <>
+      {user ? (
+        <Form onSubmit={onSubmit}>
+          <Image src={user?.avatar} alt='' />
+          <Textarea
+            placeholder={`${user?.nickname}님으로 댓글 달기...`}
+            onChange={(e) => setContents(e.target.value)}
+            value={contents}
+          />
 
-      <PostBtn value={value?.length !== 0 ? 'true' : ''}>게시</PostBtn>
-    </Form>
+          {isPending ? (
+            <img
+              src='./spinner.gif'
+              className='spinner'
+              alt='spinner-loading'
+            />
+          ) : (
+            <PostBtn value={contents?.length !== 0 ? 'true' : ''}>게시</PostBtn>
+          )}
+        </Form>
+      ) : (
+        ''
+      )}
+    </>
   );
 };
 
