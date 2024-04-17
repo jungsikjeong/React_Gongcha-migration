@@ -6,8 +6,8 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const Container = styled.div<{ loader: string }>`
-  position: ${({ loader }) => (loader ? 'static' : 'fixed')};
+const Container = styled.div<{ $loader: string }>`
+  position: ${({ $loader }) => ($loader ? 'static' : 'fixed')};
   top: 0;
   left: 0;
   width: 100%;
@@ -67,7 +67,7 @@ const LoaderText = styled.div`
 
 function Loading({ loader = false }) {
   return (
-    <Container loader={loader ? 'true' : ''}>
+    <Container $loader={loader ? 'true' : ''}>
       <LoaderWrapper>
         <LoaderIcon />
         <LoaderIcon />
