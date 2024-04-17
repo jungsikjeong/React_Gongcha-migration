@@ -1,3 +1,4 @@
+import { IComment } from 'interface/comment';
 import { FcLike } from 'react-icons/fc';
 import { SlHeart } from 'react-icons/sl';
 import { useLocation } from 'react-router-dom';
@@ -55,19 +56,22 @@ const Bottom = styled.div`
   }
 `;
 
-const CommentList = () => {
+interface ICommentListProps {
+  comment: IComment;
+}
+
+const CommentList = ({ comment }: ICommentListProps) => {
   const location = useLocation();
   const test = false;
+
   return (
     <CommentsList>
       <Wrapper>
-        <Image
-          src='https://img.hankyung.com/photo/202306/03.33835613.1.jpg'
-          alt=''
-        />
+        <Image src={comment?.author?.avatar} alt='' />
 
         <Post $ispathname={location.pathname.includes('/commentList')}>
-          <b>일이삼사오육</b> 너무 행복했고 너무 너무 좋았습니다.
+          <b>{comment?.author?.nickname}</b>&nbsp;
+          <span dangerouslySetInnerHTML={{ __html: comment?.contents || '' }} />
           <Bottom>
             <span>좋아요 1개</span> <span>답글 달기</span>
           </Bottom>

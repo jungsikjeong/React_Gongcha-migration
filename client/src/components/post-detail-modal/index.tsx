@@ -4,6 +4,7 @@ import { useRecoilState } from 'recoil';
 import styled, { keyframes } from 'styled-components';
 
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
+import useFetchCommentList from './hook/use-fetch-comment-list';
 import UseFetchPostDetail from './hook/use-fetch-post-detail';
 
 import PostDetailContentsMobile from './post-detail-contents/post-detail-contents-mobile';
@@ -86,7 +87,9 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
     postDetailModalStatus
   );
 
-  const { data } = UseFetchPostDetail(postId);
+  const { data: post } = UseFetchPostDetail(postId);
+  const { data: commentList, isLoading: commentListLoading } =
+    useFetchCommentList(postId);
 
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -146,9 +149,17 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
           <IoMdClose />
         </Close>
         {isMobile ? (
-          <PostDetailContentsMobile post={data} />
+          <PostDetailContentsMobile
+            post={post}
+            commentList={commentList}
+            commentListLoading={commentListLoading}
+          />
         ) : (
-          <PostDetailContentsPC post={data} />
+          <PostDetailContentsPC
+            post={post}
+            commentList={commentList}
+            commentListLoading={commentListLoading}
+          />
         )}
       </Wrapper>
     </Container>

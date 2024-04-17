@@ -40,20 +40,27 @@ router.post('/', auth, async (req, res) => {
 // @access  Public
 router.get('/:id', async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate('author', [
-      'nickname',
-      'avatar',
-    ]);
+    const post = await Post.findById(req.params.id);
 
     if (!post) {
-      return res.status(404).json({ msg: '게시글을 찾을 수 없습니다' });
+      return res.status(404).json({ msg: '해당 게시글을 찾을 수 없습니다' });
+    }
+    const commentList = await Comment.find({ post: req.params.id }).populate(
+      'author',
+      ['nickname', 'avatar']
+    );
+
+    if (!commentList) {
+      return res.status(404).json({ msg: '댓글 정보를 찾을 수 없습니다' });
     }
 
-    res.json(post);
+    res.json(commentList);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: '게시글을 찾을 수 없습니다' });
+      return res
+        .status(404)
+        .json({ msg: '댓글을 불러오던중 에러가 발생했습니다.' });
     }
     res.status(500).send('Server Error');
   }

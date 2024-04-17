@@ -1,5 +1,6 @@
 import { formatDistance } from 'date-fns';
 import ko from 'date-fns/locale/ko';
+import { IComment } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
 import { useRef } from 'react';
 import { CiBookmark } from 'react-icons/ci';
@@ -10,8 +11,10 @@ import { SlHeart, SlSpeech } from 'react-icons/sl';
 import styled from 'styled-components';
 
 import CommentForm from 'components/comments/comment-form';
+import CommentList from 'components/comments/comment-list';
+import CommentSkeleton from 'components/comments/comment-skeleton';
+import FlexBox from 'components/common/flex-box';
 import PostDetailImages from 'components/post-detail-modal/post-detail-images';
-import CommentList from '../../../comments/comment-list';
 
 const Container = styled.div`
   /* max-width: 335px; */
@@ -118,9 +121,17 @@ const Time = styled.div`
 
 interface IPostDetailContents {
   post: PostsDataType | undefined;
+  commentList: IComment[] | undefined;
+  commentListLoading: boolean;
 }
 
-const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
+const skeletons = Array(12).fill(0);
+
+const PostDetailContentsPC = ({
+  post,
+  commentList,
+  commentListLoading,
+}: IPostDetailContents) => {
   const commentRef = useRef<HTMLTextAreaElement | null>(null);
   const test = false;
 
@@ -149,9 +160,9 @@ const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
             <UserImage src={post?.author?.avatar} alt='userImage' />
 
             <Post>
-              <b>{post?.author?.nickname}</b>{' '}
+              <b>{post?.author?.nickname}</b>
               <div
-                dangerouslySetInnerHTML={{ __html: post?.content || '' }}
+                dangerouslySetInnerHTML={{ __html: post?.contents || '' }}
               ></div>
               <Tag>#MiuMiu </Tag>
               <Tag>#MiuCrew </Tag>
@@ -160,19 +171,23 @@ const PostDetailContentsPC = ({ post }: IPostDetailContents) => {
             </Post>
           </ContentsItem>
 
-          <>
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-            <CommentList />
-          </>
+          <FlexBox $direction='column'>
+            {commentListLoading ? (
+              <>
+                {skeletons.map((_, index) => (
+                  <div key={index}>
+                    <CommentSkeleton />
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                {commentList?.map((comment, index) => (
+                  <CommentList comment={comment} key={index} />
+                ))}
+              </>
+            )}
+          </FlexBox>
         </ContentsWrap>
 
         <Footer>

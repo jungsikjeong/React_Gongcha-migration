@@ -1,5 +1,6 @@
 import { formatDistance } from 'date-fns';
 import ko from 'date-fns/locale/ko';
+import { IComment } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
 import { FaShare } from 'react-icons/fa';
@@ -110,9 +111,15 @@ const Bottom = styled.div`
 
 interface IPostDetailContents {
   post: PostsDataType | undefined;
+  commentList: IComment[] | undefined;
+  commentListLoading: boolean;
 }
 
-const PostDetailContentsMobile = ({ post }: IPostDetailContents) => {
+const PostDetailContentsMobile = ({
+  post,
+  commentList,
+  commentListLoading,
+}: IPostDetailContents) => {
   const test = false;
 
   return (
@@ -156,7 +163,7 @@ const PostDetailContentsMobile = ({ post }: IPostDetailContents) => {
             <br />
             <b>{post?.author?.nickname}</b>
             <div
-              dangerouslySetInnerHTML={{ __html: post?.content || '' }}
+              dangerouslySetInnerHTML={{ __html: post?.contents || '' }}
             ></div>
             <Tag>#MiuMiu </Tag>
             <Tag>#MiuCrew </Tag>

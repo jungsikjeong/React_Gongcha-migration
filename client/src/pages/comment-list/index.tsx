@@ -5,7 +5,10 @@ import UseFetchPostDetail from 'components/post-detail-modal/hook/use-fetch-post
 
 import CommentForm from 'components/comments/comment-form';
 import CommentList from 'components/comments/comment-list';
+import CommentSkeleton from 'components/comments/comment-skeleton';
+import FlexBox from 'components/common/flex-box';
 import PostHeader from 'components/common/post-header';
+import useFetchCommentList from 'components/post-detail-modal/hook/use-fetch-comment-list';
 
 const Container = styled.div`
   min-width: 335px;
@@ -35,7 +38,6 @@ const ContentsList = styled.ul`
 const ContentsItem = styled.li`
   display: flex;
   align-items: start;
-  border-bottom: 1px solid rgb(85, 85, 85);
   padding-bottom: 10px;
 `;
 
@@ -63,10 +65,14 @@ const Tag = styled.span`
   color: rgb(224, 241, 255);
 `;
 
+const skeletons = Array(12).fill(0);
+
 const CommentListPage = () => {
   let { id } = useParams();
 
   const { data } = UseFetchPostDetail(id as string);
+  const { data: commentList, isLoading: commentListLoading } =
+    useFetchCommentList(id as string);
 
   return (
     <Container>
@@ -86,22 +92,21 @@ const CommentListPage = () => {
               <Tag>#광고</Tag>
             </Post>
           </ContentsItem>
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
-          <CommentList />
+          <FlexBox $direction='column'>
+            {commentListLoading ? (
+              <>
+                {skeletons.map((_, index) => (
+                  <CommentSkeleton key={index} />
+                ))}
+              </>
+            ) : (
+              <>
+                {commentList?.map((comment) => (
+                  <CommentList comment={comment} />
+                ))}
+              </>
+            )}
+          </FlexBox>
         </ContentsList>
 
         <CommentForm post={data} />

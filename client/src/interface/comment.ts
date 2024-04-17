@@ -1,13 +1,10 @@
 import { AuthorType } from './auth';
 
-export type PostsDataType = {
+export interface IComment {
   author: AuthorType;
-  className?: string;
-  commentsCount: number;
+  post: string;
   contents: string;
   date: string;
-  images: string[];
-  postLikeCount: number;
   __v: number;
   _id: string;
-};
+}

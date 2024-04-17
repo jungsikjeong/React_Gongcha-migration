@@ -18,3 +18,9 @@ export interface ILogin {
   email: string;
   password: string;
 }
+
+export type AuthorType = {
+  avatar: string;
+  nickname: string;
+  _id: string;
+};
