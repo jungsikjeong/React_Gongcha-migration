@@ -181,9 +181,14 @@ const PostDetailContentsPC = ({
                 ))}
               </>
             ) : (
+              // 댓글 리스트
               <>
                 {commentList?.map((comment, index) => (
-                  <CommentList comment={comment} key={index} />
+                  <CommentList
+                    postId={post?._id}
+                    comment={comment}
+                    key={index}
+                  />
                 ))}
               </>
             )}

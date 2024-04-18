@@ -66,60 +66,43 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// @route   DELETE api/posts/:id
-// @desc    게시글 지우기
+// @route   DELETE api/comment/:id
+// @desc    댓글 지우기
 // @access  Private
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-    const user = await User.findById(req.user.id).select('-password');
+    const post = await Post.findById(req.query.postId);
 
     if (!post) {
-      return res.status(404).json({ msg: '게시글이 없습니다.' });
+      return res
+        .status(404)
+        .json({ msg: '해당 댓글이 작성된 게시글을 찾을 수 없습니다' });
     }
 
-    // aws s3 버킷에서 파일 삭제
-    const url = post.image.split('/'); // post에 저장된 image를 가져옴
-    const delFileName = url[url.length - 1];
+    // 로그인 유져
+    const user = await User.findById(req.user.id).select('-password');
+    // 댓글 작성한 유저
+    const commentAuthor = await Comment.findById(req.params.id);
 
-    const params = {
-      Bucket: 'gongcha',
-      Key: `uploadImage/${delFileName}`,
-    };
-
-    upload.s3.deleteObject(params, function (err, data) {
-      console.log(params);
-
-      if (err) {
-        console.log('aws image delete error');
-        console.log(err, err.stack);
-        return;
-      } else {
-        console.log('aws image delete success' + data);
-      }
-    });
-
-    // check user
-    if (post.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: '게시글을 작성한 유저가 아닙니다.' });
+    if (
+      user._id &&
+      commentAuthor &&
+      user._id.toString() === commentAuthor.author.toString()
+    ) {
+      // 로그인한 유저와 댓글 작성자가 같으면
+      await Comment.findByIdAndDelete(req?.params?.id);
+      return res.status(200).json({ msg: '댓글이 성공적으로 삭제되었습니다.' });
+    } else {
+      // 로그인한 유저와 댓글 작성자가 같지 않으면
+      return res.status(404).json({
+        msg: '댓글을 작성한 유저가 아닙니다. 올바른 경로로 시도해주세요',
+      });
     }
-    const userPost = user.posts.filter(
-      (post) => post._id.toString() !== req.params.id
-    );
-    // Get remove index
-    const removeIndex = user.posts
-      .map((post) => post._id.toString())
-      .indexOf(req.user.id);
-
-    user.posts.splice(removeIndex, 1);
-
-    await user.save();
-    await post.remove();
-
-    res.json({ msg: '게시글 삭제 완료' });
   } catch (err) {
     if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
+      return res
+        .status(404)
+        .json({ msg: '에러가 발생했습니다. 다시 시도해주세요.' });
     }
     res.status(500).send('Server Error');
   }
@@ -223,44 +206,6 @@ router.post(
     }
   }
 );
-
-// @route   DELETE api/posts/comment/:id/:comment_id
-// @desc    댓글 삭제
-// @access  Private
-router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-
-    const comment = await post.comments.find(
-      (comment) => comment.id === req.params.comment_id
-    );
-    // 댓글이 있는지 확인
-    if (!comment) {
-      // return res.status(404).json({ msg: '댓글이 없습니다.' });
-      return console.log('댓글이 없습니다');
-    }
-
-    // Check user
-    if (comment.user.toString() !== req.user.id) {
-      return res.status(404).json({ msg: '유저가 일치하지 않습니다.' });
-    }
-
-    // Get remove index
-    // 댓글 삭제
-    const removeIndex = post.comments
-      .map((comment) => comment.id)
-      .indexOf(req.params.comment_id);
-
-    post.comments.splice(removeIndex, 1);
-
-    await post.save();
-
-    res.json(post.comments);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
 
 // @route   PUT api/posts/comment/like/:id/:comment_id
 // @desc    댓글 좋아요 누르기

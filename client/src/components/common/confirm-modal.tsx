@@ -1,5 +1,3 @@
-import { alertModalState } from 'atom/alert-modal-atoms';
-import { useRecoilState } from 'recoil';
 import styled, { keyframes } from 'styled-components';
 
 import Button from './button';
@@ -7,8 +5,7 @@ import Button from './button';
 const fadeInAnimation = keyframes`
   0% {
     opacity: 0;
-    opacity: 0;
-     scale: 0;
+    scale: 0;
   }
   50% {
     opacity: 1;
@@ -34,12 +31,12 @@ const Container = styled.div`
   background-color: rgba(0, 0, 0, 0.05);
   z-index: 30;
   overflow: hidden;
-  animation: ${fadeInAnimation} 0.3s ease-in-out;
 `;
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  animation: ${fadeInAnimation} 0.3s ease-in-out;
 `;
 
 const StyledButton = styled(Button)`
@@ -60,22 +57,29 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const AlertModal = () => {
-  const [alertModal, setAlertModal] = useRecoilState(alertModalState);
+interface IConfirmModalProps {
+  text: string;
+  handleConfirm: () => void;
+  handleCancel: (value: React.SetStateAction<boolean>) => void;
+}
+
+const ConfirmModal = ({
+  text,
+  handleConfirm,
+  handleCancel,
+}: IConfirmModalProps) => {
+  const onClick = () => {
+    handleConfirm();
+    handleCancel(false);
+  };
 
   return (
     <Container>
       <Wrapper>
-        <StyledButton
-          type='button'
-          onClick={() => setAlertModal({ text: '', confirm: true })}
-        >
-          {alertModal.text}
+        <StyledButton type='button' onClick={onClick}>
+          {text}
         </StyledButton>
-        <StyledButton
-          type='button'
-          onClick={() => setAlertModal({ confirm: false, text: '' })}
-        >
+        <StyledButton type='button' onClick={() => handleCancel(false)}>
           취소
         </StyledButton>
       </Wrapper>
@@ -83,4 +87,4 @@ const AlertModal = () => {
   );
 };
 
-export default AlertModal;
+export default ConfirmModal;

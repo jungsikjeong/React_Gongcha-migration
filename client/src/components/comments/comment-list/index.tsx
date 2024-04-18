@@ -1,14 +1,14 @@
-import { alertModalState } from 'atom/alert-modal-atoms';
 import { useUser } from 'hook/auth/use-user';
 import { IComment } from 'interface/comment';
 import { FcLike } from 'react-icons/fc';
 import { SlHeart } from 'react-icons/sl';
 import { useLocation } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 
 import styled from 'styled-components';
 
-import AlertModal from 'components/common/alert-modal';
+import AlertModal from 'components/common/confirm-modal';
+import useDeleteComments from 'hook/comments/use-delete-comments';
+import { useCallback, useState } from 'react';
 
 const CommentsList = styled.li`
   margin-top: 1rem;
@@ -63,27 +63,39 @@ const Bottom = styled.div`
 
 interface ICommentListProps {
   comment: IComment;
+  postId: string | undefined;
 }
 
-const CommentList = ({ comment }: ICommentListProps) => {
+const CommentList = ({ comment, postId }: ICommentListProps) => {
   const { user } = useUser();
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const [alertModal, setAlertModal] = useRecoilState(alertModalState);
+  const { mutate } = useDeleteComments(postId as string);
 
   const location = useLocation();
   const test = false;
 
-  const handleCommentDelete = () => {
-    setAlertModal({ ...alertModal, text: '삭제' });
+  const handleCommentDelete = useCallback(() => {
+    if (comment._id && postId) {
+      const commentId = comment._id;
 
-    if (alertModal.confirm) {
+      mutate({ commentId, postId });
     }
-  };
+  }, [comment._id, mutate, postId]);
 
   return (
     <CommentsList>
       <Wrapper>
-        {alertModal.text && <AlertModal />}
+        {isConfirmModalOpen && (
+          <AlertModal
+            text='삭제'
+            handleConfirm={() => {
+              handleCommentDelete();
+              setIsConfirmModalOpen(false);
+            }}
+            handleCancel={() => setIsConfirmModalOpen(false)}
+          />
+        )}
 
         <Image src={comment?.author?.avatar} alt='' />
 
@@ -93,7 +105,7 @@ const CommentList = ({ comment }: ICommentListProps) => {
           <Bottom>
             <span>좋아요 1개</span> <span>답글 달기</span>{' '}
             {user?._id === comment?.author._id && (
-              <span onClick={() => handleCommentDelete()}>댓글 삭제</span>
+              <span onClick={() => setIsConfirmModalOpen(true)}>댓글 삭제</span>
             )}
           </Bottom>
         </Post>

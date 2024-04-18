@@ -102,7 +102,7 @@ const CommentListPage = () => {
             ) : (
               <>
                 {commentList?.map((comment) => (
-                  <CommentList comment={comment} />
+                  <CommentList postId={id} comment={comment} />
                 ))}
               </>
             )}

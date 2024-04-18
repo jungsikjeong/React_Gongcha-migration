@@ -5,16 +5,16 @@ import { useEffect } from 'react';
 import { commentKey } from 'react-query-key/comment.keys';
 import { toast } from 'react-toastify';
 
-const fetchCommentList = async (postId: string) => {
-  const res = await instance.get<IComment[]>(`/api/comment/${postId}`);
+const postLikeComments = async (id: string) => {
+  const res = await instance.get<IComment[]>(`/api/comment/${id}`);
 
   return res.data;
 };
 
-const useFetchCommentList = (postId: string) => {
+const usePostLikeComments = (id: string) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: [commentKey.comment, postId],
-    queryFn: () => fetchCommentList(postId),
+    queryKey: [commentKey.comment, id],
+    queryFn: () => postLikeComments(id),
     refetchOnWindowFocus: false,
     staleTime: 15000,
   });
@@ -29,4 +29,4 @@ const useFetchCommentList = (postId: string) => {
   return { data, isLoading, error };
 };
 
-export default useFetchCommentList;
+export default usePostLikeComments;
