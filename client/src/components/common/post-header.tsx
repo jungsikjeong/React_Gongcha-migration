@@ -8,9 +8,9 @@ import FlexBox from 'components/common/flex-box';
 import Typography from 'components/common/typography';
 import styled from 'styled-components';
 
-const Box = styled.div`
+const Box = styled.div<{ pathname: string }>`
   max-width: 500px;
-
+  max-width: ${({ pathname }) => (pathname ? '100%' : '500px')};
   margin: 0 auto;
   position: fixed;
   left: 0;
@@ -50,9 +50,9 @@ const PostHeader = ({ text }: { text: string }) => {
       setPostDetailModal(false);
     }
   };
-
+  console.log(location.pathname === '/posts');
   return (
-    <Box>
+    <Box pathname={location.pathname === '/posts' ? 'true' : ''}>
       <FlexBox
         $alignItems='center'
         $justifyContent='space-between'
