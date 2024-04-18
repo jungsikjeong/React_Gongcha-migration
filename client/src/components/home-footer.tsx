@@ -48,6 +48,22 @@ const ImgWrapper = styled.div`
   img {
     width: 100%;
     height: 100%;
+    cursor: zoom-in;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1) !important;
+  }
+
+  .popvisible {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    transform: translate(-50%, -50%);
+    cursor: zoom-out;
+    @media (max-width: 768px) {
+      width: 350px;
+      height: auto;
+    }
   }
 `;
 
@@ -72,6 +88,7 @@ const MainFooter = () => {
       src: './images/inside-image04.jpg',
     },
   ]);
+  const [isPopVisible, setIsPopVisible] = useState(false);
 
   const handleClickPrev = (e: any) => {
     if (number === 0) {
@@ -88,33 +105,44 @@ const MainFooter = () => {
   };
 
   return (
-    <Container variants={containerVariants} initial='hidden' animate='visible'>
-      <Wrapper>
-        <small>공차는 세련되고 전문적인 모습으로 새로워지고 있습니다.</small>
-        <ButtonWrap>
-          <Button
-            type='button'
-            onClick={handleClickPrev}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.8 }}
-          >
-            <FaChevronLeft />
-          </Button>
-          <Button
-            type='button'
-            onClick={handleClickNext}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.8 }}
-          >
-            <FaChevronRight />
-          </Button>
-        </ButtonWrap>
-      </Wrapper>
+    <>
+      <Container
+        variants={containerVariants}
+        initial='hidden'
+        animate='visible'
+      >
+        <Wrapper>
+          <small>공차는 세련되고 전문적인 모습으로 새로워지고 있습니다.</small>
+          <ButtonWrap>
+            <Button
+              type='button'
+              onClick={handleClickPrev}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.8 }}
+            >
+              <FaChevronLeft />
+            </Button>
+            <Button
+              type='button'
+              onClick={handleClickNext}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.8 }}
+            >
+              <FaChevronRight />
+            </Button>
+          </ButtonWrap>
+        </Wrapper>
 
-      <ImgWrapper>
-        <img src={images[number].src} alt='img-view' />
-      </ImgWrapper>
-    </Container>
+        <ImgWrapper>
+          <img
+            className={isPopVisible ? 'popvisible' : ''}
+            src={images[number].src}
+            alt='img'
+            onClick={() => setIsPopVisible(!isPopVisible)}
+          />
+        </ImgWrapper>
+      </Container>
+    </>
   );
 };
 
