@@ -50,7 +50,7 @@ const PostHeader = ({ text }: { text: string }) => {
       setPostDetailModal(false);
     }
   };
-  console.log(location.pathname === '/posts');
+
   return (
     <Box pathname={location.pathname === '/posts' ? 'true' : ''}>
       <FlexBox
