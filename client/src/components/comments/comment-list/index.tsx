@@ -1,9 +1,14 @@
+import { alertModalState } from 'atom/alert-modal-atoms';
+import { useUser } from 'hook/auth/use-user';
 import { IComment } from 'interface/comment';
 import { FcLike } from 'react-icons/fc';
 import { SlHeart } from 'react-icons/sl';
 import { useLocation } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 
 import styled from 'styled-components';
+
+import AlertModal from 'components/common/alert-modal';
 
 const CommentsList = styled.li`
   margin-top: 1rem;
@@ -61,19 +66,35 @@ interface ICommentListProps {
 }
 
 const CommentList = ({ comment }: ICommentListProps) => {
+  const { user } = useUser();
+
+  const [alertModal, setAlertModal] = useRecoilState(alertModalState);
+
   const location = useLocation();
   const test = false;
+
+  const handleCommentDelete = () => {
+    setAlertModal({ ...alertModal, text: '삭제' });
+
+    if (alertModal.confirm) {
+    }
+  };
 
   return (
     <CommentsList>
       <Wrapper>
+        {alertModal.text && <AlertModal />}
+
         <Image src={comment?.author?.avatar} alt='' />
 
         <Post $ispathname={location.pathname.includes('/commentList')}>
           <b>{comment?.author?.nickname}</b>&nbsp;
           <span dangerouslySetInnerHTML={{ __html: comment?.contents || '' }} />
           <Bottom>
-            <span>좋아요 1개</span> <span>답글 달기</span>
+            <span>좋아요 1개</span> <span>답글 달기</span>{' '}
+            {user?._id === comment?.author._id && (
+              <span onClick={() => handleCommentDelete()}>댓글 삭제</span>
+            )}
           </Bottom>
         </Post>
 
