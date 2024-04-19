@@ -214,7 +214,7 @@ const PostDetailContentsPC = ({
             {post &&
               formatDistance(new Date(), new Date(post.date), {
                 locale: ko as any,
-              }).slice(1)}
+              })}
             전
           </Time>
           {/* 댓글 작성 폼 */}

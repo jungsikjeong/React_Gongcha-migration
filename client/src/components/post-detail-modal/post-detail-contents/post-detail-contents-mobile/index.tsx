@@ -1,5 +1,5 @@
 import { formatDistance } from 'date-fns';
-import ko from 'date-fns/locale/ko';
+import { ko } from 'date-fns/locale/ko';
 import { IComment } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
@@ -179,7 +179,7 @@ const PostDetailContentsMobile = ({
           {post &&
             formatDistance(new Date(), new Date(post.date), {
               locale: ko as any,
-            }).slice(1)}
+            })}
           전
         </Bottom>
       </ContentsWrap>
