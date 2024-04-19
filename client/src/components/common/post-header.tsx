@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { IoChevronBackSharp } from 'react-icons/io5';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { postDetailModalStatus } from 'atom/post-detail-modal-atoms';
 import { useSetRecoilState } from 'recoil';
@@ -38,18 +39,25 @@ const IconBox = styled.div`
 const PostHeader = ({ text }: { text: string }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const params = useParams();
   const setPostDetailModal = useSetRecoilState(postDetailModalStatus);
 
   const handleGoBack = () => {
     if (
-      location.pathname.includes('/commentList') ||
-      location.pathname === '/write'
+      location.pathname === '/write' ||
+      location.pathname.includes('/commentList')
     ) {
       navigate(-1);
     } else {
       setPostDetailModal(false);
     }
   };
+
+  useEffect(() => {
+    if (location.pathname.includes('/commentList') && params.id) {
+      localStorage.setItem('previousPageUrl', params.id as string);
+    }
+  }, [location.pathname, params.id]);
 
   return (
     <Box pathname={location.pathname === '/posts' ? 'true' : ''}>
@@ -58,11 +66,6 @@ const PostHeader = ({ text }: { text: string }) => {
         $justifyContent='space-between'
         $background='black'
         $padding='5px 16px'
-        style={
-          {
-            // borderBottom: '1px solid rgb(38, 38, 38)',
-          }
-        }
       >
         <IconBox
           onClick={() => {

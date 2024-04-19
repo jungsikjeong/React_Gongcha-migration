@@ -62,7 +62,9 @@ const Image = styled.img`
 `;
 
 const PostsPage = () => {
-  const [postId, setPostId] = useState<string>('');
+  const [postId, setPostId] = useState<string>(
+    localStorage.getItem('previousPageUrl') || ''
+  );
 
   const [searchParams, setSearchParams] = useState('test'); // 임시
 
@@ -111,6 +113,16 @@ const PostsPage = () => {
       clearTimeout(timerId);
     };
   }, [fetchNext, isPageEnd, hasNextPage]);
+
+  useEffect(() => {
+    const previousPageUrl = localStorage.getItem('previousPageUrl');
+    if (previousPageUrl) {
+      setPostId(previousPageUrl);
+      setPostDetailModal(true);
+    }
+
+    return () => localStorage.removeItem('previousPageUrl');
+  }, [setPostDetailModal]);
 
   if (!isLoading && data?.pages[0].posts.length === 0) {
     return <NotFound text={'아직 작성된 게시글이 없습니다..'} />;
