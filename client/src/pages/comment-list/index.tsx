@@ -2,13 +2,13 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import UseFetchPostDetail from 'components/post-detail-modal/hook/use-fetch-post-detail';
+import useFetchCommentList from 'hook/comments/use-fetch-comment-list';
 
 import CommentForm from 'components/comments/comment-form';
 import CommentList from 'components/comments/comment-list';
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import FlexBox from 'components/common/flex-box';
 import PostHeader from 'components/common/post-header';
-import useFetchCommentList from 'components/post-detail-modal/hook/use-fetch-comment-list';
 
 const Container = styled.div`
   min-width: 335px;
