@@ -24,7 +24,7 @@ const Container = styled(motion.div)`
   }
 
   @media (max-width: 768px) {
-    padding: 30px;
+    padding: 0;
   }
 `;
 
@@ -34,14 +34,12 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   line-height: 2rem;
-  @media (max-width: 768px) {
-    align-items: flex-start;
-  }
 `;
 
 const Logo = styled.div`
   color: #fff;
   @media (max-width: 768px) {
+    display: none;
     visibility: hidden;
   }
 
@@ -69,6 +67,8 @@ const MobileMenuOpen = styled(motion.div)`
     cursor: pointer;
   }
   @media (max-width: 768px) {
+    top: 2rem;
+    right: 1.5rem;
     font-size: 22px;
   }
 `;
