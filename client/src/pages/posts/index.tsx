@@ -121,8 +121,17 @@ const PostsPage = () => {
       setPostDetailModal(true);
     }
 
-    return () => localStorage.removeItem('previousPageUrl');
-  }, [setPostDetailModal]);
+    const onBeforeUnload = () => {
+      localStorage.removeItem('previousPageUrl');
+    };
+
+    window.addEventListener('beforeunload', onBeforeUnload);
+
+    return () => {
+      localStorage.removeItem('previousPageUrl');
+      window.removeEventListener('beforeunload', onBeforeUnload);
+    };
+  }, []);
 
   if (!isLoading && data?.pages[0].posts.length === 0) {
     return <NotFound text={'아직 작성된 게시글이 없습니다..'} />;
