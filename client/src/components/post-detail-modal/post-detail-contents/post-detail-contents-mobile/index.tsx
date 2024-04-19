@@ -10,6 +10,7 @@ import { SlHeart, SlSpeech } from 'react-icons/sl';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import CommentSkeleton from 'components/comments/comment-skeleton';
 import PostHeader from 'components/common/post-header';
 import PostDetailImages from 'components/post-detail-modal/post-detail-images';
 
@@ -113,33 +114,40 @@ interface IPostDetailContents {
   post: PostsDataType | undefined;
   commentList: IComment[] | undefined;
   commentListLoading: boolean;
+  postLoading: boolean;
 }
 
 const PostDetailContentsMobile = ({
   post,
   commentList,
   commentListLoading,
+  postLoading,
 }: IPostDetailContents) => {
   const test = false;
 
   return (
     <Container>
       <PostHeader text='게시물' />
-
       <User>
-        <img
-          className='user-image'
-          src={post?.author?.avatar}
-          alt='userImage'
-        />
+        {postLoading ? (
+          <CommentSkeleton />
+        ) : (
+          <>
+            <img
+              className='user-image'
+              src={post?.author?.avatar}
+              alt='userImage'
+            />
 
-        <div className='user-nickname'>{post?.author?.nickname}</div>
+            <div className='user-nickname'>{post?.author?.nickname}</div>
 
-        <div className='icon'>
-          <FaShare />
-        </div>
+            <div className='icon'>
+              <FaShare />
+            </div>
+          </>
+        )}
       </User>
-      <PostDetailImages url={post?.images} />
+      <PostDetailImages url={post?.images} postLoading={postLoading} />
       <ContentsWrap>
         <ContentsItem>
           <Section>

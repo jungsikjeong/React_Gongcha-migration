@@ -123,6 +123,7 @@ interface IPostDetailContents {
   post: PostsDataType | undefined;
   commentList: IComment[] | undefined;
   commentListLoading: boolean;
+  postLoading: boolean;
 }
 
 const skeletons = Array(12).fill(0);
@@ -131,6 +132,7 @@ const PostDetailContentsPC = ({
   post,
   commentList,
   commentListLoading,
+  postLoading,
 }: IPostDetailContents) => {
   const commentRef = useRef<HTMLTextAreaElement | null>(null);
   const test = false;
@@ -143,33 +145,41 @@ const PostDetailContentsPC = ({
 
   return (
     <>
-      <PostDetailImages url={post?.images} />
+      <PostDetailImages postLoading={postLoading} url={post?.images} />
       <Container>
-        <User>
-          <UserImage src={post?.author?.avatar} alt='userImage' />
-
-          <div className='user-nickname'>{post?.author?.nickname}</div>
-
-          <div className='icon'>
-            <FaShare />
-          </div>
-        </User>
-
-        <ContentsWrap>
-          <ContentsItem>
+        {postLoading ? (
+          <CommentSkeleton />
+        ) : (
+          <User>
             <UserImage src={post?.author?.avatar} alt='userImage' />
 
-            <Post>
-              <b>{post?.author?.nickname}</b>
-              <div
-                dangerouslySetInnerHTML={{ __html: post?.contents || '' }}
-              ></div>
-              <Tag>#MiuMiu </Tag>
-              <Tag>#MiuCrew </Tag>
-              <Tag>#미우미우 </Tag>
-              <Tag>#광고</Tag>
-            </Post>
-          </ContentsItem>
+            <div className='user-nickname'>{post?.author?.nickname}</div>
+
+            <div className='icon'>
+              <FaShare />
+            </div>
+          </User>
+        )}
+
+        <ContentsWrap>
+          {postLoading ? (
+            <CommentSkeleton />
+          ) : (
+            <ContentsItem>
+              <UserImage src={post?.author?.avatar} alt='userImage' />
+
+              <Post>
+                <b>{post?.author?.nickname}</b>
+                <div
+                  dangerouslySetInnerHTML={{ __html: post?.contents || '' }}
+                ></div>
+                <Tag>#MiuMiu </Tag>
+                <Tag>#MiuCrew </Tag>
+                <Tag>#미우미우 </Tag>
+                <Tag>#광고</Tag>
+              </Post>
+            </ContentsItem>
+          )}
 
           <FlexBox $direction='column'>
             {commentListLoading ? (

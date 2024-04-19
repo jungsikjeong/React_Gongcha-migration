@@ -13,10 +13,15 @@ const Image = styled.img`
   height: 100%;
 `;
 
-const PostDetailImages = ({ url }: { url: string[] | undefined }) => {
+interface IPostDetailImagesProps {
+  postLoading: boolean;
+  url: string[] | undefined;
+}
+
+const PostDetailImages = ({ url, postLoading }: IPostDetailImagesProps) => {
   return (
     <ImageBox>
-      <Image src={url && url[0]} alt='postImg' />
+      {postLoading ? '' : <Image src={url ? url[0] : ''} alt='post-img' />}
     </ImageBox>
   );
 };
