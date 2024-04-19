@@ -121,6 +121,7 @@ const PostsPage = () => {
       setPostDetailModal(true);
     }
 
+    // 새로고침 할 때도 제거
     const onBeforeUnload = () => {
       localStorage.removeItem('previousPageUrl');
     };
