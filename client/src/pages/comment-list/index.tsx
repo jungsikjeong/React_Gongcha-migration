@@ -70,7 +70,7 @@ const skeletons = Array(12).fill(0);
 const CommentListPage = () => {
   let { id } = useParams();
 
-  const { data } = UseFetchPostDetail(id as string);
+  const { data, isLoading: postLoading } = UseFetchPostDetail(id as string);
   const { data: commentList, isLoading: commentListLoading } =
     useFetchCommentList(id as string);
 
@@ -80,29 +80,41 @@ const CommentListPage = () => {
         <PostHeader text='게시물' />
         <ContentsList>
           <ContentsItem>
-            <Image src={data?.author?.avatar} alt='' />
-            <Post>
-              <b>{data?.author?.nickname}</b> 너무 행복했고 너무 너무
-              좋았습니다. 여러분이있기에 제가 있었던것 같습니다! 아 너무 좋아
-              행복해~ 나 날아갈것같아~~~~~~~~~~~~~~~~~~ 이야아!!!!!!!!!!!!
-              푸슈슈슈~~~~~
-              <Tag>#MiuMiu </Tag>
-              <Tag>#MiuCrew </Tag>
-              <Tag>#미우미우 </Tag>
-              <Tag>#광고</Tag>
-            </Post>
+            {postLoading ? (
+              <CommentSkeleton />
+            ) : (
+              <>
+                <Image src={data?.author?.avatar} alt='' />
+                <Post>
+                  <b>{data?.author?.nickname}</b> 너무 행복했고 너무 너무
+                  좋았습니다. 여러분이있기에 제가 있었던것 같습니다! 아 너무
+                  좋아 행복해~ 나 날아갈것같아~~~~~~~~~~~~~~~~~~
+                  이야아!!!!!!!!!!!! 푸슈슈슈~~~~~
+                  <Tag>#MiuMiu </Tag>
+                  <Tag>#MiuCrew </Tag>
+                  <Tag>#미우미우 </Tag>
+                  <Tag>#광고</Tag>
+                </Post>
+              </>
+            )}
           </ContentsItem>
           <FlexBox $direction='column'>
             {commentListLoading ? (
               <>
                 {skeletons.map((_, index) => (
-                  <CommentSkeleton key={index} />
+                  <div key={index}>
+                    <CommentSkeleton />
+                  </div>
                 ))}
               </>
             ) : (
               <>
                 {commentList?.map((comment) => (
-                  <CommentList postId={id} comment={comment} />
+                  <CommentList
+                    postId={id}
+                    comment={comment}
+                    key={comment._id}
+                  />
                 ))}
               </>
             )}
