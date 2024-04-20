@@ -1,5 +1,6 @@
 import { useUser } from 'hook/auth/use-user';
 import { IComment } from 'interface/comment';
+import { useCallback, useState } from 'react';
 import { FcLike } from 'react-icons/fc';
 import { SlHeart } from 'react-icons/sl';
 import { useLocation } from 'react-router-dom';
@@ -8,7 +9,7 @@ import styled from 'styled-components';
 
 import AlertModal from 'components/common/confirm-modal';
 import useDeleteComments from 'hook/comments/use-delete-comments';
-import { useCallback, useState } from 'react';
+import usePostLikeComments from 'hook/comments/use-post-like-comments';
 
 const CommentsList = styled.li`
   margin-top: 1rem;
@@ -43,11 +44,11 @@ const Post = styled.div<{ $ispathname: boolean }>`
 const LikeBtn = styled.div`
   cursor: pointer;
   margin-top: 9px;
-  padding-left: 0.875rem;
+  margin-left: 0.875rem;
 
   @media (max-width: 768px) {
     font-size: 12px;
-    padding-left: 0.5rem;
+    margin-left: 0.5rem;
   }
 `;
 
@@ -71,10 +72,11 @@ const CommentList = ({ comment, postId }: ICommentListProps) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const { mutate } = useDeleteComments(postId as string);
+  const { mutate: commentMutate } = usePostLikeComments(postId as string);
 
   const location = useLocation();
-  const test = false;
 
+  // 댓글 삭제
   const handleCommentDelete = useCallback(() => {
     if (comment._id && postId) {
       const commentId = comment._id;
@@ -83,6 +85,13 @@ const CommentList = ({ comment, postId }: ICommentListProps) => {
     }
   }, [comment._id, mutate, postId]);
 
+  const handleCommentLike = useCallback(() => {
+    if (comment._id && postId) {
+      const commentId = comment._id;
+
+      commentMutate({ commentId, postId });
+    }
+  }, [comment._id, commentMutate, postId]);
   return (
     <CommentsList>
       <Wrapper>
@@ -97,20 +106,43 @@ const CommentList = ({ comment, postId }: ICommentListProps) => {
           />
         )}
 
-        <Image src={comment?.author?.avatar} alt='' />
+        <Image src={comment?.user?.avatar} alt='' />
 
         <Post $ispathname={location.pathname.includes('/commentList')}>
-          <b>{comment?.author?.nickname}</b>&nbsp;
+          <b>{comment?.user?.nickname}</b>&nbsp;
           <span dangerouslySetInnerHTML={{ __html: comment?.contents || '' }} />
           <Bottom>
-            <span>좋아요 1개</span> <span>답글 달기</span>{' '}
-            {user?._id === comment?.author._id && (
+            {comment?.likes?.length !== 0 && (
+              <span>좋아요 {comment?.likes?.length}개</span>
+            )}{' '}
+            <span>답글 달기</span>{' '}
+            {user?._id === comment?.user._id && (
               <span onClick={() => setIsConfirmModalOpen(true)}>댓글 삭제</span>
             )}
           </Bottom>
         </Post>
 
-        <LikeBtn>{test ? <FcLike /> : <SlHeart />}</LikeBtn>
+        {user?._id === comment?.user._id && (
+          <LikeBtn onClick={handleCommentLike}>
+            {comment?.likes?.length !== 0 ? (
+              <>
+                {comment?.likes?.map((like) =>
+                  like?.user === user?._id ? (
+                    <div key={like._id}>
+                      <FcLike />
+                    </div>
+                  ) : (
+                    <div key={like._id}>
+                      <SlHeart />
+                    </div>
+                  )
+                )}
+              </>
+            ) : (
+              <SlHeart />
+            )}
+          </LikeBtn>
+        )}
       </Wrapper>
     </CommentsList>
   );

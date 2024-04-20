@@ -7,6 +7,7 @@ const { imageUpload } = require('../../middleware/file-upload');
 
 const Post = require('../../models/Post');
 const Comment = require('../../models/Comment');
+const CommentLike = require('../../models/CommentLike');
 const User = require('../../models/User');
 
 // @route   POST api/comment/
@@ -21,7 +22,7 @@ router.post('/', auth, async (req, res) => {
     if (postId) {
       const newComment = new Comment({
         contents: contents || '',
-        author: user._id,
+        user: user._id,
         post: postId,
       });
       const comment = await newComment.save();
@@ -35,7 +36,7 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-// @route   GET api/comment/:id
+// @route   GET api/comment/:postId
 // @desc    특정 게시물 ID로 댓글 정보 얻기
 // @access  Public
 router.get('/:id', async (req, res) => {
@@ -45,17 +46,34 @@ router.get('/:id', async (req, res) => {
     if (!post) {
       return res.status(404).json({ msg: '해당 게시글을 찾을 수 없습니다' });
     }
-    const commentList = await Comment.find({ post: req.params.id }).populate(
-      'author',
-      ['nickname', 'avatar']
-    );
+    const commentList = await Comment.find({ post: req.params.id })
+      .populate('user', ['nickname', 'avatar'])
+      .populate('likes', ['user']);
 
     if (!commentList) {
       return res.status(404).json({ msg: '댓글 정보를 찾을 수 없습니다' });
     }
 
+    // // comments 배열에 담긴 각 댓글에 대한 좋아요 정보를 가져옵니다.
+    // const commentsWithLikes = await Promise.all(
+    //   commentList.map(async (comment) => {
+    //     // 해당 댓글에 대한 좋아요 정보를 가져옵니다.
+    //     const likes = await CommentLike.find({ comment: comment._id });
+
+    //     // 댓글 객체에 좋아요를 누른 사용자들의 ID 목록을 추가합니다.
+    //     const likedUserIds = likes.map((like) => like.user.toString());
+
+    //     // comment 객체에 좋아요 정보를 추가하여 반환합니다.
+    //     return {
+    //       ...comment.toObject(),
+    //       likes: likedUserIds, // 댓글에 좋아요를 누른 사용자들의 ID 목록을 추가합니다.
+    //     };
+    //   })
+    // );
+
     res.json(commentList);
   } catch (err) {
+    console.log(err);
     console.error(err.message);
     if (err.kind === 'ObjectId') {
       return res
@@ -66,11 +84,12 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// @route   DELETE api/comment/:id
+// @route   DELETE api/comment/:commentId
 // @desc    댓글 지우기
 // @access  Private
 router.delete('/:id', auth, async (req, res) => {
   try {
+    const commentId = req.params.id;
     const post = await Post.findById(req.query.postId);
 
     if (!post) {
@@ -82,15 +101,17 @@ router.delete('/:id', auth, async (req, res) => {
     // 로그인 유져
     const user = await User.findById(req.user.id).select('-password');
     // 댓글 작성한 유저
-    const commentAuthor = await Comment.findById(req.params.id);
+    const commentAuthor = await Comment.findById(commentId);
 
     if (
+      commentId &&
       user._id &&
       commentAuthor &&
-      user._id.toString() === commentAuthor.author.toString()
+      user._id.toString() === commentAuthor.user.toString()
     ) {
       // 로그인한 유저와 댓글 작성자가 같으면
-      await Comment.findByIdAndDelete(req?.params?.id);
+      await Comment.findByIdAndDelete(commentId);
+      await CommentLike.deleteMany({ comment: commentId });
       return res.status(200).json({ msg: '댓글이 성공적으로 삭제되었습니다.' });
     } else {
       // 로그인한 유저와 댓글 작성자가 같지 않으면
@@ -99,6 +120,7 @@ router.delete('/:id', auth, async (req, res) => {
       });
     }
   } catch (err) {
+    console.log(err);
     if (err.kind === 'ObjectId') {
       return res
         .status(404)
@@ -108,26 +130,61 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-// @route   PUT api/posts/like/:id
-// @desc    게시글 좋아요 누르기
+// @route   PUT api/comment/like/:commentId
+// @desc    댓글 좋아요 누르기
 // @access  Private
 router.put('/like/:id', auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const commentId = req.params.id;
+    const post = await Post.findById(req.query.postId);
 
-    // 게시글이 이미 좋아요 눌렀는지 확인
-    if (
-      post.likes.filter((like) => like.user.toString() === req.user.id).length >
-      0
-    ) {
-      return res.status(400).json({ msg: '이미 좋아요를 누른 게시글 입니다.' });
+    if (!post) {
+      return res
+        .status(404)
+        .json({ msg: '해당 댓글이 작성된 게시글을 찾을 수 없습니다' });
     }
 
-    post.likes.unshift({ user: req.user.id });
-    await post.save();
+    // 로그인 유져
+    const user = await User.findById(req.user.id).select('-password');
+    // 댓글 작성한 유저
+    const comment = await Comment.findById(commentId);
 
-    res.json(post.likes);
+    // 해당 유저가 이미 해당 댓글에 대한 좋아요를 눌렀는지 확인
+    const existingLike = await CommentLike.findOne({
+      user: user._id,
+      comment: commentId,
+    });
+
+    if (existingLike) {
+      // 이미 좋아요를 눌렀다면 해당 좋아요를 취소
+      await CommentLike.findByIdAndDelete(existingLike._id);
+
+      // 해당 댓글의 좋아요 목록에서 해당 좋아요를 제거
+      const index = comment.likes.indexOf(existingLike._id);
+      if (index > -1) {
+        comment.likes.splice(index, 1);
+      }
+
+      await comment.save();
+
+      return res.json({ msg: '좋아요가 취소되었습니다.' });
+    } else {
+      // 해당 유저가 좋아요를 누르지 않은 경우에만 좋아요를 추가
+      const newCommentLike = new CommentLike({
+        user: user._id,
+        post: post._id,
+        comment: commentId,
+      });
+
+      const commentLike = await newCommentLike.save();
+
+      comment.likes.push(newCommentLike);
+      await comment.save();
+
+      return res.json(commentLike);
+    }
   } catch (err) {
+    console.error(err);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
     }
@@ -169,43 +226,6 @@ router.put('/unlike/:id', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
-// @route   POST api/posts/comment/:id
-// @desc    게시글에 댓글 작성
-// @access  Private
-router.post(
-  '/comment/:id',
-  [auth, [check('text', '댓글을 입력해주세요').not().isEmpty()]],
-  async (req, res) => {
-    const errors = validationResult(req);
-
-    if (!errors) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    try {
-      const user = await User.findById(req.user.id).select('-password');
-
-      const post = await Post.findById(req.params.id).populate(
-        'comments.user',
-        ['name', 'avatar']
-      );
-
-      const newComment = {
-        text: req.body.text,
-        user: user,
-      };
-
-      post.comments.unshift(newComment);
-
-      await post.save();
-
-      res.json(post.comments);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
-    }
-  }
-);
 
 // @route   PUT api/posts/comment/like/:id/:comment_id
 // @desc    댓글 좋아요 누르기

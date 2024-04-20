@@ -7,19 +7,11 @@ const PostSchema = new Schema({
     ref: 'user',
     required: true,
   },
-
   contents: {
     type: String,
   },
-
   images: [{ type: String, required: true }],
-
   postLikeCount: {
-    type: Number,
-    default: 0,
-  },
-
-  commentsCount: {
     type: Number,
     default: 0,
   },
