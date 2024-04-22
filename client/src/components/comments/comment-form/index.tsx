@@ -112,8 +112,7 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
     await submitComment();
   };
 
-  // 댓글에 답글 달기 버튼 눌렀을 때
-  // ex) @정중식 이렇게 됨
+  // 답글 달기 버튼 눌렀을 때
   useEffect(() => {
     if (isReplyCommentStatus && formRef.current) {
       formRef.current.focus();
@@ -140,7 +139,7 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
       {user ? (
         <Form onSubmit={onSubmit}>
           <Image src={user?.avatar} alt='' />
-          {isPending ? (
+          {isPending || replyCommentIsPending ? (
             <FlexBox $justifyContent='center' style={{ width: '100%' }}>
               <img
                 src='./spinner.svg'
