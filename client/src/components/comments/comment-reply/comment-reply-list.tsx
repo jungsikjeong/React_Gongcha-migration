@@ -16,7 +16,7 @@ interface ICommentReplyProps {
 const CommentReplyList = ({ parentCommentId }: ICommentReplyProps) => {
   const { data: commentReplies, isLoading } =
     useFetchCommentReplyList(parentCommentId);
-  console.log(isLoading);
+
   return (
     <Container>
       <ReplyList>

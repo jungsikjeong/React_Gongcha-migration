@@ -96,6 +96,7 @@ const CommentReplyItem = ({ commentReplyItem }: ICommentReplyItemProps) => {
       replyDeleteMutate({ commentReplyId, parentCommentId });
     }
   }, [commentReplyItem, replyDeleteMutate]);
+
   // 댓글 좋아요
   const handleCommentLike = useCallback(() => {
     if (commentReplyItem) {
@@ -107,11 +108,11 @@ const CommentReplyItem = ({ commentReplyItem }: ICommentReplyItemProps) => {
   }, [commentReplyItem, replyLikeMutate]);
 
   // 답글 달기
-  const handleReplyComment = useCallback(() => {
+  const handleReplyComment = useCallback((e: any) => {
     setReplyCommentStatus(true);
     setReplyCommentUserStatus({
       userId: commentReplyItem?.user._id,
-      commentId: commentReplyItem?._id,
+      commentId: commentReplyItem?.parentComment,
       nickName: `@${commentReplyItem?.user?.nickname} `,
     });
   }, []);
