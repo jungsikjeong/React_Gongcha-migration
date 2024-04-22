@@ -1,6 +1,6 @@
 import { useUser } from 'hook/auth/use-user';
 import { PostsDataType } from 'interface/posts';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -83,8 +83,7 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
 
   const formRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submitComment = useCallback(async () => {
     if (post?._id) {
       // 대댓글작성
       if (replyCommentUser.commentId) {
@@ -93,14 +92,27 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
           postId: post._id,
           commentId: replyCommentUser.commentId,
         });
+        setReplyCommentUser({
+          userId: '',
+          commentId: '',
+          nickName: '',
+        });
         setContents('');
       } else {
+        // 일반 댓글 작성
         mutate({ contents, postId: post._id });
         setContents('');
       }
     }
+  }, [post?._id, replyCommentUser, contents]);
+
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+    await submitComment();
   };
 
+  // 댓글에 답글 달기 버튼 눌렀을 때
+  // ex) @정중식 이렇게 됨
   useEffect(() => {
     if (isReplyCommentStatus && formRef.current) {
       formRef.current.focus();
@@ -121,7 +133,7 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [formRef, setIsReplyCommentStatus]);
+  }, [formRef, setIsReplyCommentStatus, submitComment]);
   return (
     <>
       {user ? (
@@ -130,6 +142,12 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
           <Textarea
             placeholder={`${user?.nickname}님으로 댓글 달기...`}
             onChange={(e) => setContents(e.target.value)}
+            onKeyDown={async (e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                await submitComment();
+              }
+            }}
             value={contents}
             ref={formRef}
           />

@@ -12,7 +12,7 @@ const CommentScheme = new mongoose.Schema({
   },
   contents: {
     type: String,
-    required: true,
+    required: false,
   },
   commentReplyCount: {
     type: Number,
