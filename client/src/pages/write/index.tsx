@@ -129,7 +129,7 @@ const WritePage = () => {
             disabled={fileObject.length === 0}
           >
             {isWriting ? (
-              <img src='./spinner.gif' alt='loading' className='spinner' />
+              <img src='./spinner.svg' alt='loading' className='spinner' />
             ) : (
               '작성'
             )}

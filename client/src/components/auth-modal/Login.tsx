@@ -129,7 +129,7 @@ const Login = () => {
             type='submit'
           >
             {isPending ? (
-              <img src='./spinner.gif' alt='loading' className='spinner' />
+              <img src='./spinner.svg' alt='loading' className='spinner' />
             ) : (
               <>로그인</>
             )}

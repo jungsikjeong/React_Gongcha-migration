@@ -7,6 +7,7 @@ import {
   replyCommentStatus,
   replyCommentUserStatus,
 } from 'atom/reply-comment-atoms';
+import FlexBox from 'components/common/flex-box';
 import { useRecoilState } from 'recoil';
 import usePostComment from './hook/use-post-comment';
 import usePostReplyComment from './hook/use-post-reply-comment';
@@ -139,27 +140,34 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
       {user ? (
         <Form onSubmit={onSubmit}>
           <Image src={user?.avatar} alt='' />
-          <Textarea
-            placeholder={`${user?.nickname}님으로 댓글 달기...`}
-            onChange={(e) => setContents(e.target.value)}
-            onKeyDown={async (e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                await submitComment();
-              }
-            }}
-            value={contents}
-            ref={formRef}
-          />
-
           {isPending ? (
-            <img
-              src='./spinner.gif'
-              className='spinner'
-              alt='spinner-loading'
-            />
+            <FlexBox $justifyContent='center' style={{ width: '100%' }}>
+              <img
+                src='./spinner.svg'
+                alt='spinner'
+                className='spinner'
+                style={{ zIndex: '999' }}
+              />
+            </FlexBox>
           ) : (
-            <PostBtn value={contents?.length !== 0 ? 'true' : ''}>게시</PostBtn>
+            <>
+              <Textarea
+                placeholder={`${user?.nickname}님으로 댓글 달기...`}
+                onChange={(e) => setContents(e.target.value)}
+                onKeyDown={async (e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    await submitComment();
+                  }
+                }}
+                value={contents}
+                ref={formRef}
+              />
+
+              <PostBtn value={contents?.length !== 0 ? 'true' : ''}>
+                게시
+              </PostBtn>
+            </>
           )}
         </Form>
       ) : (

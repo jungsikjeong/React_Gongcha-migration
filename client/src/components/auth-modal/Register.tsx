@@ -158,7 +158,7 @@ const Register = () => {
 
           <SignUpButton disabled={Object.keys(errors).length > 0} type='submit'>
             {isPending ? (
-              <img src='./spinner.gif' alt='loading' className='spinner' />
+              <img src='./spinner.svg' alt='loading' className='spinner' />
             ) : (
               <>가입하기</>
             )}
