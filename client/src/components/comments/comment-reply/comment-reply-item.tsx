@@ -139,27 +139,25 @@ const CommentReplyItem = ({ commentReplyItem }: ICommentReplyItemProps) => {
             </span>
             &nbsp;
             <span>{commentReplyItem?.contents}</span>
-            {user?._id === commentReplyItem?.user._id && (
-              <LikeBtn onClick={handleCommentLike}>
-                {commentReplyItem?.likes?.length !== 0 ? (
-                  <>
-                    {commentReplyItem?.likes?.map((like) =>
-                      like?.user === user?._id ? (
-                        <div key={like._id}>
-                          <FcLike />
-                        </div>
-                      ) : (
-                        <div key={like._id}>
-                          <SlHeart />
-                        </div>
-                      )
-                    )}
-                  </>
-                ) : (
-                  <SlHeart />
-                )}
-              </LikeBtn>
-            )}
+            <LikeBtn onClick={handleCommentLike}>
+              {commentReplyItem?.likes?.length !== 0 ? (
+                <>
+                  {commentReplyItem?.likes?.map((like) =>
+                    like?.user === user?._id ? (
+                      <div key={like._id}>
+                        <FcLike />
+                      </div>
+                    ) : (
+                      <div key={like._id}>
+                        <SlHeart />
+                      </div>
+                    )
+                  )}
+                </>
+              ) : (
+                <SlHeart />
+              )}
+            </LikeBtn>
           </FlexBox>
 
           <Bottom>
