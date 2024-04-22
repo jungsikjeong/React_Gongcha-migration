@@ -108,7 +108,7 @@ const CommentList = ({ comment, postId }: ICommentListProps) => {
     setReplyCommentUserStatus({
       userId: comment?.user?._id,
       commentId: comment?._id,
-      nickName: `@${comment?.user?.nickname} `,
+      nickName: comment?.user?.nickname,
     });
   }, []);
   return (

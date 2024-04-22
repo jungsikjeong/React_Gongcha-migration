@@ -6,6 +6,11 @@ const ReplyComment = new mongoose.Schema({
     required: 'comment',
     required: true,
   },
+  parentCommentUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    required: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',

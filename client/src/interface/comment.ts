@@ -5,9 +5,15 @@ type LikeTypes = {
   post?: string;
   user: string;
 };
+type ParentCommentUserTypes = {
+  _id: string;
+  nickname: string;
+};
+
 export type CommentReplyTypes = {
   _id: string;
   parentComment: string;
+  parentCommentUser: ParentCommentUserTypes;
   contents: string;
   likes: LikeTypes[];
   user: AuthorType;

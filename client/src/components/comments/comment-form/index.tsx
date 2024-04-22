@@ -1,16 +1,17 @@
 import { useUser } from 'hook/auth/use-user';
 import { PostsDataType } from 'interface/posts';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import {
   replyCommentStatus,
   replyCommentUserStatus,
 } from 'atom/reply-comment-atoms';
-import FlexBox from 'components/common/flex-box';
-import { useRecoilState } from 'recoil';
 import usePostComment from './hook/use-post-comment';
 import usePostReplyComment from './hook/use-post-reply-comment';
+
+import FlexBox from 'components/common/flex-box';
 
 const Form = styled.form`
   display: flex;
@@ -88,8 +89,13 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
     if (post?._id) {
       // 대댓글작성
       if (replyCommentUser.commentId) {
+        const newContents = contents.replace(
+          `@${replyCommentUser.nickName}`,
+          ''
+        );
+
         replyCommentMutate({
-          contents,
+          contents: newContents,
           postId: post._id,
           commentId: replyCommentUser.commentId,
         });
@@ -116,7 +122,7 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
   useEffect(() => {
     if (isReplyCommentStatus && formRef.current) {
       formRef.current.focus();
-      setContents(replyCommentUser.nickName);
+      setContents(`@${replyCommentUser.nickName} `);
     }
   }, [isReplyCommentStatus]);
 

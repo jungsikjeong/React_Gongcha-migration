@@ -25,9 +25,10 @@ router.get('/comment/:commentId', async (req, res) => {
       parentComment: req.params.commentId,
     })
       .populate('user', ['nickname', 'avatar'])
-      .populate('parentComment', ['nickname'])
+      .populate('parentCommentUser', ['nickname'])
       .populate('likes');
 
+    console.log(commentReply);
     res.json(commentReply);
   } catch (err) {
     console.log(err);
@@ -60,6 +61,7 @@ router.post('/comment/:comment_id', auth, async (req, res) => {
     if (postId && parentComment) {
       const newCommentReply = new CommentReply({
         parentComment: parentComment,
+        parentCommentUser: parentComment.user,
         contents: contents || '',
         user: user._id,
       });

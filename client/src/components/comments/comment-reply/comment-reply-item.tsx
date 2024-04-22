@@ -113,7 +113,7 @@ const CommentReplyItem = ({ commentReplyItem }: ICommentReplyItemProps) => {
     setReplyCommentUserStatus({
       userId: commentReplyItem?.user._id,
       commentId: commentReplyItem?.parentComment,
-      nickName: `@${commentReplyItem?.user?.nickname} `,
+      nickName: commentReplyItem?.user?.nickname,
     });
   }, []);
 
@@ -134,11 +134,11 @@ const CommentReplyItem = ({ commentReplyItem }: ICommentReplyItemProps) => {
         <Post $ispathname={location.pathname.includes('/commentList')}>
           <FlexBox $alignItems='center'>
             <b>{commentReplyItem?.user?.nickname}</b>&nbsp;
-            <span
-              dangerouslySetInnerHTML={{
-                __html: commentReplyItem?.contents || '',
-              }}
-            />
+            <span className='user-reply-comment'>
+              @{commentReplyItem?.parentCommentUser?.nickname}
+            </span>
+            &nbsp;
+            <span>{commentReplyItem?.contents}</span>
             {user?._id === commentReplyItem?.user._id && (
               <LikeBtn onClick={handleCommentLike}>
                 {commentReplyItem?.likes?.length !== 0 ? (
