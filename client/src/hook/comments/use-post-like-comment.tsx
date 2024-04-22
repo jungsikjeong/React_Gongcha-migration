@@ -8,7 +8,7 @@ interface IPostLikeCommentsProps {
   commentId: string;
   postId: string;
 }
-const postLikeComments = async ({
+const postLikeComment = async ({
   commentId,
   postId,
 }: IPostLikeCommentsProps) => {
@@ -20,11 +20,11 @@ const postLikeComments = async ({
 };
 
 // 댓글 좋아요 뮤테이션
-const usePostLikeComments = (postId: string) => {
+const usePostLikeComment = (postId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: postLikeComments,
+    mutationFn: postLikeComment,
     mutationKey: ['comment-like'],
 
     onSuccess: (data) => {
@@ -40,4 +40,4 @@ const usePostLikeComments = (postId: string) => {
   });
 };
 
-export default usePostLikeComments;
+export default usePostLikeComment;

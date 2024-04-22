@@ -15,7 +15,7 @@ const deleteComment = async ({ commentId, postId }: IDeleteCommentProps) => {
   return res.data;
 };
 
-const useDeleteComments = (postId: string) => {
+const useDeleteComment = (postId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -35,4 +35,4 @@ const useDeleteComments = (postId: string) => {
   });
 };
 
-export default useDeleteComments;
+export default useDeleteComment;

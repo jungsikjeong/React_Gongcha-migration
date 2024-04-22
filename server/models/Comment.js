@@ -14,10 +14,20 @@ const CommentScheme = new mongoose.Schema({
     type: String,
     required: true,
   },
+  commentReplyCount: {
+    type: Number,
+    default: 0,
+  },
   likes: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'commentLike',
+    },
+  ],
+  commentReply: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'commentReply',
     },
   ],
 

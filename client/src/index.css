@@ -43,6 +43,11 @@ button {
 :root {
 }
 
+.user-reply-comment {
+  color: rgb(224, 241, 255);
+  font-weight: 400;
+}
+
 .spinner {
   width: 25px;
   height: 25px;

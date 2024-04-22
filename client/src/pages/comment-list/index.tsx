@@ -73,7 +73,6 @@ const CommentListPage = () => {
   const { data, isLoading: postLoading } = UseFetchPostDetail(id as string);
   const { data: commentList, isLoading: commentListLoading } =
     useFetchCommentList(id as string);
-
   return (
     <Container>
       <Wrapper>

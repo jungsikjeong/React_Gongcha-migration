@@ -3,23 +3,23 @@ import {
   replyCommentUserStatus,
 } from 'atom/reply-comment-atoms';
 import { useUser } from 'hook/auth/use-user';
-import { IComment } from 'interface/comment';
+import { CommentReplyTypes } from 'interface/comment';
 import { useCallback, useState } from 'react';
 import { FcLike } from 'react-icons/fc';
 import { SlHeart } from 'react-icons/sl';
 import { useLocation } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
-import useDeleteComment from 'hook/comments/use-delete-comment';
-import usePostLikeComment from 'hook/comments/use-post-like-comment';
 import styled from 'styled-components';
 
 import ConfirmModal from 'components/common/confirm-modal';
 import FlexBox from 'components/common/flex-box';
-import CommentReply from '../comment-reply';
+import useDeleteCommentReply from 'hook/comments-reply/use-delete-comment-reply';
+import usePostLikeCommentReply from 'hook/comments-reply/use-post-like-comment-reply';
 
 const CommentsList = styled.li`
   margin-top: 1rem;
+  width: 100%;
 `;
 
 const Wrapper = styled.div`
@@ -44,10 +44,11 @@ const Post = styled.div<{ $ispathname: boolean }>`
   color: rgb(245, 245, 245);
 
   @media (max-width: 768px) {
+    /* max-width: 100%; */
   }
 `;
 
-const LikeBtn = styled.div`
+const LikeBtn = styled.span`
   cursor: pointer;
   margin-top: 5px;
   margin-left: auto;
@@ -67,50 +68,54 @@ const Bottom = styled.div`
   }
 `;
 
-interface ICommentListProps {
-  comment: IComment;
-  postId: string | undefined;
+interface ICommentReplyItemProps {
+  commentReplyItem: CommentReplyTypes;
 }
-
-const CommentList = ({ comment, postId }: ICommentListProps) => {
+const CommentReplyItem = ({ commentReplyItem }: ICommentReplyItemProps) => {
   const { user } = useUser();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const setReplyCommentStatus = useSetRecoilState(replyCommentStatus);
   const setReplyCommentUserStatus = useSetRecoilState(replyCommentUserStatus);
 
-  const { mutate } = useDeleteComment(postId as string);
-  const { mutate: commentMutate } = usePostLikeComment(postId as string);
+  const { mutate: replyDeleteMutate } = useDeleteCommentReply(
+    commentReplyItem?.parentComment
+  );
+  const { mutate: replyLikeMutate } = usePostLikeCommentReply(
+    commentReplyItem?.parentComment
+  );
 
   const location = useLocation();
 
   // 댓글 삭제
   const handleCommentDelete = useCallback(() => {
-    if (comment._id && postId) {
-      const commentId = comment._id;
+    if (commentReplyItem) {
+      const commentReplyId = commentReplyItem._id;
+      const parentCommentId = commentReplyItem.parentComment;
 
-      mutate({ commentId, postId });
+      replyDeleteMutate({ commentReplyId, parentCommentId });
     }
-  }, [comment._id, mutate, postId]);
-
+  }, [commentReplyItem, replyDeleteMutate]);
   // 댓글 좋아요
   const handleCommentLike = useCallback(() => {
-    if (comment._id && postId) {
-      const commentId = comment._id;
+    if (commentReplyItem) {
+      const parentCommentId = commentReplyItem.parentComment;
+      const commentReplyId = commentReplyItem._id;
 
-      commentMutate({ commentId, postId });
+      replyLikeMutate({ commentReplyId, parentCommentId });
     }
-  }, [comment._id, commentMutate, postId]);
+  }, [commentReplyItem, replyLikeMutate]);
 
   // 답글 달기
   const handleReplyComment = useCallback(() => {
     setReplyCommentStatus(true);
     setReplyCommentUserStatus({
-      userId: comment?.user?._id,
-      commentId: comment?._id,
-      nickName: `@${comment?.user?.nickname} `,
+      userId: commentReplyItem?.user._id,
+      commentId: commentReplyItem?._id,
+      nickName: `@${commentReplyItem?.user?.nickname} `,
     });
   }, []);
+
   return (
     <CommentsList>
       <Wrapper>
@@ -124,18 +129,20 @@ const CommentList = ({ comment, postId }: ICommentListProps) => {
             handleCancel={() => setIsConfirmModalOpen(false)}
           />
         )}
-        <Image src={comment?.user?.avatar} alt='' />
+        <Image src={commentReplyItem?.user?.avatar} alt='' />
         <Post $ispathname={location.pathname.includes('/commentList')}>
           <FlexBox $alignItems='center'>
-            <b>{comment?.user?.nickname}</b>&nbsp;
+            <b>{commentReplyItem?.user?.nickname}</b>&nbsp;
             <span
-              dangerouslySetInnerHTML={{ __html: comment?.contents || '' }}
+              dangerouslySetInnerHTML={{
+                __html: commentReplyItem?.contents || '',
+              }}
             />
-            {user?._id === comment?.user._id && (
+            {user?._id === commentReplyItem?.user._id && (
               <LikeBtn onClick={handleCommentLike}>
-                {comment?.likes?.length !== 0 ? (
+                {commentReplyItem?.likes?.length !== 0 ? (
                   <>
-                    {comment?.likes?.map((like) =>
+                    {commentReplyItem?.likes?.map((like) =>
                       like?.user === user?._id ? (
                         <div key={like._id}>
                           <FcLike />
@@ -153,26 +160,20 @@ const CommentList = ({ comment, postId }: ICommentListProps) => {
               </LikeBtn>
             )}
           </FlexBox>
+
           <Bottom>
-            {comment?.likes?.length !== 0 && (
-              <span>좋아요 {comment?.likes?.length}개</span>
+            {commentReplyItem?.likes?.length !== 0 && (
+              <span>좋아요 {commentReplyItem?.likes?.length}개</span>
             )}{' '}
             <span onClick={handleReplyComment}>답글 달기</span>{' '}
-            {user?._id === comment?.user._id && (
+            {user?._id === commentReplyItem?.user._id && (
               <span onClick={() => setIsConfirmModalOpen(true)}>댓글 삭제</span>
             )}
           </Bottom>
-          {/* 대댓글 */}
-          {comment?.commentReplyCount !== 0 && (
-            <CommentReply
-              commentReplyCount={comment?.commentReplyCount}
-              parentCommentId={comment?._id}
-            />
-          )}
         </Post>
       </Wrapper>
     </CommentsList>
   );
 };
 
-export default CommentList;
+export default CommentReplyItem;

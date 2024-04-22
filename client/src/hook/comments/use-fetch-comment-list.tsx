@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 
 const fetchCommentList = async (postId: string) => {
   const res = await instance.get<IComment[]>(`/api/comment/${postId}`);
-
   return res.data;
 };
 

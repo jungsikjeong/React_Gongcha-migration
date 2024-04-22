@@ -1,21 +1,20 @@
 const mongoose = require('mongoose');
 
-const CommentLikeSchema = new mongoose.Schema({
+const CommentReplyLike = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
   },
-  post: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'post',
-    required: true,
-  },
-  comment: {
+  parentComment: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'comment',
+  },
+  commentReply: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'commentReply',
     required: true,
   },
 });
 
-module.exports = mongoose.model('commentLike', CommentLikeSchema);
+module.exports = mongoose.model('commentReplyLike', CommentReplyLike);

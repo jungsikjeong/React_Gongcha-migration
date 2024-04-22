@@ -5,6 +5,13 @@ type LikeTypes = {
   post?: string;
   user: string;
 };
+export type CommentReplyTypes = {
+  _id: string;
+  parentComment: string;
+  contents: string;
+  likes: LikeTypes[];
+  user: AuthorType;
+};
 
 export interface IComment {
   user: AuthorType;
@@ -12,6 +19,7 @@ export interface IComment {
   contents: string;
   date: string;
   likes?: LikeTypes[];
+  commentReplyCount: number;
   __v: number;
   _id: string;
 }

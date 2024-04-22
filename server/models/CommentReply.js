@@ -5,8 +5,7 @@ const ReplyComment = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: 'comment',
   },
-
-  author: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true,
@@ -15,11 +14,16 @@ const ReplyComment = new mongoose.Schema({
     type: String,
     required: true,
   },
-
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'commentReplyLike',
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = mongoose.model('comment', ReplyComment);
+module.exports = mongoose.model('commentReply', ReplyComment);

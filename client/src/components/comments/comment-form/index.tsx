@@ -1,9 +1,15 @@
 import { useUser } from 'hook/auth/use-user';
 import { PostsDataType } from 'interface/posts';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
+import {
+  replyCommentStatus,
+  replyCommentUserStatus,
+} from 'atom/reply-comment-atoms';
+import { useRecoilState } from 'recoil';
 import usePostComment from './hook/use-post-comment';
+import usePostReplyComment from './hook/use-post-reply-comment';
 
 const Form = styled.form`
   display: flex;
@@ -66,15 +72,56 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
 
   const [contents, setContents] = useState('');
   const { mutate, isPending } = usePostComment();
+  const { mutate: replyCommentMutate, isPending: replyCommentIsPending } =
+    usePostReplyComment();
+
+  const [isReplyCommentStatus, setIsReplyCommentStatus] =
+    useRecoilState(replyCommentStatus);
+  const [replyCommentUser, setReplyCommentUser] = useRecoilState(
+    replyCommentUserStatus
+  );
+
+  const formRef = useRef<HTMLTextAreaElement | null>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (post?._id) {
-      mutate({ contents, postId: post._id });
-      setContents('');
+      // 대댓글작성
+      if (replyCommentUser.commentId) {
+        replyCommentMutate({
+          contents,
+          postId: post._id,
+          commentId: replyCommentUser.commentId,
+        });
+        setContents('');
+      } else {
+        mutate({ contents, postId: post._id });
+        setContents('');
+      }
     }
   };
 
+  useEffect(() => {
+    if (isReplyCommentStatus && formRef.current) {
+      formRef.current.focus();
+      setContents(replyCommentUser.nickName);
+    }
+  }, [isReplyCommentStatus]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        // Textarea 이외의 요소를 클릭한 경우
+        setIsReplyCommentStatus(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [formRef, setIsReplyCommentStatus]);
   return (
     <>
       {user ? (
@@ -84,6 +131,7 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
             placeholder={`${user?.nickname}님으로 댓글 달기...`}
             onChange={(e) => setContents(e.target.value)}
             value={contents}
+            ref={formRef}
           />
 
           {isPending ? (
