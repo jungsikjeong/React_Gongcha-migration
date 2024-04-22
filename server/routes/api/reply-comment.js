@@ -25,7 +25,9 @@ router.get('/comment/:commentId', async (req, res) => {
       parentComment: req.params.commentId,
     })
       .populate('user', ['nickname', 'avatar'])
+      .populate('parentComment', ['nickname'])
       .populate('likes');
+
     res.json(commentReply);
   } catch (err) {
     console.log(err);

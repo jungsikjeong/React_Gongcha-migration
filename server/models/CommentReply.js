@@ -4,6 +4,7 @@ const ReplyComment = new mongoose.Schema({
   parentComment: {
     type: mongoose.Schema.Types.ObjectId,
     required: 'comment',
+    required: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -12,7 +13,7 @@ const ReplyComment = new mongoose.Schema({
   },
   contents: {
     type: String,
-    required: true,
+    required: false,
   },
 
   likes: [
