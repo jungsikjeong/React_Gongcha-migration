@@ -16,12 +16,13 @@ interface ICommentReplyProps {
 const CommentReplyList = ({ parentCommentId }: ICommentReplyProps) => {
   const { data: commentReplies, isLoading } =
     useFetchCommentReplyList(parentCommentId);
+  console.log(isLoading);
   return (
     <Container>
       <ReplyList>
         {isLoading ? (
           <FlexBox $justifyContent='center'>
-            <img className='spinner' src='/spinner.gif' alt='loading' />
+            <img className='spinner' src='/spinner.svg' alt='loading' />
           </FlexBox>
         ) : (
           <>
