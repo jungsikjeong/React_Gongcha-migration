@@ -10,6 +10,13 @@ type ParentCommentUserTypes = {
   nickname: string;
 };
 
+type CommentListTypes = {
+  commentList: IComment[];
+  page: number;
+  totalCount: number;
+  totalpage: number;
+};
+
 export type CommentReplyTypes = {
   _id: string;
   parentComment: string;
@@ -28,4 +35,16 @@ export interface IComment {
   commentReplyCount: number;
   __v: number;
   _id: string;
+}
+
+export interface ICommentResponse {
+  page: number;
+  commentList: IComment[];
+  totalCount: number;
+  totalPage: number;
+}
+
+export interface ICommentList {
+  pageParams: number[];
+  pages: CommentListTypes[];
 }

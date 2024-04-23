@@ -1,21 +1,47 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import instance from 'api/instance';
-import { IComment } from 'interface/comment';
+import { ICommentResponse } from 'interface/comment';
 import { useEffect } from 'react';
 import { commentKey } from 'react-query-key/comment.keys';
 import { toast } from 'react-toastify';
 
-const fetchCommentList = async (postId: string) => {
-  const res = await instance.get<IComment[]>(`/api/comment/${postId}`);
-  return res.data;
+const fetchCommentList = async (
+  postId: string,
+  pageParam: number
+): Promise<ICommentResponse> => {
+  const res = await instance.get<ICommentResponse>(
+    `/api/comment/${postId}?page=${pageParam}`,
+    {
+      params: {
+        limit: 10,
+        page: pageParam,
+      },
+    }
+  );
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(res.data);
+    }, 1000);
+  });
 };
 
 const useFetchCommentList = (postId: string) => {
-  const { data, isLoading, error } = useQuery({
+  const {
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+    isLoading,
+    data,
+    error,
+  } = useInfiniteQuery({
     queryKey: [commentKey.comment, postId],
-    queryFn: () => fetchCommentList(postId),
-    refetchOnWindowFocus: false,
-    staleTime: 15000,
+    queryFn: ({ pageParam = 1 }) => fetchCommentList(postId, pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      return lastPage.commentList?.length > 0 ? lastPage.page + 1 : undefined;
+    },
   });
 
   useEffect(() => {
@@ -25,7 +51,15 @@ const useFetchCommentList = (postId: string) => {
     }
   }, [error]);
 
-  return { data, isLoading, error };
+  return {
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+    isLoading,
+    data,
+    error,
+  };
 };
 
 export default useFetchCommentList;

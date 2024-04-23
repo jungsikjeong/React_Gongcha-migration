@@ -1,7 +1,4 @@
-import {
-  replyCommentStatus,
-  replyCommentUserStatus,
-} from 'atom/reply-comment-atoms';
+import { replyCommentStatus, replyCommentUserStatus } from 'atom/comment-atoms';
 import { useUser } from 'hook/auth/use-user';
 import { CommentReplyTypes } from 'interface/comment';
 import { useCallback, useState } from 'react';

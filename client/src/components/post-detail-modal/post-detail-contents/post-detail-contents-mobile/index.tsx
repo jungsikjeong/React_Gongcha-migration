@@ -1,14 +1,19 @@
+import { InfiniteData } from '@tanstack/react-query';
 import { formatDistance } from 'date-fns';
 import { ko } from 'date-fns/locale/ko';
-import { IComment } from 'interface/comment';
+import { ICommentResponse } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
 import { FaShare } from 'react-icons/fa';
 import { FaBookmark } from 'react-icons/fa6';
 import { FcLike } from 'react-icons/fc';
-import { SlHeart, SlSpeech } from 'react-icons/sl';
+import { IoChatbubbleOutline } from 'react-icons/io5';
+import { SlHeart } from 'react-icons/sl';
 import { Link } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
+
+import { commentFormStatus } from 'atom/comment-atoms';
 
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import PostHeader from 'components/common/post-header';
@@ -112,19 +117,19 @@ const Bottom = styled.div`
 
 interface IPostDetailContents {
   post: PostsDataType | undefined;
-  commentList: IComment[] | undefined;
+  commentListResponse: InfiniteData<ICommentResponse, unknown> | undefined;
   commentListLoading: boolean;
   postLoading: boolean;
 }
 
 const PostDetailContentsMobile = ({
   post,
-  commentList,
+  commentListResponse,
   commentListLoading,
   postLoading,
 }: IPostDetailContents) => {
+  const setCommentFormStatus = useSetRecoilState(commentFormStatus);
   const test = false;
-
   return (
     <Container>
       <PostHeader text='게시물' />
@@ -155,9 +160,12 @@ const PostDetailContentsMobile = ({
               {test ? <FcLike /> : <SlHeart />}
             </div>
 
-            <Link to='/:id/commentList'>
+            <Link
+              to={`/${post?._id}/commentList`}
+              onClick={() => setCommentFormStatus(true)}
+            >
               <div className='section-icons'>
-                <SlSpeech />
+                <IoChatbubbleOutline />
               </div>
             </Link>
 
@@ -181,7 +189,9 @@ const PostDetailContentsMobile = ({
         </ContentsItem>
 
         <Link to={`/${post?._id}/commentList`}>
-          <Bottom>댓글 42개 모두 보기</Bottom>
+          <Bottom>
+            댓글 {commentListResponse?.pages[0].totalCount}개 모두 보기
+          </Bottom>
         </Link>
         <Bottom>
           {post &&

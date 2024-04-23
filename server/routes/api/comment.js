@@ -48,14 +48,29 @@ router.get('/:id', async (req, res) => {
     if (!post) {
       return res.status(404).json({ msg: '해당 게시글을 찾을 수 없습니다' });
     }
+
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit);
+    const skipPage = parseInt(page) - 1;
+    const count = await Comment.countDocuments(); // 현재 db에 저장된 댓글 갯수
+
     const commentList = await Comment.find({ post: req.params.id })
       .populate('user', ['nickname', 'avatar'])
-      .populate('likes', ['user']);
+      .populate('likes', ['user'])
+      .sort({ date: -1 })
+      .skip(skipPage * 10)
+      .limit(limit)
+      .exec();
+
     if (!commentList) {
       return res.status(404).json({ msg: '댓글 정보를 찾을 수 없습니다' });
     }
-
-    res.json(commentList);
+    res.json({
+      page: parseInt(page),
+      commentList: commentList,
+      totalCount: count,
+      totalPage: Math.ceil(count / 10),
+    });
   } catch (err) {
     console.log(err);
     console.error(err.message);

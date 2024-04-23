@@ -3,7 +3,6 @@ import { AuthorType } from './auth';
 export type PostsDataType = {
   author: AuthorType;
   className?: string;
-  commentsCount: number;
   contents: string;
   date: string;
   images: string[];

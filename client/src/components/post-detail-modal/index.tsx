@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { useRecoilState } from 'recoil';
 import styled, { keyframes } from 'styled-components';
@@ -88,10 +88,24 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
   );
 
   const { data: post, isLoading: postLoading } = UseFetchPostDetail(postId);
-  const { data: commentList, isLoading: commentListLoading } =
-    useFetchCommentList(postId);
+  const {
+    data: commentListResponse,
+    isLoading: commentListLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useFetchCommentList(postId);
 
   const divRef = useRef<HTMLDivElement>(null);
+
+  const fetchNext = useCallback(async () => {
+    const res = await fetchNextPage();
+
+    if (res.isError) {
+      console.log(res.error);
+    }
+  }, [fetchNextPage]);
 
   useEffect(() => {
     return () => setPostDetailModal(false);
@@ -151,16 +165,20 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
         {isMobile ? (
           <PostDetailContentsMobile
             post={post}
-            commentList={commentList}
+            commentListResponse={commentListResponse}
             commentListLoading={commentListLoading}
             postLoading={postLoading}
           />
         ) : (
           <PostDetailContentsPC
             post={post}
-            commentList={commentList}
+            commentListResponse={commentListResponse}
             commentListLoading={commentListLoading}
             postLoading={postLoading}
+            fetchNext={fetchNext}
+            hasNextPage={hasNextPage}
+            isFetching={isFetching}
+            isFetchingNextPage={isFetchingNextPage}
           />
         )}
       </Wrapper>

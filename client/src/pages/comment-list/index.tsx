@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { LuPlusCircle } from 'react-icons/lu';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -71,8 +73,22 @@ const CommentListPage = () => {
   let { id } = useParams();
 
   const { data, isLoading: postLoading } = UseFetchPostDetail(id as string);
-  const { data: commentList, isLoading: commentListLoading } =
-    useFetchCommentList(id as string);
+  const {
+    data: commentListResponse,
+    isLoading: commentListLoading,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useFetchCommentList(id as string);
+
+  const fetchNext = useCallback(async () => {
+    const res = await fetchNextPage();
+
+    if (res.isError) {
+      console.log(res.error);
+    }
+  }, [fetchNextPage]);
   return (
     <Container>
       <Wrapper>
@@ -107,14 +123,40 @@ const CommentListPage = () => {
                 ))}
               </>
             ) : (
+              // 댓글 리스트
               <>
-                {commentList?.map((comment) => (
-                  <CommentList
-                    postId={id}
-                    comment={comment}
-                    key={comment._id}
-                  />
-                ))}
+                {commentListResponse?.pages?.map((data) =>
+                  data?.commentList?.map((comment) => (
+                    <CommentList
+                      postId={id}
+                      comment={comment}
+                      key={comment._id}
+                    />
+                  ))
+                )}
+
+                {isFetching || isFetchingNextPage ? (
+                  <img src='/spinner.svg' alt='loading' className='spinner' />
+                ) : (
+                  <>
+                    {hasNextPage && (
+                      <div onClick={() => fetchNext()}>
+                        <FlexBox
+                          $justifyContent='center'
+                          $alignItems='center'
+                          style={{
+                            minHeight: '40px',
+                            fontSize: '20px',
+                            marginTop: '10px',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <LuPlusCircle />
+                        </FlexBox>
+                      </div>
+                    )}
+                  </>
+                )}
               </>
             )}
           </FlexBox>

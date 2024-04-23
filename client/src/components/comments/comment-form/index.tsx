@@ -5,9 +5,10 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import {
+  commentFormStatus,
   replyCommentStatus,
   replyCommentUserStatus,
-} from 'atom/reply-comment-atoms';
+} from 'atom/comment-atoms';
 import usePostComment from './hook/use-post-comment';
 import usePostReplyComment from './hook/use-post-reply-comment';
 
@@ -69,7 +70,11 @@ const Image = styled.img`
   margin-right: 10px;
 `;
 
-const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
+interface ICommentFormProps {
+  post: PostsDataType | undefined;
+}
+
+const CommentForm = ({ post }: ICommentFormProps) => {
   const { user } = useUser();
 
   const [contents, setContents] = useState('');
@@ -82,6 +87,8 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
   const [replyCommentUser, setReplyCommentUser] = useRecoilState(
     replyCommentUserStatus
   );
+  const [isCommentFormFocus, setIsCommentFormFocus] =
+    useRecoilState(commentFormStatus);
 
   const formRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -118,19 +125,23 @@ const CommentForm = ({ post }: { post: PostsDataType | undefined }) => {
     await submitComment();
   };
 
-  // 답글 달기 버튼 눌렀을 때
+  // 답글 달기 버튼 눌렀을 때 혹은
+  // 댓글 이모티콘 눌렀을 때 댓글 form에 focus줌
   useEffect(() => {
     if (isReplyCommentStatus && formRef.current) {
       formRef.current.focus();
       setContents(`@${replyCommentUser.nickName} `);
+    } else if (isCommentFormFocus && formRef.current) {
+      formRef.current.focus();
     }
-  }, [isReplyCommentStatus]);
+  }, [isReplyCommentStatus, isCommentFormFocus]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (formRef.current && !formRef.current.contains(event.target as Node)) {
         // Textarea 이외의 요소를 클릭한 경우
         setIsReplyCommentStatus(false);
+        setIsCommentFormFocus(false);
       }
     };
 

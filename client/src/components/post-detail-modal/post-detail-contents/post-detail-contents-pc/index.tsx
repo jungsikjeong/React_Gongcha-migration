@@ -1,14 +1,19 @@
+import { InfiniteData } from '@tanstack/react-query';
 import { formatDistance } from 'date-fns';
 import ko from 'date-fns/locale/ko';
-import { IComment } from 'interface/comment';
+import { ICommentResponse } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
-import { useRef } from 'react';
 import { CiBookmark } from 'react-icons/ci';
 import { FaShare } from 'react-icons/fa';
 import { FaBookmark } from 'react-icons/fa6';
 import { FcLike } from 'react-icons/fc';
-import { SlHeart, SlSpeech } from 'react-icons/sl';
+import { IoChatbubbleOutline } from 'react-icons/io5';
+import { LuPlusCircle } from 'react-icons/lu';
+import { SlHeart } from 'react-icons/sl';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
+
+import { commentFormStatus } from 'atom/comment-atoms';
 
 import CommentForm from 'components/comments/comment-form';
 import CommentList from 'components/comments/comment-list';
@@ -121,28 +126,29 @@ const Time = styled.div`
 
 interface IPostDetailContents {
   post: PostsDataType | undefined;
-  commentList: IComment[] | undefined;
+  commentListResponse: InfiniteData<ICommentResponse, unknown> | undefined;
   commentListLoading: boolean;
   postLoading: boolean;
+  hasNextPage: boolean;
+  isFetching: boolean;
+  isFetchingNextPage: boolean;
+  fetchNext: () => Promise<void>;
 }
 
 const skeletons = Array(12).fill(0);
 
 const PostDetailContentsPC = ({
   post,
-  commentList,
+  commentListResponse,
   commentListLoading,
   postLoading,
+  fetchNext,
+  hasNextPage,
+  isFetching,
+  isFetchingNextPage,
 }: IPostDetailContents) => {
-  const commentRef = useRef<HTMLTextAreaElement | null>(null);
+  const setCommentFormStatus = useSetRecoilState(commentFormStatus);
   const test = false;
-
-  const handleCommentFocus = () => {
-    if (commentRef.current) {
-      commentRef.current.focus();
-    }
-  };
-
   return (
     <>
       <PostDetailImages postLoading={postLoading} url={post?.images} />
@@ -193,13 +199,38 @@ const PostDetailContentsPC = ({
             ) : (
               // 댓글 리스트
               <>
-                {commentList?.map((comment, index) => (
-                  <CommentList
-                    postId={post?._id}
-                    comment={comment}
-                    key={index}
-                  />
-                ))}
+                {commentListResponse?.pages?.map((data) =>
+                  data?.commentList?.map((comment) => (
+                    <CommentList
+                      postId={post?._id}
+                      comment={comment}
+                      key={comment._id}
+                    />
+                  ))
+                )}
+
+                {isFetching || isFetchingNextPage ? (
+                  <img src='/spinner.svg' alt='loading' className='spinner' />
+                ) : (
+                  <>
+                    {hasNextPage && (
+                      <div onClick={() => fetchNext()}>
+                        <FlexBox
+                          $justifyContent='center'
+                          $alignItems='center'
+                          style={{
+                            minHeight: '40px',
+                            fontSize: '20px',
+                            marginTop: '10px',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <LuPlusCircle />
+                        </FlexBox>
+                      </div>
+                    )}
+                  </>
+                )}
               </>
             )}
           </FlexBox>
@@ -211,8 +242,11 @@ const PostDetailContentsPC = ({
               {test ? <FcLike /> : <SlHeart />}
             </div>
 
-            <div className='section-icons' onClick={handleCommentFocus}>
-              <SlSpeech />
+            <div
+              className='section-icons'
+              onClick={() => setCommentFormStatus(true)}
+            >
+              <IoChatbubbleOutline />
             </div>
 
             <div className='bookmark section-icons'>
