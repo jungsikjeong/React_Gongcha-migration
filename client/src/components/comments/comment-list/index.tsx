@@ -15,16 +15,20 @@ import ConfirmModal from 'components/common/confirm-modal';
 import FlexBox from 'components/common/flex-box';
 import CommentReply from '../comment-reply';
 
-const CommentsList = styled.li`
+const CommentsItem = styled.li<{ $ispathname: boolean }>`
+  margin-right: -2px;
   margin-top: 1rem;
+  width: 100%;
+  height: 100%;
+  max-width: ${({ $ispathname }) => ($ispathname ? '500px' : '335px')};
+  font-size: 14px;
+  line-height: 18px;
+  color: rgb(245, 245, 245);
 `;
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: start;
-`;
+const Box = styled.div``;
 
-const Image = styled.img`
+const UserImage = styled.img`
   width: 35px;
   height: 35px;
   border-radius: 50%;
@@ -33,14 +37,26 @@ const Image = styled.img`
   margin-right: 10px;
 `;
 
-const Post = styled.div<{ $ispathname: boolean }>`
-  width: 100%;
-  max-width: ${({ $ispathname }) => ($ispathname ? '500px' : '335px')};
-  font-size: 14px;
-  line-height: 18px;
-  color: rgb(245, 245, 245);
+const Nickname = styled.span`
+  font-weight: bold;
+  margin-right: 4px;
+  flex-shrink: 0;
+`;
 
-  @media (max-width: 768px) {
+const TaggedUser = styled.span`
+  margin-right: 4px;
+  flex-shrink: 0;
+`;
+
+const Contents = styled.span``;
+
+const Actions = styled.div`
+  padding-top: 8px;
+  font-size: 12px;
+  color: rgb(168, 168, 168);
+
+  span {
+    cursor: pointer;
   }
 `;
 
@@ -51,16 +67,6 @@ const LikeBtn = styled.div`
 
   @media (max-width: 768px) {
     font-size: 12px;
-  }
-`;
-
-const Bottom = styled.div`
-  padding-top: 8px;
-  font-size: 12px;
-  color: rgb(168, 168, 168);
-
-  span {
-    cursor: pointer;
   }
 `;
 
@@ -109,66 +115,70 @@ const CommentList = ({ comment, postId }: ICommentListProps) => {
     });
   }, []);
   return (
-    <CommentsList>
-      <Wrapper>
-        {isConfirmModalOpen && (
-          <ConfirmModal
-            text='삭제'
-            handleConfirm={() => {
-              handleCommentDelete();
-              setIsConfirmModalOpen(false);
-            }}
-            handleCancel={() => setIsConfirmModalOpen(false)}
+    <>
+      {isConfirmModalOpen && (
+        <ConfirmModal
+          text='삭제'
+          handleConfirm={() => {
+            handleCommentDelete();
+            setIsConfirmModalOpen(false);
+          }}
+          handleCancel={() => setIsConfirmModalOpen(false)}
+        />
+      )}
+      <CommentsItem $ispathname={location.pathname.includes('/commentList')}>
+        <FlexBox>
+          <UserImage src={comment?.user?.avatar} alt='' />
+          <Box>
+            <FlexBox $alignItems='center'>
+              <Contents>
+                <Nickname>{comment?.user?.nickname}</Nickname>&nbsp;
+                {comment?.contents}
+              </Contents>
+            </FlexBox>
+            <Actions>
+              {comment?.likes?.length !== 0 && (
+                <span>좋아요 {comment?.likes?.length}개</span>
+              )}{' '}
+              <span onClick={handleReplyComment}>답글 달기</span>{' '}
+              {user?._id === comment?.user._id && (
+                <span onClick={() => setIsConfirmModalOpen(true)}>
+                  댓글 삭제
+                </span>
+              )}
+            </Actions>
+          </Box>
+          {user?._id === comment?.user._id && (
+            <LikeBtn onClick={handleCommentLike}>
+              {comment?.likes?.length !== 0 ? (
+                <>
+                  {comment?.likes?.map((like) =>
+                    like?.user === user?._id ? (
+                      <div key={like._id}>
+                        <FcLike />
+                      </div>
+                    ) : (
+                      <div key={like._id}>
+                        <SlHeart />
+                      </div>
+                    )
+                  )}
+                </>
+              ) : (
+                <SlHeart />
+              )}
+            </LikeBtn>
+          )}
+        </FlexBox>
+        {/* 대댓글 */}
+        {comment?.commentReplyCount !== 0 && (
+          <CommentReply
+            commentReplyCount={comment?.commentReplyCount}
+            parentCommentId={comment?._id}
           />
         )}
-        <Image src={comment?.user?.avatar} alt='' />
-        <Post $ispathname={location.pathname.includes('/commentList')}>
-          <FlexBox $alignItems='center'>
-            <b>{comment?.user?.nickname}</b>&nbsp;
-            <span
-              dangerouslySetInnerHTML={{ __html: comment?.contents || '' }}
-            />
-            {user?._id === comment?.user._id && (
-              <LikeBtn onClick={handleCommentLike}>
-                {comment?.likes?.length !== 0 ? (
-                  <>
-                    {comment?.likes?.map((like) =>
-                      like?.user === user?._id ? (
-                        <div key={like._id}>
-                          <FcLike />
-                        </div>
-                      ) : (
-                        <div key={like._id}>
-                          <SlHeart />
-                        </div>
-                      )
-                    )}
-                  </>
-                ) : (
-                  <SlHeart />
-                )}
-              </LikeBtn>
-            )}
-          </FlexBox>
-          <Bottom>
-            {comment?.likes?.length !== 0 && (
-              <span>좋아요 {comment?.likes?.length}개</span>
-            )}{' '}
-            <span onClick={handleReplyComment}>답글 달기</span>{' '}
-            {user?._id === comment?.user._id && (
-              <span onClick={() => setIsConfirmModalOpen(true)}>댓글 삭제</span>
-            )}
-          </Bottom>
-          {/* 대댓글 */}
-          {comment?.commentReplyCount !== 0 && (
-            <CommentReply
-              commentReplyCount={comment?.commentReplyCount}
-              parentCommentId={comment?._id}
-            />
-          )}
-        </Post>
-      </Wrapper>
-    </CommentsList>
+      </CommentsItem>
+    </>
   );
 };
 

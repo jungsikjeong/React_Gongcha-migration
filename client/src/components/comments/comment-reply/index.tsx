@@ -6,13 +6,12 @@ import CommentReplyList from './comment-reply-list';
 const Container = styled.div`
   color: rgb(168, 168, 168);
   font-size: 12px;
+  margin: 16px 0 0 54px;
 `;
 
 const Box = styled.div`
   display: flex;
   align-items: center;
-  padding-top: 0.5rem;
-  padding-left: 0.5rem;
   cursor: pointer;
 `;
 
