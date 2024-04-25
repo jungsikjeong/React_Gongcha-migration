@@ -17,14 +17,21 @@ type CommentListTypes = {
   totalpage: number;
 };
 
-export type CommentReplyTypes = {
+export interface ICommentReplyResponse {
+  page: number;
+  commentReply: CommentReplyTypes[];
+  totalCount: number;
+  totalPage: number;
+}
+
+export interface CommentReplyTypes {
   _id: string;
   parentComment: string;
   parentCommentUser: ParentCommentUserTypes;
   contents: string;
   likes: LikeTypes[];
   user: AuthorType;
-};
+}
 
 export interface IComment {
   user: AuthorType;

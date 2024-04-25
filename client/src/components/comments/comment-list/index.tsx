@@ -43,11 +43,6 @@ const Nickname = styled.span`
   flex-shrink: 0;
 `;
 
-const TaggedUser = styled.span`
-  margin-right: 4px;
-  flex-shrink: 0;
-`;
-
 const Contents = styled.span``;
 
 const Actions = styled.div`

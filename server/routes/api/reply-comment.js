@@ -21,15 +21,32 @@ router.get('/comment/:commentId', async (req, res) => {
     if (!commentList) {
       return res.status(404).json({ msg: '댓글 정보를 찾을 수 없습니다' });
     }
+
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit);
+    const skipPage = parseInt(page) - 1;
+
+    const count = await CommentReply.countDocuments({
+      parentComment: req.params.commentId,
+    });
+
     const commentReply = await CommentReply.find({
       parentComment: req.params.commentId,
     })
       .populate('user', ['nickname', 'avatar'])
       .populate('parentCommentUser', ['nickname'])
-      .populate('likes');
+      .populate('likes')
+      .sort({ date: -1 })
+      .skip(skipPage * 3)
+      .limit(limit)
+      .exec();
 
-    console.log(commentReply);
-    res.json(commentReply);
+    res.json({
+      page: parseInt(page),
+      commentReply: commentReply,
+      totalCount: count,
+      totalPage: Math.ceil(count / 3),
+    });
   } catch (err) {
     console.log(err);
     console.error(err.message);

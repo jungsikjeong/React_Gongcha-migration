@@ -33,18 +33,23 @@ const CommentReply = ({
   parentCommentId,
 }: ICommentReplyProps) => {
   const [open, setOpen] = useState(false);
+
   return (
     <Container>
-      <Box onClick={() => setOpen(!open)}>
-        <Line />
-        {open ? (
-          <span>답글 숨기기</span>
-        ) : (
+      {!open && (
+        <Box onClick={() => setOpen(!open)}>
+          <Line />
           <span>답글 보기({commentReplyCount}개)</span>
-        )}
-      </Box>
+        </Box>
+      )}
 
-      {open && <CommentReplyList parentCommentId={parentCommentId} />}
+      {open && (
+        <CommentReplyList
+          commentReplyCount={commentReplyCount}
+          parentCommentId={parentCommentId}
+          setOpen={setOpen}
+        />
+      )}
     </Container>
   );
 };
