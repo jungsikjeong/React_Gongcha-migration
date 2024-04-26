@@ -149,6 +149,7 @@ const PostDetailContentsPC = ({
 }: IPostDetailContents) => {
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
   const test = false;
+  
   return (
     <>
       <PostDetailImages postLoading={postLoading} url={post?.images} />
