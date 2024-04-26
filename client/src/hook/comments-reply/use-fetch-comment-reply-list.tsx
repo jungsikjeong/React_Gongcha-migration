@@ -46,8 +46,11 @@ const useFetchCommentReplyList = (commentId: string) => {
         : undefined;
     },
     refetchOnWindowFocus: false,
-    // staleTime: 15000,
     staleTime: Infinity,
+    select: (data) => ({
+      pages: [...data.pages].reverse(),
+      pageParams: [...data.pageParams].reverse(),
+    }),
   });
 
   useEffect(() => {
