@@ -41,9 +41,9 @@ router.post('/', auth, async (req, res) => {
 // @route   GET api/comment/:postId
 // @desc    특정 게시물 ID로 댓글 정보 얻기
 // @access  Public
-router.get('/:id', async (req, res) => {
+router.get('/:postId', async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.postId);
 
     if (!post) {
       return res.status(404).json({ msg: '해당 게시글을 찾을 수 없습니다' });
@@ -52,7 +52,7 @@ router.get('/:id', async (req, res) => {
     const page = parseInt(req.query.page || '1', 10);
     const limit = parseInt(req.query.limit);
     const skipPage = parseInt(page) - 1;
-    const count = await Comment.countDocuments(); // 현재 db에 저장된 댓글 갯수
+    const count = await Comment.countDocuments({ post: req.params.postId }); // 현재 db에 저장된 댓글 갯수
 
     const commentList = await Comment.find({ post: req.params.id })
       .populate('user', ['nickname', 'avatar'])
