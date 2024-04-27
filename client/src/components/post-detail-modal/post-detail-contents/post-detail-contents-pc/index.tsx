@@ -153,10 +153,7 @@ const PostDetailContentsPC = ({
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
   const test = false;
 
-  const { mutate: updateLike, isPending } = usePostLikePost(
-    post?._id as string,
-    user
-  );
+  const { mutate: updateLike } = usePostLikePost(post?._id as string, user);
 
   const handlePostLike = () => {
     if (!user) {

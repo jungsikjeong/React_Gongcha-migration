@@ -1,6 +1,7 @@
 import { InfiniteData } from '@tanstack/react-query';
 import { formatDistance } from 'date-fns';
 import { ko } from 'date-fns/locale/ko';
+import { IUserInfo } from 'interface/auth';
 import { ICommentResponse } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
@@ -10,6 +11,7 @@ import { FcLike } from 'react-icons/fc';
 import { IoChatbubbleOutline } from 'react-icons/io5';
 import { SlHeart } from 'react-icons/sl';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -17,6 +19,7 @@ import { commentFormStatus } from 'atom/comment-atoms';
 
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import PostHeader from 'components/common/post-header';
+import usePostLikePost from 'components/post-detail-modal/hook/use-post-like-post';
 import PostDetailImages from 'components/post-detail-modal/post-detail-images';
 
 const Container = styled.div`
@@ -120,15 +123,27 @@ interface IPostDetailContents {
   commentListResponse: InfiniteData<ICommentResponse, unknown> | undefined;
   commentListLoading: boolean;
   postLoading: boolean;
+  user: IUserInfo | null | undefined;
 }
 
 const PostDetailContentsMobile = ({
+  user,
   post,
   commentListResponse,
   commentListLoading,
   postLoading,
 }: IPostDetailContents) => {
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
+
+  const { mutate: updateLike } = usePostLikePost(post?._id as string, user);
+
+  const handlePostLike = () => {
+    if (!user) {
+      toast.warning('로그인이 필요한 서비스입니다.');
+    } else {
+      updateLike({ postId: post?._id as string });
+    }
+  };
   const test = false;
   return (
     <Container>
@@ -156,10 +171,13 @@ const PostDetailContentsMobile = ({
       <ContentsWrap>
         <ContentsItem>
           <Section>
-            <div className='section-icons'>
-              {test ? <FcLike /> : <SlHeart />}
+            <div className='section-icons' onClick={handlePostLike}>
+              {user?.postLikes?.some((likedPost) => post?._id === likedPost) ? (
+                <FcLike />
+              ) : (
+                <SlHeart />
+              )}
             </div>
-
             <Link
               to={`/${post?._id}/commentList`}
               onClick={() => setCommentFormStatus(true)}
@@ -168,7 +186,6 @@ const PostDetailContentsMobile = ({
                 <IoChatbubbleOutline />
               </div>
             </Link>
-
             <div className='bookmark section-icons'>
               {test ? <FaBookmark /> : <CiBookmark />}
             </div>

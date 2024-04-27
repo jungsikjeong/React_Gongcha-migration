@@ -169,6 +169,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
             commentListResponse={commentListResponse}
             commentListLoading={commentListLoading}
             postLoading={postLoading}
+            user={user}
           />
         ) : (
           <PostDetailContentsPC
