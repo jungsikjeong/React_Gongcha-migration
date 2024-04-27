@@ -86,8 +86,7 @@ router.post(
         nickname: user.nickname,
         email: user.email,
         avatar: user.avatar,
-        commentCount: user.commentCount,
-        postCount: user.postCount,
+        postLikes: user.postLikes,
         date: user.date,
         __v: user.__v,
       };
