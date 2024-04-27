@@ -8,11 +8,18 @@ interface IPostComment {
   postId: string;
 }
 
+interface ICustomResponse<T, U> {
+  data: T;
+  msg?: U;
+}
 const postComment = async ({ contents, postId }: IPostComment) => {
-  const res: any = await instance.post('/api/comment', {
-    contents,
-    postId,
-  });
+  const res: ICustomResponse<string, any> = await instance.post(
+    '/api/comment',
+    {
+      contents,
+      postId,
+    }
+  );
 
   if (res.msg === '리프레시 토큰 만료됨') {
     toast.error('로그인 기한이 만료되었습니다. 다시 로그인 해주세요!');

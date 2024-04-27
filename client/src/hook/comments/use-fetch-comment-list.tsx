@@ -5,10 +5,7 @@ import { useEffect } from 'react';
 import { commentKey } from 'react-query-key/comment.keys';
 import { toast } from 'react-toastify';
 
-const fetchCommentList = async (
-  postId: string,
-  pageParam: number
-): Promise<ICommentResponse> => {
+const fetchCommentList = async (postId: string, pageParam: number) => {
   const res = await instance.get<ICommentResponse>(
     `/api/comment/${postId}?page=${pageParam}`,
     {
@@ -19,11 +16,7 @@ const fetchCommentList = async (
     }
   );
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(res.data);
-    }, 1000);
-  });
+  return res.data;
 };
 
 const useFetchCommentList = (postId: string) => {
@@ -40,7 +33,6 @@ const useFetchCommentList = (postId: string) => {
     queryFn: ({ pageParam = 1 }) => fetchCommentList(postId, pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      console.log(lastPage);
       return lastPage.commentList?.length > 0 &&
         lastPage.page !== lastPage.totalPage
         ? lastPage.page + 1

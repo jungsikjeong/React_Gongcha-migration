@@ -54,7 +54,7 @@ router.get('/:postId', async (req, res) => {
     const skipPage = parseInt(page) - 1;
     const count = await Comment.countDocuments({ post: req.params.postId }); // 현재 db에 저장된 댓글 갯수
 
-    const commentList = await Comment.find({ post: req.params.id })
+    const commentList = await Comment.find({ post: req.params.postId })
       .populate('user', ['nickname', 'avatar'])
       .populate('likes', ['user'])
       .sort({ date: -1 })

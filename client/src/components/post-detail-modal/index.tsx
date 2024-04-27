@@ -3,11 +3,10 @@ import { IoMdClose } from 'react-icons/io';
 import { useRecoilState } from 'recoil';
 import styled, { keyframes } from 'styled-components';
 
+import { useUser } from 'hook/auth/use-user';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 import useFetchCommentList from '../../hook/comments/use-fetch-comment-list';
-import useFetchLikePost from './hook/use-fetch-like-post';
 import useFetchPostDetail from './hook/use-fetch-post-detail';
-import usePostLikePost from './hook/use-post-like-post';
 
 import PostDetailContentsMobile from './post-detail-contents/post-detail-contents-mobile';
 import PostDetailContentsPC from './post-detail-contents/post-detail-contents-pc';
@@ -88,6 +87,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
   const [postDetailModal, setPostDetailModal] = useRecoilState(
     postDetailModalStatus
   );
+  const { user } = useUser();
 
   const { data: post, isLoading: postLoading } = useFetchPostDetail(postId);
   const {
@@ -95,13 +95,8 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
     isLoading: commentListLoading,
     fetchNextPage,
     hasNextPage,
-    isFetching,
     isFetchingNextPage,
   } = useFetchCommentList(postId);
-
-  const { mutate: updateLike, isPending } = usePostLikePost(postId);
-
-  const { data: isLiked } = useFetchLikePost(postId);
 
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -178,12 +173,12 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
         ) : (
           <PostDetailContentsPC
             post={post}
+            user={user}
             commentListResponse={commentListResponse}
             commentListLoading={commentListLoading}
             postLoading={postLoading}
             fetchNext={fetchNext}
             hasNextPage={hasNextPage}
-            isFetching={isFetching}
             isFetchingNextPage={isFetchingNextPage}
           />
         )}

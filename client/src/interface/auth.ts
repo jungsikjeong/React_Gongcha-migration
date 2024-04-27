@@ -3,6 +3,7 @@ export interface IUserInfo {
   date: string;
   email: string;
   nickname: string;
+  postLikes: string[];
   __v: number;
   _id: string;
 }

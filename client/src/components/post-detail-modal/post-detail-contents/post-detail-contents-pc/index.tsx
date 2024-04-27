@@ -1,6 +1,7 @@
 import { InfiniteData } from '@tanstack/react-query';
 import { formatDistance } from 'date-fns';
 import ko from 'date-fns/locale/ko';
+import { IUserInfo } from 'interface/auth';
 import { ICommentResponse } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
@@ -10,10 +11,12 @@ import { FcLike } from 'react-icons/fc';
 import { IoChatbubbleOutline } from 'react-icons/io5';
 import { LuPlusCircle } from 'react-icons/lu';
 import { SlHeart } from 'react-icons/sl';
+import { toast } from 'react-toastify';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { commentFormStatus } from 'atom/comment-atoms';
+import usePostLikePost from 'components/post-detail-modal/hook/use-post-like-post';
 
 import CommentForm from 'components/comments/comment-form';
 import CommentList from 'components/comments/comment-list';
@@ -130,26 +133,38 @@ interface IPostDetailContents {
   commentListLoading: boolean;
   postLoading: boolean;
   hasNextPage: boolean;
-  isFetching: boolean;
   isFetchingNextPage: boolean;
   fetchNext: () => Promise<void>;
+  user: IUserInfo | null | undefined;
 }
 
 const skeletons = Array(12).fill(0);
 
 const PostDetailContentsPC = ({
+  user,
   post,
   commentListResponse,
   commentListLoading,
   postLoading,
   fetchNext,
   hasNextPage,
-  isFetching,
   isFetchingNextPage,
 }: IPostDetailContents) => {
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
   const test = false;
-  console.log(hasNextPage);
+
+  const { mutate: updateLike, isPending } = usePostLikePost(
+    post?._id as string,
+    user
+  );
+
+  const handlePostLike = () => {
+    if (!user) {
+      toast.warning('로그인이 필요한 서비스입니다.');
+    } else {
+      updateLike({ postId: post?._id as string });
+    }
+  };
 
   return (
     <>
@@ -212,7 +227,7 @@ const PostDetailContentsPC = ({
                 )}
 
                 {/* 더보기 버튼 눌렀을 시 로딩 */}
-                {isFetching || isFetchingNextPage ? (
+                {isFetchingNextPage ? (
                   <img src='/spinner.svg' alt='loading' className='spinner' />
                 ) : (
                   // 더보기 버튼
@@ -242,8 +257,13 @@ const PostDetailContentsPC = ({
 
         <Footer>
           <Section>
-            <div className='section-icons'>
-              {test ? <FcLike /> : <SlHeart />}
+            {/* 게시글 좋아요 */}
+            <div className='section-icons' onClick={handlePostLike}>
+              {user?.postLikes?.some((likedPost) => post?._id === likedPost) ? (
+                <FcLike />
+              ) : (
+                <SlHeart />
+              )}
             </div>
 
             <div
@@ -257,7 +277,14 @@ const PostDetailContentsPC = ({
               {test ? <FaBookmark /> : <CiBookmark />}
             </div>
           </Section>
-          <span>좋아요 9.4만개</span> <br />
+          <span>
+            좋아요{' '}
+            {new Intl.NumberFormat('ko-KR').format(
+              post?.postLikeCount as number
+            )}
+            개
+          </span>{' '}
+          <br />
           <Time>
             {post &&
               formatDistance(new Date(), new Date(post.date), {
