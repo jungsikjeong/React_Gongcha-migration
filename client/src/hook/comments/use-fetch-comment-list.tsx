@@ -40,6 +40,7 @@ const useFetchCommentList = (postId: string) => {
     queryFn: ({ pageParam = 1 }) => fetchCommentList(postId, pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
+      console.log(lastPage);
       return lastPage.commentList?.length > 0 &&
         lastPage.page !== lastPage.totalPage
         ? lastPage.page + 1

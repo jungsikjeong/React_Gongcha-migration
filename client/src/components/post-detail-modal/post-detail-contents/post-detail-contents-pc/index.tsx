@@ -149,7 +149,8 @@ const PostDetailContentsPC = ({
 }: IPostDetailContents) => {
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
   const test = false;
-  
+  console.log(hasNextPage);
+
   return (
     <>
       <PostDetailImages postLoading={postLoading} url={post?.images} />
@@ -210,9 +211,11 @@ const PostDetailContentsPC = ({
                   ))
                 )}
 
+                {/* 더보기 버튼 눌렀을 시 로딩 */}
                 {isFetching || isFetchingNextPage ? (
                   <img src='/spinner.svg' alt='loading' className='spinner' />
                 ) : (
+                  // 더보기 버튼
                   <>
                     {hasNextPage && (
                       <div onClick={() => fetchNext()}>

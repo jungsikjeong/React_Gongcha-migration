@@ -5,7 +5,9 @@ import styled, { keyframes } from 'styled-components';
 
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 import useFetchCommentList from '../../hook/comments/use-fetch-comment-list';
-import UseFetchPostDetail from './hook/use-fetch-post-detail';
+import useFetchLikePost from './hook/use-fetch-like-post';
+import useFetchPostDetail from './hook/use-fetch-post-detail';
+import usePostLikePost from './hook/use-post-like-post';
 
 import PostDetailContentsMobile from './post-detail-contents/post-detail-contents-mobile';
 import PostDetailContentsPC from './post-detail-contents/post-detail-contents-pc';
@@ -87,7 +89,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
     postDetailModalStatus
   );
 
-  const { data: post, isLoading: postLoading } = UseFetchPostDetail(postId);
+  const { data: post, isLoading: postLoading } = useFetchPostDetail(postId);
   const {
     data: commentListResponse,
     isLoading: commentListLoading,
@@ -96,6 +98,10 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
     isFetching,
     isFetchingNextPage,
   } = useFetchCommentList(postId);
+
+  const { mutate: updateLike, isPending } = usePostLikePost(postId);
+
+  const { data: isLiked } = useFetchLikePost(postId);
 
   const divRef = useRef<HTMLDivElement>(null);
 
