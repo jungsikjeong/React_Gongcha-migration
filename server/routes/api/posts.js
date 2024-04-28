@@ -183,6 +183,40 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+// @route   GET api/posts/like/:postId
+// @desc    게시글 좋아요 확인
+// @access  Private
+router.get('/like/:postId', auth, async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.user.id;
+
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
+    }
+
+    const user = await User.findById(req.user.id).select('-password');
+
+    // 게시글에 좋아요 눌렀는지 체크
+    const existingLike = await PostLike.findOne({
+      user: user._id,
+      post: post._id,
+    });
+
+    // 좋아요를 눌렀으면 true를 반환
+    if (existingLike) {
+      return res.status(200).json(true);
+    } else {
+      return res.status(200).json(false);
+    }
+  } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
 // @route   PUT api/posts/like/:postId
 // @desc    게시글 좋아요 누르기
 // @access  Private
@@ -208,25 +242,18 @@ router.put('/like/:postId', auth, async (req, res) => {
       // 이미 좋아요를 눌렀다면 해당 좋아요를 취소
       await PostLike.findByIdAndDelete(existingLike._id);
 
-      const index = user.postLikes.indexOf(postId);
-
-      if (index > -1) {
-        user.postLikes.splice(index, 1);
-      }
       post.postLikeCount -= 1;
       await post.save();
-      await user.save();
 
       return res.json({ msg: '좋아요가 취소되었습니다.' });
     } else {
       // 해당 유저가 좋아요를 누르지 않은 경우에만 좋아요를 추가
       const newLike = new PostLike({ user: userId, post: postId });
       await newLike.save();
-      user.postLikes.push(postId);
+
       post.postLikeCount += 1;
 
       await post.save();
-      await user.save();
 
       return res.json({ msg: '좋아요가 추가되었습니다.' });
     }

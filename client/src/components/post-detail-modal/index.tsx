@@ -7,6 +7,7 @@ import { useUser } from 'hook/auth/use-user';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 import useFetchCommentList from '../../hook/comments/use-fetch-comment-list';
 import useFetchPostDetail from './hook/use-fetch-post-detail';
+import useFetchPostLike from './hook/use-fetch-post-like';
 
 import PostDetailContentsMobile from './post-detail-contents/post-detail-contents-mobile';
 import PostDetailContentsPC from './post-detail-contents/post-detail-contents-pc';
@@ -90,6 +91,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
   const { user } = useUser();
 
   const { data: post, isLoading: postLoading } = useFetchPostDetail(postId);
+  const { data: isPostLike } = useFetchPostLike(postId);
   const {
     data: commentListResponse,
     isLoading: commentListLoading,
@@ -97,7 +99,6 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
     hasNextPage,
     isFetchingNextPage,
   } = useFetchCommentList(postId);
-
   const divRef = useRef<HTMLDivElement>(null);
 
   const fetchNext = useCallback(async () => {
@@ -170,6 +171,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
             commentListLoading={commentListLoading}
             postLoading={postLoading}
             user={user}
+            isPostLike={isPostLike}
           />
         ) : (
           <PostDetailContentsPC
@@ -181,6 +183,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
             fetchNext={fetchNext}
             hasNextPage={hasNextPage}
             isFetchingNextPage={isFetchingNextPage}
+            isPostLike={isPostLike}
           />
         )}
       </Wrapper>

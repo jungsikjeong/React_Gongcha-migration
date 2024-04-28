@@ -7,9 +7,7 @@ import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
 import { FaShare } from 'react-icons/fa';
 import { FaBookmark } from 'react-icons/fa6';
-import { FcLike } from 'react-icons/fc';
 import { IoChatbubbleOutline } from 'react-icons/io5';
-import { SlHeart } from 'react-icons/sl';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useSetRecoilState } from 'recoil';
@@ -21,6 +19,7 @@ import CommentSkeleton from 'components/comments/comment-skeleton';
 import PostHeader from 'components/common/post-header';
 import usePostLikePost from 'components/post-detail-modal/hook/use-post-like-post';
 import PostDetailImages from 'components/post-detail-modal/post-detail-images';
+import PostDetailLike from 'components/post-detail-modal/post-detail-like';
 
 const Container = styled.div`
   min-width: 335px;
@@ -124,6 +123,7 @@ interface IPostDetailContents {
   commentListLoading: boolean;
   postLoading: boolean;
   user: IUserInfo | null | undefined;
+  isPostLike: boolean | undefined;
 }
 
 const PostDetailContentsMobile = ({
@@ -132,6 +132,7 @@ const PostDetailContentsMobile = ({
   commentListResponse,
   commentListLoading,
   postLoading,
+  isPostLike,
 }: IPostDetailContents) => {
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
 
@@ -171,13 +172,12 @@ const PostDetailContentsMobile = ({
       <ContentsWrap>
         <ContentsItem>
           <Section>
-            <div className='section-icons' onClick={handlePostLike}>
-              {user?.postLikes?.some((likedPost) => post?._id === likedPost) ? (
-                <FcLike />
-              ) : (
-                <SlHeart />
-              )}
-            </div>
+            {/* 게시글 좋아요 */}
+            <PostDetailLike
+              handlePostLike={handlePostLike}
+              isPostLike={isPostLike}
+            />
+
             <Link
               to={`/${post?._id}/commentList`}
               onClick={() => setCommentFormStatus(true)}
@@ -192,7 +192,13 @@ const PostDetailContentsMobile = ({
           </Section>
 
           <Post>
-            <b>좋아요 24개</b>
+            <b>
+              좋아요{' '}
+              {new Intl.NumberFormat('ko-KR').format(
+                (post?.postLikeCount as number) || 0
+              )}
+              개
+            </b>
             <br />
             <b>{post?.author?.nickname}</b>
             <div

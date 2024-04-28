@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import instance from 'api/instance';
 import { IUserInfo } from 'interface/auth';
-import { userKey } from 'react-query-key/auth.keys';
 import { postDetailKey } from 'react-query-key/post.key';
 import { toast } from 'react-toastify';
 
@@ -45,7 +44,7 @@ const usePostLikePost = (
         refetchType: 'all',
       });
       queryClient.invalidateQueries({
-        queryKey: [userKey.user],
+        queryKey: [postDetailKey.postLike],
         refetchType: 'all',
       });
     },

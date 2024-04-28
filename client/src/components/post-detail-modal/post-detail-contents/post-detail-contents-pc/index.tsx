@@ -7,10 +7,8 @@ import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
 import { FaShare } from 'react-icons/fa';
 import { FaBookmark } from 'react-icons/fa6';
-import { FcLike } from 'react-icons/fc';
 import { IoChatbubbleOutline } from 'react-icons/io5';
 import { LuPlusCircle } from 'react-icons/lu';
-import { SlHeart } from 'react-icons/sl';
 import { toast } from 'react-toastify';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -23,6 +21,7 @@ import CommentList from 'components/comments/comment-list';
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import FlexBox from 'components/common/flex-box';
 import PostDetailImages from 'components/post-detail-modal/post-detail-images';
+import PostDetailLike from 'components/post-detail-modal/post-detail-like';
 
 const Container = styled.div`
   /* max-width: 335px; */
@@ -136,6 +135,7 @@ interface IPostDetailContents {
   isFetchingNextPage: boolean;
   fetchNext: () => Promise<void>;
   user: IUserInfo | null | undefined;
+  isPostLike: boolean | undefined;
 }
 
 const skeletons = Array(12).fill(0);
@@ -149,6 +149,7 @@ const PostDetailContentsPC = ({
   fetchNext,
   hasNextPage,
   isFetchingNextPage,
+  isPostLike,
 }: IPostDetailContents) => {
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
   const test = false;
@@ -255,13 +256,10 @@ const PostDetailContentsPC = ({
         <Footer>
           <Section>
             {/* 게시글 좋아요 */}
-            <div className='section-icons' onClick={handlePostLike}>
-              {user?.postLikes?.some((likedPost) => post?._id === likedPost) ? (
-                <FcLike />
-              ) : (
-                <SlHeart />
-              )}
-            </div>
+            <PostDetailLike
+              handlePostLike={handlePostLike}
+              isPostLike={isPostLike}
+            />
 
             <div
               className='section-icons'
@@ -277,7 +275,7 @@ const PostDetailContentsPC = ({
           <span>
             좋아요{' '}
             {new Intl.NumberFormat('ko-KR').format(
-              post?.postLikeCount as number
+              (post?.postLikeCount as number) || 0
             )}
             개
           </span>{' '}
