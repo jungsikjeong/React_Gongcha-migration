@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { PrivateRoute } from './private-route';
 
+import MyPage from 'pages/my-page';
 import AboutPage from '../pages/about';
 import CommentListPage from '../pages/comment-list';
 import HomePage from '../pages/home';
@@ -19,6 +20,7 @@ const Router = () => {
 
         <Route element={<PrivateRoute />}>
           <Route path='/write' element={<WritePage />} />
+          <Route path='/myPage' element={<MyPage />} />
         </Route>
 
         {/* 경로 외에 곳으로 갔을때 */}

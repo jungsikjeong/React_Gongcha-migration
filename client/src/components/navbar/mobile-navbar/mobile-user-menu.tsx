@@ -150,7 +150,7 @@ const MobileUserMenu = ({ userInfo }: { userInfo: IUserInfo }) => {
             </Link>
           </Item>
           <Item>
-            <Link to='/mypage' onClick={() => setIsOpen(false)}>
+            <Link to='/myPage' onClick={() => setIsOpen(false)}>
               🔒 마이페이지
             </Link>
           </Item>
