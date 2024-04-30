@@ -2,9 +2,9 @@ import 'cropperjs/dist/cropper.css';
 import { useRef, useState } from 'react';
 import { Cropper, ReactCropperElement } from 'react-cropper';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.div<{ profileImg: string }>`
   z-index: 10;
   position: fixed;
   left: 0;
@@ -14,8 +14,25 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
 
+  .cropper-crop-box,
+  .cropper-view-box {
+    ${({ profileImg }) =>
+      profileImg &&
+      css`
+        border-radius: 50%;
+      `}
+  }
+
+  .cropper-view-box {
+    ${({ profileImg }) =>
+      profileImg &&
+      css`
+        box-shadow: 0 0 0 1px #39f;
+        outline: 0;
+      `}
+  }
+`;
 const BackDrop = styled.div`
   position: inherit;
   width: 100%;
@@ -82,6 +99,7 @@ const Footer = styled.div`
 interface IImageCropperProps {
   onCrop: (image: string) => void;
   aspectRatio: number;
+  profileImg?: boolean;
   children: React.ReactNode;
 }
 
@@ -89,6 +107,7 @@ const ImageCropper = ({
   children,
   aspectRatio,
   onCrop,
+  profileImg = false,
 }: IImageCropperProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const cropperRef = useRef<ReactCropperElement>(null);
@@ -143,7 +162,7 @@ const ImageCropper = ({
       />
       <span onClick={handleChildrenClick}>{children}</span>
       {image && (
-        <Container>
+        <Container profileImg={profileImg === true ? 'true' : ''}>
           <BackDrop />
           <Wrapper>
             <h3 className='title'>이미지 편집하기</h3>
