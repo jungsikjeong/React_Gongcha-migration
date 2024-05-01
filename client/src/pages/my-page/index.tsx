@@ -12,6 +12,7 @@ import useImageCompress from 'hook/use-image-compress';
 
 import Button from 'components/common/button';
 import ImageCropper from 'components/common/image-cropper';
+import Skeleton from 'components/common/skeleton';
 import MyPageBookMark from './my-page-bookmark';
 import MyPagePosts from './my-page-posts';
 
@@ -153,7 +154,7 @@ const MyPage = () => {
 
   const query = searchParams.get('currentTab') || '게시물';
 
-  const { user } = useUser();
+  const { user, isLoading: userLoading } = useUser();
 
   const text = `안녕하세요!!`;
 
@@ -223,29 +224,38 @@ const MyPage = () => {
           <IoIosArrowBack />
         </BackButton>
         <User>
-          <ImageCropper
-            profileImg={true}
-            onCrop={handleUploadImage}
-            aspectRatio={1 / 1}
-          >
-            <UserImage
-              src={compressedImages ? compressedImages : user?.avatar}
-              alt=''
-            />
-          </ImageCropper>
+          {userLoading ? (
+            <>
+              <Skeleton width='120px' height='120px' $borderradius='50%' />
+              <Skeleton width='80px' height='20px' $margin='10px 0 10px 0 ' />
+            </>
+          ) : (
+            <>
+              <ImageCropper
+                profileImg={true}
+                onCrop={handleUploadImage}
+                aspectRatio={1 / 1}
+              >
+                <UserImage
+                  src={compressedImages ? compressedImages : user?.avatar}
+                  alt=''
+                />
+              </ImageCropper>
 
-          <Nickname>{user?.nickname}</Nickname>
+              <Nickname>{user?.nickname}</Nickname>
 
-          <Introduction>
-            {showFullText || text.length <= MAX_CHARS
-              ? text
-              : text.slice(0, MAX_CHARS) + '...'}
-            {!showFullText && text.length > MAX_CHARS && (
-              <button onClick={() => setShowFullText(true)}>더보기</button>
-            )}
-          </Introduction>
+              <Introduction>
+                {showFullText || text.length <= MAX_CHARS
+                  ? text
+                  : text.slice(0, MAX_CHARS) + '...'}
+                {!showFullText && text.length > MAX_CHARS && (
+                  <button onClick={() => setShowFullText(true)}>더보기</button>
+                )}
+              </Introduction>
 
-          <ProfileEdit type='button'>프로필 수정</ProfileEdit>
+              <ProfileEdit type='button'>프로필 수정</ProfileEdit>
+            </>
+          )}
         </User>
 
         <Tabs>

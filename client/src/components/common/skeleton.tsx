@@ -14,25 +14,33 @@ interface ISkeletonProps {
   width: string;
   height: string;
   $borderradius?: string;
+  $margin?: string;
 }
 
 const SkeletonElement = styled.div<ISkeletonProps>`
   height: ${({ height }) => height};
   width: ${({ width }) => width};
   border-radius: ${({ $borderradius }) => $borderradius};
+  margin: ${({ $margin }) => $margin};
   background: linear-gradient(90deg, #1e1e1e 35%, #0a0a0a 50%, #151515 65%);
   /* background-size: 200px 100%; */
   background-size: 300% auto;
   animation: ${skeletonAnimation} 2s infinite linear;
 `;
 
-const Skeleton = ({ width, height, $borderradius }: ISkeletonProps) => {
+const Skeleton = ({
+  width,
+  height,
+  $borderradius,
+  $margin,
+}: ISkeletonProps) => {
   return (
     <div>
       <SkeletonElement
         width={width}
         height={height}
         $borderradius={$borderradius}
+        $margin={$margin}
       />
     </div>
   );
