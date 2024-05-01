@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useUser } from 'hook/auth/use-user';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CiBookmark, CiViewList } from 'react-icons/ci';
@@ -127,18 +128,9 @@ const TabIndicator = styled.div<{ activeTab: number | undefined }>`
   top: 0;
   left: ${({ activeTab }) => `${activeTab}px`};
   background-color: rgb(245, 245, 245);
-  transition: left 400ms ease;
+  transition: left 400ms ease-in-out;
   width: 65px;
   height: 1px;
-`;
-
-const ImgWrapper = styled.div``;
-
-const Img = styled.img`
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1;
-  cursor: pointer;
 `;
 
 const MAX_CHARS = 100;
@@ -188,7 +180,6 @@ const MyPage = () => {
 
   const onChangeCurrentTap = (e: any, tabName: string) => {
     const activeNumber = e.currentTarget.offsetLeft;
-
     setActiveTab(activeNumber);
 
     setSearchParams({
@@ -277,11 +268,31 @@ const MyPage = () => {
           <TabIndicator activeTab={activeTab} />
         </Tabs>
 
-        <ImgWrapper>
+        {query === '게시물' && (
+          <motion.div
+            initial={{ x: 300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -300, opacity: 0 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+          >
+            <MyPagePosts />
+          </motion.div>
+        )}
+        {query === '북마크' && (
+          <motion.div
+            initial={{ x: -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 300, opacity: 0 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+          >
+            <MyPageBookMark />
+          </motion.div>
+        )}
+        {/* <ImgWrapper>
           {query === '게시물' && <MyPagePosts />}
 
           {query === '북마크' && <MyPageBookMark />}
-        </ImgWrapper>
+        </ImgWrapper> */}
       </Wrapper>
     </Container>
   );
