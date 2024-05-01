@@ -6,7 +6,15 @@ export type PostsDataType = {
   contents: string;
   date: string;
   images: string[];
+  postCommentCount: number;
   postLikeCount: number;
   __v: number;
   _id: string;
 };
+
+export interface IPostsResponse {
+  page: number;
+  posts: PostsDataType[];
+  totalCount: number;
+  totalPage: number;
+}

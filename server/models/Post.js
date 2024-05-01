@@ -15,6 +15,10 @@ const PostSchema = new Schema({
     type: Number,
     default: 0,
   },
+  postCommentCount: {
+    type: Number,
+    default: 0,
+  },
 
   date: {
     type: Date,

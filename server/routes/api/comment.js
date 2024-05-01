@@ -20,6 +20,7 @@ router.post('/', auth, async (req, res) => {
 
   try {
     const user = await User.findById(req.user.id).select('-password');
+    const post = await Post.findById(postId);
 
     if (postId) {
       const newComment = new Comment({
@@ -27,6 +28,9 @@ router.post('/', auth, async (req, res) => {
         user: user._id,
         post: postId,
       });
+      post.postCommentCount += 1;
+      await post.save();
+
       const comment = await newComment.save();
       return res.json(comment);
     } else {
@@ -120,6 +124,9 @@ router.delete('/:id', auth, async (req, res) => {
       }
       // 댓글 삭제 및 댓글 좋아요 삭제
       await Comment.findByIdAndDelete(commentId);
+      post.postCommentCount -= 1;
+      await post.save();
+
       await CommentLike.deleteMany({ comment: commentId });
       return res.status(200).json({ msg: '댓글이 성공적으로 삭제되었습니다.' });
     } else {

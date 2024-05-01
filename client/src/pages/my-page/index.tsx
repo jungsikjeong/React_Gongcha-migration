@@ -1,18 +1,17 @@
 import { useUser } from 'hook/auth/use-user';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AiTwotoneHeart } from 'react-icons/ai';
-import { useSearchParams } from 'react-router-dom';
+import { CiBookmark, CiViewList } from 'react-icons/ci';
+import { IoIosArrowBack } from 'react-icons/io';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import uuid from 'react-uuid';
 import styled from 'styled-components';
 
 import { dataURItoFile } from 'components/uitls/data-url-to-file';
 import useImageCompress from 'hook/use-image-compress';
-import { CiBookmark, CiViewList } from 'react-icons/ci';
-import { IoChatbubbleOutline } from 'react-icons/io5';
 
 import Button from 'components/common/button';
-import FlexBox from 'components/common/flex-box';
 import ImageCropper from 'components/common/image-cropper';
+import MyPagePosts from './my-page-posts';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -26,9 +25,26 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
+  position: relative;
   max-width: 935px;
   margin: 0 auto;
-  /* padding: 0 20px; */
+`;
+
+const BackButton = styled.div`
+  position: absolute;
+  top: 2rem;
+  left: 1rem;
+  font-size: 30px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  @media (max-width: 768px) {
+    top: -4rem;
+  }
 `;
 
 const User = styled.div`
@@ -115,59 +131,13 @@ const TabIndicator = styled.div<{ activeTab: number | undefined }>`
   height: 1px;
 `;
 
-const ImgWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-`;
-
-const Box = styled.div`
-  position: relative;
-`;
+const ImgWrapper = styled.div``;
 
 const Img = styled.img`
   width: 100%;
   height: 100%;
   aspect-ratio: 1;
   cursor: pointer;
-`;
-
-const HoverBox = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-  font-weight: bold;
-  z-index: 10;
-  background-color: rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-
-  .icons {
-    font-size: 30px;
-    margin-right: 2px;
-    @media (max-width: 768px) {
-      font-size: 20px;
-    }
-  }
-
-  .chat-icon {
-    font-size: 25px;
-    transform: scaleX(-1);
-    @media (max-width: 768px) {
-      font-size: 20px;
-    }
-  }
-
-  span {
-    @media (max-width: 768px) {
-      font-size: 12px;
-    }
-  }
 `;
 
 const MAX_CHARS = 100;
@@ -181,11 +151,12 @@ const MyPage = () => {
   const [compressedImages, setCompressedImages] = useState<string>();
   const [showFullText, setShowFullText] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { isLoading: isCompressLoading, compressImage } = useImageCompress();
+
+  const navigate = useNavigate();
 
   const query = searchParams.get('currentTab') || '게시물';
 
@@ -256,6 +227,9 @@ const MyPage = () => {
   return (
     <Container>
       <Wrapper>
+        <BackButton onClick={() => navigate('/')}>
+          <IoIosArrowBack />
+        </BackButton>
         <User>
           <ImageCropper
             profileImg={true}
@@ -303,75 +277,7 @@ const MyPage = () => {
         </Tabs>
 
         <ImgWrapper>
-          {query === '게시물' && (
-            <>
-              <Box
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                <Img
-                  src='https://i.pinimg.com/236x/40/31/be/4031bef5b93956ce2163728fc1dc3015.jpg'
-                  alt=''
-                />
-                {isHovered && (
-                  <HoverBox className='hover-box'>
-                    <FlexBox
-                      style={{ width: '100%', height: '100%' }}
-                      $alignItems='center'
-                      $justifyContent='center'
-                      $gap='4px'
-                    >
-                      <AiTwotoneHeart className='icons' /> <span>11.5만</span>
-                      <IoChatbubbleOutline className='icons chat-icon' />{' '}
-                      <span>396</span>
-                    </FlexBox>
-                  </HoverBox>
-                )}
-              </Box>
-              <Box>
-                <Img
-                  src='https://i.pinimg.com/236x/40/74/62/4074624713d1962ee9ad10bcab4ae1d2.jpg'
-                  alt=''
-                />
-              </Box>
-              <Box>
-                <Img
-                  src='https://i.pinimg.com/236x/40/31/be/4031bef5b93956ce2163728fc1dc3015.jpg'
-                  alt=''
-                />
-              </Box>
-              <Box>
-                <Img
-                  src='https://i.pinimg.com/236x/40/74/62/4074624713d1962ee9ad10bcab4ae1d2.jpg'
-                  alt=''
-                />
-              </Box>
-              <Box>
-                <Img
-                  src='https://i.pinimg.com/236x/40/31/be/4031bef5b93956ce2163728fc1dc3015.jpg'
-                  alt=''
-                />
-              </Box>
-              <Box>
-                <Img
-                  src='https://i.pinimg.com/236x/40/74/62/4074624713d1962ee9ad10bcab4ae1d2.jpg'
-                  alt=''
-                />
-              </Box>
-              <Box>
-                <Img
-                  src='https://i.pinimg.com/236x/40/31/be/4031bef5b93956ce2163728fc1dc3015.jpg'
-                  alt=''
-                />
-              </Box>
-              <Box>
-                <Img
-                  src='https://i.pinimg.com/236x/40/74/62/4074624713d1962ee9ad10bcab4ae1d2.jpg'
-                  alt=''
-                />
-              </Box>
-            </>
-          )}
+          {query === '게시물' && <MyPagePosts />}
 
           {query === '북마크' && (
             <>
