@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AiTwotoneHeart } from 'react-icons/ai';
 import { IoChatbubbleOutline } from 'react-icons/io5';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { postDetailModalStatus } from 'atom/post-detail-modal-atoms';
 import useIntersectionObserver from 'hook/use-intersection-observer';
 import { formattedNumber } from 'utils/formatted-number';
 import useFetchMyPosts from '../hook/use-fetch-my-posts';
@@ -10,6 +12,7 @@ import useFetchMyPosts from '../hook/use-fetch-my-posts';
 import FlexBox from 'components/common/flex-box';
 import Skeleton from 'components/common/skeleton';
 import NotFound from 'components/not-found';
+import PostDetailModal from 'components/post-detail-modal';
 
 const Container = styled.div`
   display: grid;
@@ -83,10 +86,15 @@ const SKELETONS = Array(10).fill(0);
 
 const MyPagePosts = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [postId, setPostId] = useState('');
 
   const ref = useRef<HTMLDivElement | null>(null);
   const pageRef = useIntersectionObserver(ref, {});
   const isPageEnd = !!pageRef?.isIntersecting; // 페이지 끝에도달
+
+  const [postDetailModal, setPostDetailModal] = useRecoilState(
+    postDetailModalStatus
+  );
 
   const {
     data: postsResponse,
@@ -131,12 +139,18 @@ const MyPagePosts = () => {
         ))
       ) : (
         <>
+          {postDetailModal && <PostDetailModal postId={postId} />}
+
           {postsResponse?.pages?.map((data) =>
             data?.posts?.map((post) => (
               <Box
                 key={post._id}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
+                onClick={() => {
+                  setPostDetailModal(true);
+                  setPostId(post._id);
+                }}
               >
                 <Img src={post.images[0]} alt='post-img' />
                 {isHovered && (
