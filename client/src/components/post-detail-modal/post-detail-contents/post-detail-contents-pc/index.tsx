@@ -14,6 +14,7 @@ import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { commentFormStatus } from 'atom/comment-atoms';
+import usePostBookmark from 'components/post-detail-modal/hook/use-post-bookmark';
 import usePostLikePost from 'components/post-detail-modal/hook/use-post-like-post';
 
 import CommentForm from 'components/comments/comment-form';
@@ -136,6 +137,7 @@ interface IPostDetailContents {
   fetchNext: () => Promise<void>;
   user: IUserInfo | null | undefined;
   isPostLike: boolean | undefined;
+  isBookmark: boolean | undefined;
 }
 
 const skeletons = Array(12).fill(0);
@@ -150,17 +152,26 @@ const PostDetailContentsPC = ({
   hasNextPage,
   isFetchingNextPage,
   isPostLike,
+  isBookmark,
 }: IPostDetailContents) => {
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
-  const test = false;
 
   const { mutate: updateLike } = usePostLikePost(post?._id as string, user);
+  const { mutate: updateBookmark } = usePostBookmark(post?._id as string, user);
 
   const handlePostLike = () => {
     if (!user) {
       toast.warning('로그인이 필요한 서비스입니다.');
     } else {
       updateLike({ postId: post?._id as string });
+    }
+  };
+
+  const handlePostBookmark = () => {
+    if (!user) {
+      toast.warning('로그인이 필요한 서비스입니다.');
+    } else {
+      updateBookmark({ postId: post?._id as string });
     }
   };
 
@@ -268,8 +279,11 @@ const PostDetailContentsPC = ({
               <IoChatbubbleOutline />
             </div>
 
-            <div className='bookmark section-icons'>
-              {test ? <FaBookmark /> : <CiBookmark />}
+            <div
+              className='bookmark section-icons'
+              onClick={handlePostBookmark}
+            >
+              {isBookmark ? <FaBookmark /> : <CiBookmark />}
             </div>
           </Section>
           <span>

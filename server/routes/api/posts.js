@@ -7,6 +7,7 @@ const { imageUpload } = require('../../middleware/file-upload');
 
 const Post = require('../../models/Post');
 const PostLike = require('../../models/PostLike');
+const Bookmark = require('../../models/Bookmark');
 const User = require('../../models/User');
 
 // @route   POST api/posts/upload
@@ -258,6 +259,82 @@ router.put('/like/:postId', auth, async (req, res) => {
       return res.json({ msg: '좋아요가 추가되었습니다.' });
     }
   } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/posts/bookmark/:postId
+// @desc    게시글 북마크 확인
+// @access  Private
+router.get('/bookmark/:postId', auth, async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.user.id;
+
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
+    }
+
+    const user = await User.findById(req.user.id).select('-password');
+
+    // 게시글 북마크 눌렀는지 체크
+    const existingBookmark = await Bookmark.findOne({
+      user: user._id,
+      post: post._id,
+    });
+    // 좋아요를 눌렀으면 true를 반환
+    if (existingBookmark) {
+      return res.status(200).json(true);
+    } else {
+      return res.status(200).json(false);
+    }
+  } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   PUT api/posts/bookmark/:postId
+// @desc    게시글 북마크 누르기
+// @access  Private
+router.put('/bookmark/:postId', auth, async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.user.id;
+
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
+    }
+
+    const user = await User.findById(req.user.id).select('-password');
+
+    // 게시글 북마크 눌렀는지 체크
+    const existingBookmark = await Bookmark.findOne({
+      user: user._id,
+      post: post._id,
+    });
+
+    if (existingBookmark) {
+      // 이미 눌렀다면 취소
+      await Bookmark.findByIdAndDelete(existingBookmark._id);
+
+      return res.json({ msg: '북마크가 취소되었습니다.' });
+    } else {
+      // 해당 유저가 누르지 않은 경우에만 북마크 추가
+      const newBookmark = new Bookmark({ user: userId, post: postId });
+      await newBookmark.save();
+
+      return res.json({ msg: '북마크가 추가되었습니다.' });
+    }
+  } catch (err) {
+    console.log(err);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
     }

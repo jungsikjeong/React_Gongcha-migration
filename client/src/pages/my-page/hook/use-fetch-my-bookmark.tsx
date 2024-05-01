@@ -1,18 +1,18 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import instance from 'api/instance';
-import { IPostsResponse } from 'interface/posts';
+import { IBookmarkResponse } from 'interface/bookmark';
 import { useEffect } from 'react';
 import { myPageKey } from 'react-query-key/my-page';
 import { toast } from 'react-toastify';
 
-const fetchMyPosts = async (pageParam: number) => {
-  const res = await instance.get<IPostsResponse>(
-    `/api/myPage/?page=${pageParam}`
+const fetchMyBookmark = async (pageParam: number) => {
+  const res = await instance.get<IBookmarkResponse>(
+    `/api/myPage/bookmarks/?page=${pageParam}`
   );
   return res.data;
 };
 
-const useFetchMyPosts = () => {
+const useFetchMyBookmark = () => {
   const {
     fetchNextPage,
     isFetching,
@@ -22,8 +22,8 @@ const useFetchMyPosts = () => {
     data,
     error,
   } = useInfiniteQuery({
-    queryKey: [myPageKey.myPosts],
-    queryFn: ({ pageParam = 1 }) => fetchMyPosts(pageParam),
+    queryKey: [myPageKey.myBookmark],
+    queryFn: ({ pageParam = 1 }) => fetchMyBookmark(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       return lastPage.posts?.length > 0 && lastPage.page !== lastPage.totalPage
@@ -49,4 +49,4 @@ const useFetchMyPosts = () => {
   };
 };
 
-export default useFetchMyPosts;
+export default useFetchMyBookmark;

@@ -6,6 +6,7 @@ import styled, { keyframes } from 'styled-components';
 import { useUser } from 'hook/auth/use-user';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 import useFetchCommentList from '../../hook/comments/use-fetch-comment-list';
+import useFetchPostBookmark from './hook/use-fetch-post-bookmark';
 import useFetchPostDetail from './hook/use-fetch-post-detail';
 import useFetchPostLike from './hook/use-fetch-post-like';
 
@@ -92,6 +93,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
 
   const { data: post, isLoading: postLoading } = useFetchPostDetail(postId);
   const { data: isPostLike } = useFetchPostLike(postId);
+  const { data: isBookmark } = useFetchPostBookmark(postId);
   const {
     data: commentListResponse,
     isLoading: commentListLoading,
@@ -172,6 +174,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
             postLoading={postLoading}
             user={user}
             isPostLike={isPostLike}
+            isBookmark={isBookmark}
           />
         ) : (
           <PostDetailContentsPC
@@ -184,6 +187,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
             hasNextPage={hasNextPage}
             isFetchingNextPage={isFetchingNextPage}
             isPostLike={isPostLike}
+            isBookmark={isBookmark}
           />
         )}
       </Wrapper>

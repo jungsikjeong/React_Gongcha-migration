@@ -14,6 +14,7 @@ import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { commentFormStatus } from 'atom/comment-atoms';
+import usePostBookmark from 'components/post-detail-modal/hook/use-post-bookmark';
 
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import PostHeader from 'components/common/post-header';
@@ -124,6 +125,7 @@ interface IPostDetailContents {
   postLoading: boolean;
   user: IUserInfo | null | undefined;
   isPostLike: boolean | undefined;
+  isBookmark: boolean | undefined;
 }
 
 const PostDetailContentsMobile = ({
@@ -133,10 +135,12 @@ const PostDetailContentsMobile = ({
   commentListLoading,
   postLoading,
   isPostLike,
+  isBookmark,
 }: IPostDetailContents) => {
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
 
   const { mutate: updateLike } = usePostLikePost(post?._id as string, user);
+  const { mutate: updateBookmark } = usePostBookmark(post?._id as string, user);
 
   const handlePostLike = () => {
     if (!user) {
@@ -145,7 +149,14 @@ const PostDetailContentsMobile = ({
       updateLike({ postId: post?._id as string });
     }
   };
-  const test = false;
+
+  const handlePostBookmark = () => {
+    if (!user) {
+      toast.warning('로그인이 필요한 서비스입니다.');
+    } else {
+      updateLike({ postId: post?._id as string });
+    }
+  };
   return (
     <Container>
       <PostHeader text='게시물' />
@@ -186,8 +197,12 @@ const PostDetailContentsMobile = ({
                 <IoChatbubbleOutline />
               </div>
             </Link>
-            <div className='bookmark section-icons'>
-              {test ? <FaBookmark /> : <CiBookmark />}
+
+            <div
+              className='bookmark section-icons'
+              onClick={handlePostBookmark}
+            >
+              {isBookmark ? <FaBookmark /> : <CiBookmark />}
             </div>
           </Section>
 

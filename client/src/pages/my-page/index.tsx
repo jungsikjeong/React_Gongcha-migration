@@ -11,6 +11,7 @@ import useImageCompress from 'hook/use-image-compress';
 
 import Button from 'components/common/button';
 import ImageCropper from 'components/common/image-cropper';
+import MyPageBookMark from './my-page-bookmark';
 import MyPagePosts from './my-page-posts';
 
 const Container = styled.div`
@@ -279,14 +280,7 @@ const MyPage = () => {
         <ImgWrapper>
           {query === '게시물' && <MyPagePosts />}
 
-          {query === '북마크' && (
-            <>
-              <Img
-                src='https://i.pinimg.com/236x/40/74/62/4074624713d1962ee9ad10bcab4ae1d2.jpg'
-                alt=''
-              />
-            </>
-          )}
+          {query === '북마크' && <MyPageBookMark />}
         </ImgWrapper>
       </Wrapper>
     </Container>

@@ -5,4 +5,5 @@ export const postsKey = {
 export const postDetailKey = {
   post: 'post',
   postLike: 'postLike',
+  postBookmark: 'postBookmark',
 };

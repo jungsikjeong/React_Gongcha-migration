@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { postDetailModalStatus } from 'atom/post-detail-modal-atoms';
 import useIntersectionObserver from 'hook/use-intersection-observer';
 import { formattedNumber } from 'utils/formatted-number';
-import useFetchMyPosts from '../hook/use-fetch-my-posts';
+import useFetchMyBookmark from '../hook/use-fetch-my-bookmark';
 
 import FlexBox from 'components/common/flex-box';
 import Skeleton from 'components/common/skeleton';
@@ -84,7 +84,7 @@ const Spinner = styled.div`
 
 const SKELETONS = Array(10).fill(0);
 
-const MyPagePosts = () => {
+const MyPageBookMark = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [postId, setPostId] = useState('');
 
@@ -103,7 +103,7 @@ const MyPagePosts = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useFetchMyPosts();
+  } = useFetchMyBookmark();
 
   const fetchNext = useCallback(async () => {
     const res = await fetchNextPage();
@@ -127,14 +127,10 @@ const MyPagePosts = () => {
     };
   }, [fetchNext, isPageEnd, hasNextPage]);
 
-  if (
-    !isLoading &&
-    postsResponse &&
-    postsResponse.pages[0].posts.length === 0
-  ) {
+  if (!isLoading && postsResponse?.pages[0].posts.length === 0) {
     return (
       <Typography tag='p' paddingTop='5rem' textAlign='center'>
-        아직 작성한 게시물이 없습니다.
+        아직 저장된 게시물이 없습니다.
       </Typography>
     );
   }
@@ -150,17 +146,17 @@ const MyPagePosts = () => {
           {postDetailModal && <PostDetailModal postId={postId} />}
 
           {postsResponse?.pages?.map((data) =>
-            data?.posts?.map((post) => (
+            data?.posts?.map((data) => (
               <Box
-                key={post._id}
+                key={data._id}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 onClick={() => {
                   setPostDetailModal(true);
-                  setPostId(post._id);
+                  setPostId(data?.post?._id);
                 }}
               >
-                <Img src={post?.images?.[0]} alt='post-img' />
+                <Img src={data?.post?.images[0]} alt='post-img' />
                 {isHovered && (
                   <HoverBox className='hover-box'>
                     <FlexBox
@@ -171,11 +167,13 @@ const MyPagePosts = () => {
                     >
                       {/* 좋아요 */}
                       <CiHeart className='icons' />{' '}
-                      <span>{formattedNumber(post?.postLikeCount || 0)}</span>
+                      <span>
+                        {formattedNumber(data?.post?.postLikeCount || 0)}
+                      </span>
                       {/* 댓글 */}
                       <IoChatbubbleOutline className='icons chat-icon' />
                       <span>
-                        {formattedNumber(post?.postCommentCount || 0)}
+                        {formattedNumber(data?.post?.postCommentCount || 0)}
                       </span>
                     </FlexBox>
                   </HoverBox>
@@ -203,4 +201,4 @@ const MyPagePosts = () => {
   );
 };
 
-export default MyPagePosts;
+export default MyPageBookMark;
