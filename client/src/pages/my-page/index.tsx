@@ -98,13 +98,13 @@ const Tabs = styled.ul`
   font-weight: 600;
 `;
 
-const Tab = styled.li<{ clicked: string }>`
+const Tab = styled.li<{ $clicked: string }>`
   gap: 5px;
   font-size: 14px;
-  border-top: ${({ clicked }) =>
-    clicked ? ' 1px solid rgb(245, 245, 245)' : ''};
-  color: ${({ clicked }) =>
-    clicked ? 'rgb(245, 245, 245)' : 'rgb(168, 168, 168)'};
+  border-top: ${({ $clicked }) =>
+    $clicked ? ' 1px solid rgb(245, 245, 245)' : ''};
+  color: ${({ $clicked }) =>
+    $clicked ? 'rgb(245, 245, 245)' : 'rgb(168, 168, 168)'};
   cursor: pointer;
   height: 52px;
   display: flex;
@@ -207,7 +207,7 @@ const MyPage = () => {
           <Tab
             ref={tab1Ref}
             onClick={(e) => onChangeCurrentTap(e, '게시물')}
-            clicked={query && query === '게시물' ? 'true' : ''}
+            $clicked={query && query === '게시물' ? 'true' : ''}
           >
             <CiViewList />
             게시물
@@ -215,7 +215,7 @@ const MyPage = () => {
           <Tab
             ref={tab2Ref}
             onClick={(e) => onChangeCurrentTap(e, '북마크')}
-            clicked={query && query === '북마크' ? 'true' : ''}
+            $clicked={query && query === '북마크' ? 'true' : ''}
           >
             <CiBookmark /> 북마크
           </Tab>

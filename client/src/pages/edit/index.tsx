@@ -213,7 +213,7 @@ const SButton = styled(Button)<{ disabled: boolean }>`
 `;
 
 const EditPage = () => {
-  const { user, isLoading: userLoading } = useUser();
+  const { user } = useUser();
 
   const [uuId, setUuId] = useState<string>('');
   const [uploadImage, setUploadImage] = useState<string | null>(null);
@@ -230,7 +230,7 @@ const EditPage = () => {
   const introduction = watch('introduction');
   const password = watch('password');
 
-  const { mutate, isPending } = usePostEditProfile(user);
+  const { mutate, isPending } = usePostEditProfile();
 
   const onSubmit: SubmitHandler<IEditMyProfile> = async (
     data: IEditMyProfile
@@ -286,6 +286,7 @@ const EditPage = () => {
       handleCompressImage();
     }
   }, [uploadImage, uuid]);
+
   return (
     <Container>
       <Wrapper>
@@ -402,12 +403,14 @@ const EditPage = () => {
             <SButton
               type='submit'
               disabled={
-                isCompressLoading || Object.keys(errors).length !== 0
+                isCompressLoading ||
+                Object.keys(errors).length !== 0 ||
+                !(nickname || introduction || password)
                   ? true
                   : false
               }
             >
-              {isCompressLoading ? (
+              {isCompressLoading || isPending ? (
                 <img src='/spinner.svg' alt='loading' className='spinner' />
               ) : (
                 '제출'

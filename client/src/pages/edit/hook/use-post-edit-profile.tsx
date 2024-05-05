@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import instance from 'api/instance';
-import { IUserInfo } from 'interface/auth';
 import { userKey } from 'react-query-key/auth.keys';
 import { toast } from 'react-toastify';
 
@@ -31,7 +30,7 @@ const postUserEdit = async (body: IBodyProps) => {
 };
 
 // 게시글 좋아요 뮤테이션
-const usePostEditProfile = (user: IUserInfo | null | undefined) => {
+const usePostEditProfile = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -40,11 +39,11 @@ const usePostEditProfile = (user: IUserInfo | null | undefined) => {
 
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: [userKey.user, user],
+        queryKey: [userKey.user],
         refetchType: 'all',
       });
 
-      window.location.reload();
+      // window.location.reload();
       toast.success('프로필이 업데이트 되었습니다.');
     },
     onError: (error: any) => {
