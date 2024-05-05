@@ -7,6 +7,7 @@ const Text = styled(motion.div)`
   letter-spacing: -1px;
   margin-top: 1rem;
   font-size: 15px;
+  text-align: center;
 `;
 
 interface IErrorText {

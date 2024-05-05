@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import instance from 'api/instance';
 import { PostsDataType } from 'interface/posts';
 import { useEffect } from 'react';
-import { postDetailKey } from 'react-query-key/post.key';
+import { postDetailKey } from 'react-query-key/post.keys';
 import { toast } from 'react-toastify';
 
 const fetchPost = async (id: string) => {

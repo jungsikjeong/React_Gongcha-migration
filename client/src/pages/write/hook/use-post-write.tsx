@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import instance from 'api/instance';
-import { myPageKey } from 'react-query-key/my-page';
-import { postsKey } from 'react-query-key/post.key';
+import { myPageKey } from 'react-query-key/my-page-keys';
+import { postsKey } from 'react-query-key/post.keys';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 

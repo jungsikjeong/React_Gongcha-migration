@@ -4,7 +4,7 @@ import { Cropper, ReactCropperElement } from 'react-cropper';
 import { toast } from 'react-toastify';
 import styled, { css } from 'styled-components';
 
-const Container = styled.div<{ profileImg: string }>`
+const Container = styled.div<{ profileimg: string }>`
   z-index: 10;
   position: fixed;
   left: 0;
@@ -17,16 +17,16 @@ const Container = styled.div<{ profileImg: string }>`
 
   .cropper-crop-box,
   .cropper-view-box {
-    ${({ profileImg }) =>
-      profileImg &&
+    ${({ profileimg }) =>
+      profileimg &&
       css`
         border-radius: 50%;
       `}
   }
 
   .cropper-view-box {
-    ${({ profileImg }) =>
-      profileImg &&
+    ${({ profileimg }) =>
+      profileimg &&
       css`
         box-shadow: 0 0 0 1px #39f;
         outline: 0;
@@ -162,7 +162,7 @@ const ImageCropper = ({
       />
       <span onClick={handleChildrenClick}>{children}</span>
       {image && (
-        <Container profileImg={profileImg === true ? 'true' : ''}>
+        <Container profileimg={profileImg === true ? 'true' : ''}>
           <BackDrop />
           <Wrapper>
             <h3 className='title'>이미지 편집하기</h3>

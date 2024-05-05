@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import instance from 'api/instance';
 import { IUserInfo } from 'interface/auth';
-import { postDetailKey } from 'react-query-key/post.key';
+import { postDetailKey } from 'react-query-key/post.keys';
 import { toast } from 'react-toastify';
 
 interface IPostLikeProps {

@@ -279,6 +279,7 @@ const PostDetailContentsPC = ({
               <IoChatbubbleOutline />
             </div>
 
+            {/* 게시글 북마크 */}
             <div
               className='bookmark section-icons'
               onClick={handlePostBookmark}

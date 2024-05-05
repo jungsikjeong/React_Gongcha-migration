@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { fetchPosts } from 'api/fetch-posts';
 import useIntersectionObserver from 'hook/use-intersection-observer';
-import { postsKey } from 'react-query-key/post.key';
+import { postsKey } from 'react-query-key/post.keys';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 
 import Loading from 'components/common/loading';

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import instance from 'api/instance';
 import { useEffect } from 'react';
-import { postDetailKey } from 'react-query-key/post.key';
+import { postDetailKey } from 'react-query-key/post.keys';
 import { toast } from 'react-toastify';
 
 const fetchPostBookmark = async (postId: string) => {

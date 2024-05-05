@@ -4,6 +4,7 @@ export interface IUserInfo {
   email: string;
   nickname: string;
   postLikes: string[];
+  introduction: string;
   __v: number;
   _id: string;
 }
@@ -25,3 +26,10 @@ export type AuthorType = {
   nickname: string;
   _id: string;
 };
+
+export interface IEditMyProfile {
+  nickname?: string;
+  password?: string;
+  password2?: string;
+  introduction?: string;
+}

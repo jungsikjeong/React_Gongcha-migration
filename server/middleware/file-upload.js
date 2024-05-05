@@ -32,7 +32,13 @@ function createMulterStorage(bucketName, folderName) {
 }
 
 // 이미지 업로드를 위한 multer 설정 (게시글 이미지)
-const imageUpload = createMulterStorage('gong-cha', 'postImages/');
-const avatarUpload = createMulterStorage('gong-cha', 'avatarImages/');
+const imageUpload = createMulterStorage(
+  process.env.AWS_BUCKET_NAME,
+  'postImages/'
+);
+const avatarUpload = createMulterStorage(
+  process.env.AWS_BUCKET_NAME,
+  'avatarImages/'
+);
 
 module.exports = { imageUpload, avatarUpload };

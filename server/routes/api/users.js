@@ -5,11 +5,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const { body, validationResult } = require('express-validator');
+const { S3, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 const User = require('../../models/User');
 const Post = require('../../models/Post');
 const auth = require('../../middleware/auth');
-const upload = require('../../middleware/file-upload');
+const { avatarUpload } = require('../../middleware/file-upload');
 
 const generateAccessToken = require('../../utils/generate-access-token');
 
@@ -117,86 +118,76 @@ router.post(
 // @route   POST api/users/edit/avatar (프로필 이미지 편집)
 // @desc    AvatarChange user
 // @access  Private
-router.post('/edit/avatar', async (req, res) => {
-  // 프론트 에서 가져온 이미지를 저장을 해준다.
-  upload.avatarUpload(req, res, (err) => {
-    if (err) {
-      return res.json({ success: false, err });
-    }
-    if (!req.file) return res.send('Please upload a file');
+router.post(
+  '/edit/avatar',
+  auth,
+  (req, res, next) => {
+    avatarUpload.single('file')(req, res, function (err) {
+      if (err) {
+        console.log(err);
 
-    return res.json({
-      success: true,
-      filePath: res.req.file.location,
-      fileName: res.req.file.originalname,
+        return res.status(400).json({ msg: err });
+      }
+
+      if (!req.file || req.file.length === 0) {
+        return res
+          .status(400)
+          .json({ msg: '이미지를 하나 이상 업로드해주세요.' });
+      }
+
+      next();
     });
-  });
-});
+  },
+  (req, res) => {
+    res.status(201).json(req.file.location);
+  }
+);
 
 // @route   POST api/users/edit/ (유저 정보 변경)
 // @desc    User information change
 // @access  Private
 router.post('/edit/profile', auth, async (req, res) => {
-  const { name, avatar } = req.body;
+  const { nickname, avatar, password, introduction, password2 } = req.body;
 
   try {
-    let user = await User.findOne({ _id: req.user.id }).select('-password');
+    let user = await User.findById(req.user.id).select('-password');
 
-    if (user) {
-      // Update
-      const newUser = await User.findByIdAndUpdate(
-        user,
-        {
-          $set: {
-            name: name ? name : user.name,
-            avatar: avatar ? avatar : user.avatar,
-          },
-        },
-        { new: true }
-      )
-        .select('-password')
-        .exec();
-
-      return res.json(newUser);
-
-      // const post = await Post.findByIdAndUpdate(
-      //   user,
-      //   {
-      //     $set: {
-      //       user: req.user.id,
-      //     },
-      //   },
-      //   { multi: true, new: true }
-      // ).exec();
+    if (!user) {
+      return res.status(404).json({ msg: '해당 유저를 찾을 수 없습니다.' });
     }
+
+    if (password && password2) {
+      if (password !== password2) {
+        return res.status(400).json({ msg: '패스워드가 일치하지 않습니다.' });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+      await user.save();
+    }
+
+    if (avatar && user.avatar) {
+      const avatarKey = user.avatar.split('/').pop();
+
+      const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `avatarImages/${avatarKey}`,
+      };
+
+      // S3 객체 삭제
+      const s3Client = new S3();
+      await s3Client.send(new DeleteObjectCommand(params));
+    }
+
+    user.nickname = nickname || user.nickname;
+    user.avatar = avatar || user.avatar;
+    user.introduction = introduction || user.introduction;
+
+    await user.save();
+    res.json(user);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
 });
-
-// @route   GET api/users/profile/:user_id
-// @desc    사용자 ID로 프로필 가져 오기
-// @access  Public
-router.get('/profile/:user_id', async (req, res) => {
-  try {
-    const profile = await User.findById(req.params.user_id)
-      .select('-password')
-      .populate('posts', ['image', 'text']);
-
-    if (!profile)
-      return res.status(400).json({ msg: '프로필을 찾을 수 없습니다.' });
-
-    res.json(profile);
-  } catch (err) {
-    console.error(err.message);
-
-    // 경로로오는 user_id가 + - 면 발생하는 에러를 잡아줌
-    if (err.kind === 'ObjectId') {
-      return res.status(400).json({ msg: '프로필을 찾을 수 없습니다.' });
-    }
-    res.status(500).send('Server Error');
-  }
-});
-
 module.exports = router;

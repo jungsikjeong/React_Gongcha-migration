@@ -3,15 +3,10 @@ import { useUser } from 'hook/auth/use-user';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CiBookmark, CiViewList } from 'react-icons/ci';
 import { IoIosArrowBack } from 'react-icons/io';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import uuid from 'react-uuid';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { dataURItoFile } from 'components/uitls/data-url-to-file';
-import useImageCompress from 'hook/use-image-compress';
-
 import Button from 'components/common/button';
-import ImageCropper from 'components/common/image-cropper';
 import Skeleton from 'components/common/skeleton';
 import MyPageBookMark from './my-page-bookmark';
 import MyPagePosts from './my-page-posts';
@@ -63,7 +58,6 @@ const UserImage = styled.img`
   object-fit: cover;
   flex-shrink: 0;
   margin-right: 10px;
-
   cursor: pointer;
 `;
 
@@ -140,15 +134,10 @@ const MyPage = () => {
   const tab1Ref = useRef<HTMLLIElement>(null);
   const tab2Ref = useRef<HTMLLIElement>(null);
 
-  const [uploadImage, setUploadImage] = useState<string | null>(null);
-  const [uuId, setUuId] = useState<string>('');
-  const [compressedImages, setCompressedImages] = useState<string>();
   const [showFullText, setShowFullText] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const { isLoading: isCompressLoading, compressImage } = useImageCompress();
 
   const navigate = useNavigate();
 
@@ -157,27 +146,6 @@ const MyPage = () => {
   const { user, isLoading: userLoading } = useUser();
 
   const text = `안녕하세요!!`;
-
-  const handleCompressImage = async () => {
-    if (!uploadImage) return;
-
-    const imageFile = dataURItoFile(uploadImage);
-    // Blob객체를 리턴함
-    const compressedImage = await compressImage(imageFile);
-
-    // 이미지 서버 저장 로직
-    if (!compressedImage) return;
-    // setFileObject((prev) => [...prev, compressedImage]);
-
-    // Blob객체를 URL로만듦
-    const imageUrl = URL.createObjectURL(compressedImage);
-    setCompressedImages(imageUrl);
-  };
-
-  const handleUploadImage = (image: string) => {
-    setUuId(uuid());
-    setUploadImage(image);
-  };
 
   const onChangeCurrentTap = (e: any, tabName: string) => {
     const activeNumber = e.currentTarget.offsetLeft;
@@ -211,12 +179,6 @@ const MyPage = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [tab1Ref, tab2Ref, query, activeTab, handleResize]);
 
-  useEffect(() => {
-    if (uploadImage) {
-      handleCompressImage();
-    }
-  }, [uploadImage, uuid]);
-
   return (
     <Container>
       <Wrapper>
@@ -231,16 +193,7 @@ const MyPage = () => {
             </>
           ) : (
             <>
-              <ImageCropper
-                profileImg={true}
-                onCrop={handleUploadImage}
-                aspectRatio={1 / 1}
-              >
-                <UserImage
-                  src={compressedImages ? compressedImages : user?.avatar}
-                  alt=''
-                />
-              </ImageCropper>
+              <UserImage src={user?.avatar} alt='' />
 
               <Nickname>{user?.nickname}</Nickname>
 
@@ -253,7 +206,9 @@ const MyPage = () => {
                 )}
               </Introduction>
 
-              <ProfileEdit type='button'>프로필 수정</ProfileEdit>
+              <ProfileEdit type='button'>
+                <Link to={`/edit/${user?._id}`}>프로필 수정</Link>
+              </ProfileEdit>
             </>
           )}
         </User>

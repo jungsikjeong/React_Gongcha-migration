@@ -130,7 +130,7 @@ const MyPagePosts = () => {
   if (
     !isLoading &&
     postsResponse &&
-    postsResponse.pages[0].posts.length === 0
+    postsResponse?.pages[0]?.posts?.length === 0
   ) {
     return (
       <Typography tag='p' paddingTop='5rem' textAlign='center'>

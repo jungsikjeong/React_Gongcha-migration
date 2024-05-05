@@ -94,7 +94,6 @@ const Login = () => {
     register,
     handleSubmit,
     setError,
-
     formState: { errors },
   } = useForm<ILogin>();
 

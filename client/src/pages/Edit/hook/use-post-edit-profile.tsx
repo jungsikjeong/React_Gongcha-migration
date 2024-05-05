@@ -1,21 +1,23 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import instance from 'api/instance';
 import { IUserInfo } from 'interface/auth';
-import { myPageKey } from 'react-query-key/my-page-keys';
-import { postDetailKey } from 'react-query-key/post.keys';
+import { userKey } from 'react-query-key/auth.keys';
 import { toast } from 'react-toastify';
 
-interface IPostBookmark {
-  postId: string;
+interface IBodyProps {
+  avatar?: string;
+  password?: string;
+  nickname?: string;
 }
 
 interface ICustomResponse<T, U> {
   data: T;
   msg?: U;
 }
-const postBookmark = async ({ postId }: IPostBookmark) => {
-  const res: ICustomResponse<string, any> = await instance.put<string>(
-    `/api/posts/bookmark/${postId}`
+const postUserEdit = async (body: IBodyProps) => {
+  const res: ICustomResponse<string, any> = await instance.post(
+    `/api/users/edit/profile`,
+    body
   );
 
   if (res.msg === '리프레시 토큰 만료됨') {
@@ -29,29 +31,21 @@ const postBookmark = async ({ postId }: IPostBookmark) => {
 };
 
 // 게시글 좋아요 뮤테이션
-const usePostBookmark = (
-  postId: string,
-  user: IUserInfo | null | undefined
-) => {
+const usePostEditProfile = (user: IUserInfo | null | undefined) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: postBookmark,
-    mutationKey: ['post-bookmark'],
+    mutationFn: postUserEdit,
+    mutationKey: ['user-edit'],
 
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: [postDetailKey.post, postId],
+        queryKey: [userKey.user, user],
         refetchType: 'all',
       });
-      queryClient.invalidateQueries({
-        queryKey: [postDetailKey.postBookmark],
-        refetchType: 'all',
-      });
-      queryClient.invalidateQueries({
-        queryKey: [myPageKey.myBookmark],
-        refetchType: 'all',
-      });
+
+      window.location.reload();
+      toast.success('프로필이 업데이트 되었습니다.');
     },
     onError: (error: any) => {
       console.log('error:', error);
@@ -59,10 +53,10 @@ const usePostBookmark = (
       if (error?.response?.status === 401) {
         setTimeout(() => {
           window.location.reload();
-        }, 1200);
+        }, 500);
       }
     },
   });
 };
 
-export default usePostBookmark;
+export default usePostEditProfile;

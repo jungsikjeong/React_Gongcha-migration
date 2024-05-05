@@ -127,7 +127,7 @@ const MyPageBookMark = () => {
     };
   }, [fetchNext, isPageEnd, hasNextPage]);
 
-  if (!isLoading && postsResponse?.pages[0].posts.length === 0) {
+  if (!isLoading && postsResponse?.pages[0]?.posts?.length === 0) {
     return (
       <Typography tag='p' paddingTop='5rem' textAlign='center'>
         아직 저장된 게시물이 없습니다.
