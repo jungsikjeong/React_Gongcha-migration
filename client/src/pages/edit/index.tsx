@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { IoIosArrowBack } from 'react-icons/io';
 import { LuPlus } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 import uuid from 'react-uuid';
 import styled from 'styled-components';
 
@@ -213,6 +215,7 @@ const SButton = styled(Button)<{ disabled: boolean }>`
 `;
 
 const EditPage = () => {
+  const navigate = useNavigate();
   const { user } = useUser();
 
   const [uuId, setUuId] = useState<string>('');
@@ -290,9 +293,17 @@ const EditPage = () => {
   return (
     <Container>
       <Wrapper>
-        <Typography tag='h3' padding='1rem 0'>
-          프로필 편집
-        </Typography>
+        <FlexBox $alignItems='center'>
+          <IoIosArrowBack
+            size={30}
+            style={{ cursor: 'pointer' }}
+            onClick={() => navigate(-1)}
+          />
+
+          <Typography tag='h3' padding='1rem 0'>
+            프로필 편집
+          </Typography>
+        </FlexBox>
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Box>
