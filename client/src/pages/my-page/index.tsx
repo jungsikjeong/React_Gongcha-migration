@@ -134,8 +134,6 @@ const MyPage = () => {
 
   const { user, isLoading: userLoading } = useUser();
 
-  const text = `안녕하세요!!`;
-
   const onChangeCurrentTap = (e: any, tabName: string) => {
     const activeNumber = e.currentTarget.offsetLeft;
     setActiveTab(activeNumber);
@@ -187,17 +185,20 @@ const MyPage = () => {
               <Nickname>{user?.nickname}</Nickname>
 
               <Introduction>
-                {showFullText || text.length <= MAX_CHARS
-                  ? text
-                  : text.slice(0, MAX_CHARS) + '...'}
-                {!showFullText && text.length > MAX_CHARS && (
-                  <button onClick={() => setShowFullText(true)}>더보기</button>
-                )}
+                {showFullText ||
+                (user?.introduction && user?.introduction?.length <= MAX_CHARS)
+                  ? user?.introduction
+                  : user?.introduction.slice(0, MAX_CHARS) +
+                    '...' +
+                    (
+                      <button onClick={() => setShowFullText(true)}>
+                        더보기
+                      </button>
+                    )}
               </Introduction>
-
-              <ProfileEdit type='button'>
-                <Link to={`/edit/${user?._id}`}>프로필 수정</Link>
-              </ProfileEdit>
+              <Link to={`/edit/${user?._id}`}>
+                <ProfileEdit type='button'>프로필 수정</ProfileEdit>
+              </Link>
             </>
           )}
         </User>
