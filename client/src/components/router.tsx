@@ -10,7 +10,7 @@ const PostsPage = lazy(() => import('../pages/posts'));
 const CommentListPage = lazy(() => import('../pages/comment-list'));
 const WritePage = lazy(() => import('../pages/write'));
 const MyPage = lazy(() => import('../pages/my-page'));
-const EditPage = lazy(() => import('../pages/Edit'));
+const EditPage = lazy(() => import('../pages/edit'));
 const NotFound = lazy(() => import('./not-found'));
 
 const Router = () => {
