@@ -25,16 +25,45 @@ export const passwordValidation = {
 
 export const password2Validation = (password: string) => ({
   required: '비밀번호를 재입력해주세요',
-  minLength: {
-    value: 6,
-    message: '비밀번호는 최소 6글자 이상이어야 합니다',
-  },
-  maxLength: {
-    value: 8,
-    message: '비밀번호는 최대 8글자입니다.',
-  },
+
   validate: {
-    matchPassword: (value: any) =>
-      value === password || '비밀번호가 일치하지 않습니다.',
+    matchPassword: (value: any) => {
+      if (!value) {
+        return true; // 빈 문자열일 경우 오류 표시하지 않음
+      }
+      if (value !== password) {
+        return '비밀번호가 일치하지 않습니다.';
+      }
+    },
+  },
+});
+
+export const nicknameEditValidation = {
+  minLength: { value: 2, message: '닉네임은 최소 2글자 이상이어야 합니다' },
+  maxLength: { value: 6, message: '닉네임은 최대 6글자입니다.' },
+  pattern: {
+    value: /^[가-힣a-zA-Z0-9]+$/,
+    message: '닉네임은 한글, 알파벳, 숫자만 입력해주세요!',
+  },
+};
+export const introductionValidation = {
+  maxLength: { value: 150, message: '150글자 이하로 작성해주세요' },
+};
+
+export const passwordEditValidation = {
+  minLength: { value: 6, message: '비밀번호는 최소 6글자 이상이어야 합니다' },
+  maxLength: { value: 8, message: '비밀번호는 최대 8글자입니다.' },
+};
+
+export const password2EditValidation = (password: string) => ({
+  validate: {
+    matchPassword: (value: any) => {
+      if (!value) {
+        return true;
+      }
+      if (value !== password) {
+        return '비밀번호가 일치하지 않습니다.';
+      }
+    },
   },
 });
