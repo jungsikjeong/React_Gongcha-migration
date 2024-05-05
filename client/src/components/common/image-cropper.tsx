@@ -98,7 +98,7 @@ const Footer = styled.div`
 
 interface IImageCropperProps {
   onCrop: (image: string) => void;
-  aspectRatio: number;
+  aspectRatio?: number;
   profileImg?: boolean;
   children: React.ReactNode;
 }
@@ -170,7 +170,8 @@ const ImageCropper = ({
               <Content>
                 <Cropper
                   ref={cropperRef}
-                  aspectRatio={aspectRatio}
+                  aspectRatio={aspectRatio && aspectRatio}
+                  initialAspectRatio={1}
                   src={image}
                   viewMode={1}
                   width={800}

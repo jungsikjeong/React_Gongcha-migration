@@ -121,7 +121,7 @@ const FileForm = () => {
           <Cover>{isCompressLoading && '이미지 압축 중..'}</Cover>
         )}
 
-        <ImageCropper onCrop={handleUploadImage} aspectRatio={1 / 1}>
+        <ImageCropper onCrop={handleUploadImage}>
           <UploadButton>📷</UploadButton>
         </ImageCropper>
       </Wrapper>
