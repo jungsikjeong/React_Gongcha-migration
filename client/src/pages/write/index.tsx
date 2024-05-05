@@ -57,7 +57,9 @@ const StyledQuillWrapper = styled.div`
       max-height: 250px;
     }
   }
-
+  .ql-container.ql-snow {
+    border: none;
+  }
   // placeholder
   .quill > .ql-container > .ql-editor.ql-blank::before {
     font-style: normal;
