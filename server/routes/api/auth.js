@@ -59,7 +59,7 @@ router.post(
 
       if (!isMatch) {
         return res.status(400).json({
-          errors: [{ type: 'email', msg: '비밀번호가 일치하지 않습니다.' }],
+          errors: [{ type: 'password', msg: '비밀번호가 일치하지 않습니다.' }],
         });
       }
 

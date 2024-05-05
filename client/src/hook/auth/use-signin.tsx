@@ -29,6 +29,7 @@ const usePostSignIn = (setError: any) => {
       if (error.response?.status === 400) {
         const type = error?.response?.data?.errors[0]?.type;
         const message = error?.response?.data?.errors[0]?.msg;
+
         setError(type, {
           message: message,
         });
