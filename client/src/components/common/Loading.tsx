@@ -6,13 +6,14 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const Container = styled.div<{ $loader: string }>`
+const Container = styled.div<{ $loader: string; $initialLoading: string }>`
   position: ${({ $loader }) => ($loader ? 'static' : 'fixed')};
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: transparent;
+  background-color: ${({ $initialLoading }) =>
+    $initialLoading ? 'black' : 'transparent'};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,9 +66,12 @@ const LoaderText = styled.div`
   color: white;
 `;
 
-function Loading({ loader = false }) {
+function Loading({ loader = false, initialLoading = false }) {
   return (
-    <Container $loader={loader ? 'true' : ''}>
+    <Container
+      $loader={loader ? 'true' : ''}
+      $initialLoading={initialLoading ? 'true' : ''}
+    >
       <LoaderWrapper>
         <LoaderIcon />
         <LoaderIcon />

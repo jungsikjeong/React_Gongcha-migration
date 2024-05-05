@@ -13,12 +13,7 @@ interface IPostsResponse {
   totalPage: number;
 }
 
-export const fetchPosts = async (
-  pageParam: number,
-  searchParams: string
-): Promise<IPostsResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
+export const fetchPosts = async (pageParam: number, searchParams: string) => {
   const res = await instance.get<IPostsResponse>(
     '/api/posts?/page=' + pageParam,
     {

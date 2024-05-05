@@ -1,18 +1,21 @@
 import { Route, Routes } from 'react-router-dom';
 import { PrivateRoute } from './private-route';
 
-import EditPage from 'pages/Edit';
-import MyPage from 'pages/my-page';
-import AboutPage from '../pages/about';
-import CommentListPage from '../pages/comment-list';
-import HomePage from '../pages/home';
-import PostsPage from '../pages/posts';
-import WritePage from '../pages/write';
-import NotFound from './not-found';
+import { Suspense, lazy } from 'react';
+import Loading from './common/loading';
+
+const HomePage = lazy(() => import('../pages/home'));
+const AboutPage = lazy(() => import('../pages/about'));
+const PostsPage = lazy(() => import('../pages/posts'));
+const CommentListPage = lazy(() => import('../pages/comment-list'));
+const WritePage = lazy(() => import('../pages/write'));
+const MyPage = lazy(() => import('../pages/my-page'));
+const EditPage = lazy(() => import('../pages/Edit'));
+const NotFound = lazy(() => import('./not-found'));
 
 const Router = () => {
   return (
-    <>
+    <Suspense fallback={<Loading initialLoading={true} />}>
       <Routes>
         <Route path='/' element={<HomePage />} />
         <Route path='/about' element={<AboutPage />} />
@@ -28,7 +31,7 @@ const Router = () => {
         {/* 경로 외에 곳으로 갔을때 */}
         <Route path='*' element={<NotFound />} />
       </Routes>
-    </>
+    </Suspense>
   );
 };
 
