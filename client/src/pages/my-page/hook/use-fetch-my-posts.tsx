@@ -5,10 +5,13 @@ import { useEffect } from 'react';
 import { myPageKey } from 'react-query-key/my-page-keys';
 import { toast } from 'react-toastify';
 
-const fetchMyPosts = async (pageParam: number) => {
+const fetchMyPosts = async (pageParam: number): Promise<IPostsResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   const res = await instance.get<IPostsResponse>(
     `/api/myPage/?page=${pageParam}`
   );
+
   return res.data;
 };
 

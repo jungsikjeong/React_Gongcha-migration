@@ -5,7 +5,11 @@ import { useEffect } from 'react';
 import { myPageKey } from 'react-query-key/my-page-keys';
 import { toast } from 'react-toastify';
 
-const fetchMyBookmark = async (pageParam: number) => {
+const fetchMyBookmark = async (
+  pageParam: number
+): Promise<IBookmarkResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   const res = await instance.get<IBookmarkResponse>(
     `/api/myPage/bookmarks/?page=${pageParam}`
   );

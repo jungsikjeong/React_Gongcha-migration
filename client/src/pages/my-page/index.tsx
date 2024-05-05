@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { useUser } from 'hook/auth/use-user';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CiBookmark, CiViewList } from 'react-icons/ci';
@@ -33,7 +32,7 @@ const BackButton = styled.div`
   top: 2rem;
   left: 1rem;
   font-size: 30px;
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
   cursor: pointer;
 
   &:hover {
@@ -102,8 +101,8 @@ const Tabs = styled.ul`
 const Tab = styled.li<{ clicked: string }>`
   gap: 5px;
   font-size: 14px;
-  /* border-top: ${({ clicked }) =>
-    clicked ? ' 1px solid rgb(245, 245, 245)' : ''}; */
+  border-top: ${({ clicked }) =>
+    clicked ? ' 1px solid rgb(245, 245, 245)' : ''};
   color: ${({ clicked }) =>
     clicked ? 'rgb(245, 245, 245)' : 'rgb(168, 168, 168)'};
   cursor: pointer;
@@ -116,16 +115,6 @@ const Tab = styled.li<{ clicked: string }>`
   &:hover {
     color: rgb(245, 245, 245);
   }
-`;
-
-const TabIndicator = styled.div<{ activeTab: number | undefined }>`
-  position: absolute;
-  top: 0;
-  left: ${({ activeTab }) => `${activeTab}px`};
-  background-color: rgb(245, 245, 245);
-  transition: left 400ms ease-in-out;
-  width: 65px;
-  height: 1px;
 `;
 
 const MAX_CHARS = 100;
@@ -229,35 +218,11 @@ const MyPage = () => {
           >
             <CiBookmark /> 북마크
           </Tab>
-
-          <TabIndicator activeTab={activeTab} />
         </Tabs>
 
-        {query === '게시물' && (
-          <motion.div
-            initial={{ x: 300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
-          >
-            <MyPagePosts />
-          </motion.div>
-        )}
-        {query === '북마크' && (
-          <motion.div
-            initial={{ x: -300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 300, opacity: 0 }}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
-          >
-            <MyPageBookMark />
-          </motion.div>
-        )}
-        {/* <ImgWrapper>
-          {query === '게시물' && <MyPagePosts />}
+        {query === '게시물' && <MyPagePosts />}
 
-          {query === '북마크' && <MyPageBookMark />}
-        </ImgWrapper> */}
+        {query === '북마크' && <MyPageBookMark />}
       </Wrapper>
     </Container>
   );
