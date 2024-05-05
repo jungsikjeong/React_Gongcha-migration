@@ -1,16 +1,14 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { fetchPosts } from 'api/fetch-posts';
 import useIntersectionObserver from 'hook/use-intersection-observer';
-import { postsKey } from 'react-query-key/post.keys';
 import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 
 import Loading from 'components/common/loading';
 import NotFound from 'components/not-found';
 import PostDetailModal from '../../components/post-detail-modal';
+import useFetchPosts from './hook/use-fetch-posts';
 
 const Container = styled.div`
   padding-top: 10rem;
@@ -73,20 +71,13 @@ const PostsPage = () => {
   );
 
   const {
+    data,
+    isLoading,
     fetchNextPage,
+    hasNextPage,
     isFetching,
     isFetchingNextPage,
-    hasNextPage,
-    isLoading,
-    data,
-  } = useInfiniteQuery({
-    queryKey: [postsKey.posts],
-    queryFn: ({ pageParam = 1 }) => fetchPosts(pageParam, searchParams),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      return lastPage.posts?.length > 0 ? lastPage.page + 1 : undefined;
-    },
-  });
+  } = useFetchPosts(postId, searchParams);
 
   const ref = useRef<HTMLDivElement | null>(null);
   const pageRef = useIntersectionObserver(ref, {});
