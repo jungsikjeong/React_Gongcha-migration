@@ -1,6 +1,7 @@
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-const AboutContainer = styled.div`
+const AboutContainer = styled(motion.div)`
   background: #000;
 `;
 
@@ -51,7 +52,11 @@ const Section = styled.div<{ $bgurl: string }>`
 
 const AboutPage = () => {
   return (
-    <AboutContainer>
+    <AboutContainer
+      initial={{ y: -50 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <Section $bgurl={'./images/about/about-img01.jpg'}>
         <div className='Section-text'>
           <h1>공차는 고민합니다.</h1>
