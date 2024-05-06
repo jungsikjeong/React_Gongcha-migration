@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
-import { useRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
 import { useUser } from 'hook/auth/use-user';
-import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 import useFetchCommentList from '../../hook/comments/use-fetch-comment-list';
 import useFetchPostBookmark from './hook/use-fetch-post-bookmark';
 import useFetchPostDetail from './hook/use-fetch-post-detail';
@@ -83,12 +82,11 @@ interface IPostDetailModal {
 }
 
 const PostDetailModal = ({ postId }: IPostDetailModal) => {
+  const navigate = useNavigate();
+
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [boxHeight, setBoxHeight] = useState(window.innerWidth / 1.5);
 
-  const [postDetailModal, setPostDetailModal] = useRecoilState(
-    postDetailModalStatus
-  );
   const { user } = useUser();
 
   const { data: post, isLoading: postLoading } = useFetchPostDetail(postId);
@@ -112,25 +110,17 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
   }, [fetchNextPage]);
 
   useEffect(() => {
-    return () => setPostDetailModal(false);
-  }, []);
-
-  useEffect(() => {
     // 모달이 열릴 때 배경 스크롤 비활성화
     document.body.style.overflow = 'hidden';
 
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.keyCode === 27) {
-        setPostDetailModal(false);
+        navigate('/posts');
       }
     };
     const handleOutsideClose = (e: MouseEvent) => {
-      if (
-        divRef.current &&
-        !divRef.current.contains(e.target as Node) &&
-        postDetailModal
-      ) {
-        setPostDetailModal(false);
+      if (divRef.current && !divRef.current.contains(e.target as Node)) {
+        navigate('/posts');
       }
     };
 
@@ -161,7 +151,7 @@ const PostDetailModal = ({ postId }: IPostDetailModal) => {
       <Wrapper $boxheight={boxHeight} ref={divRef}>
         <Close
           onClick={() => {
-            setPostDetailModal(false);
+            navigate('/posts');
           }}
         >
           <IoMdClose />

@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import useIntersectionObserver from 'hook/use-intersection-observer';
-import { postDetailModalStatus } from '../../atom/post-detail-modal-atoms';
 
 import Loading from 'components/common/loading';
 import NotFound from 'components/not-found';
-import PostDetailModal from '../../components/post-detail-modal';
 import useFetchPosts from './hook/use-fetch-posts';
 
 const Container = styled.div`
@@ -66,10 +64,6 @@ const PostsPage = () => {
 
   const [searchParams, setSearchParams] = useState('test'); // 임시
 
-  const [postDetailModal, setPostDetailModal] = useRecoilState(
-    postDetailModalStatus
-  );
-
   const {
     data,
     isLoading,
@@ -109,7 +103,6 @@ const PostsPage = () => {
     const previousPageUrl = localStorage.getItem('previousPageUrl');
     if (previousPageUrl) {
       setPostId(previousPageUrl);
-      setPostDetailModal(true);
     }
 
     // 새로고침 할 때도 제거
@@ -137,8 +130,6 @@ const PostsPage = () => {
         </Box>
       ) : (
         <>
-          {postDetailModal && <PostDetailModal postId={postId} />}
-
           <Wrapper>
             {data?.pages?.map((page) =>
               page?.posts?.map((post) => (
@@ -146,11 +137,12 @@ const PostsPage = () => {
                   className={post.className}
                   key={post._id}
                   onClick={() => {
-                    setPostDetailModal(true);
                     setPostId(post._id);
                   }}
                 >
-                  <Image src={post?.images[0]} />
+                  <Link to={`/post/${post?._id}`}>
+                    <Image src={post?.images[0]} />
+                  </Link>
                 </Card>
               ))
             )}

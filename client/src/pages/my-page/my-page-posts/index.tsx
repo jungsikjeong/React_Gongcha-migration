@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CiHeart } from 'react-icons/ci';
 import { IoChatbubbleOutline } from 'react-icons/io5';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { postDetailModalStatus } from 'atom/post-detail-modal-atoms';
 import useIntersectionObserver from 'hook/use-intersection-observer';
 import { formattedNumber } from 'utils/formatted-number';
 import useFetchMyPosts from '../hook/use-fetch-my-posts';
@@ -12,7 +10,7 @@ import useFetchMyPosts from '../hook/use-fetch-my-posts';
 import FlexBox from 'components/common/flex-box';
 import Skeleton from 'components/common/skeleton';
 import Typography from 'components/common/typography';
-import PostDetailModal from 'components/post-detail-modal';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   display: grid;
@@ -92,10 +90,6 @@ const MyPagePosts = () => {
   const pageRef = useIntersectionObserver(ref, {});
   const isPageEnd = !!pageRef?.isIntersecting; // 페이지 끝에도달
 
-  const [postDetailModal, setPostDetailModal] = useRecoilState(
-    postDetailModalStatus
-  );
-
   const {
     data: postsResponse,
     isLoading,
@@ -147,40 +141,35 @@ const MyPagePosts = () => {
         ))
       ) : (
         <>
-          {postDetailModal && <PostDetailModal postId={postId} />}
-
           {postsResponse?.pages?.map((data) =>
             data?.posts?.map((post) => (
-              <Box
-                key={post._id}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                onClick={() => {
-                  setPostDetailModal(true);
-                  setPostId(post._id);
-                }}
-              >
-                <Img src={post?.images?.[0]} alt='post-img' />
-                {isHovered && (
-                  <HoverBox className='hover-box'>
-                    <FlexBox
-                      style={{ width: '100%', height: '100%' }}
-                      $alignItems='center'
-                      $justifyContent='center'
-                      $gap='4px'
-                    >
-                      {/* 좋아요 */}
-                      <CiHeart className='icons' />{' '}
-                      <span>{formattedNumber(post?.postLikeCount || 0)}</span>
-                      {/* 댓글 */}
-                      <IoChatbubbleOutline className='icons chat-icon' />
-                      <span>
-                        {formattedNumber(post?.postCommentCount || 0)}
-                      </span>
-                    </FlexBox>
-                  </HoverBox>
-                )}
-              </Box>
+              <Link to={`/post/${post?._id}`} key={post._id}>
+                <Box
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                >
+                  <Img src={post?.images?.[0]} alt='post-img' />
+                  {isHovered && (
+                    <HoverBox className='hover-box'>
+                      <FlexBox
+                        style={{ width: '100%', height: '100%' }}
+                        $alignItems='center'
+                        $justifyContent='center'
+                        $gap='4px'
+                      >
+                        {/* 좋아요 */}
+                        <CiHeart className='icons' />{' '}
+                        <span>{formattedNumber(post?.postLikeCount || 0)}</span>
+                        {/* 댓글 */}
+                        <IoChatbubbleOutline className='icons chat-icon' />
+                        <span>
+                          {formattedNumber(post?.postCommentCount || 0)}
+                        </span>
+                      </FlexBox>
+                    </HoverBox>
+                  )}
+                </Box>
+              </Link>
             ))
           )}
         </>

@@ -1,17 +1,13 @@
-import { useEffect } from 'react';
 import { IoChevronBackSharp } from 'react-icons/io5';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-
-import { postDetailModalStatus } from 'atom/post-detail-modal-atoms';
-import { useSetRecoilState } from 'recoil';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import FlexBox from 'components/common/flex-box';
 import Typography from 'components/common/typography';
 import styled from 'styled-components';
 
-const Box = styled.div<{ pathname: string }>`
-  max-width: 500px;
-  max-width: ${({ pathname }) => (pathname ? '100%' : '500px')};
+const Box = styled.div<{ $pathname: string }>`
+  max-width: ${({ $pathname }) => ($pathname ? '100%' : '500px')};
+  max-width: 100%;
   margin: 0 auto;
   position: fixed;
   left: 0;
@@ -27,6 +23,10 @@ const Box = styled.div<{ pathname: string }>`
     position: absolute;
     right: 0;
   }
+
+  @media (min-width: 768px) {
+    max-width: 500px;
+  }
 `;
 
 const IconBox = styled.div`
@@ -39,28 +39,13 @@ const IconBox = styled.div`
 const PostHeader = ({ text }: { text: string }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const params = useParams();
-  const setPostDetailModal = useSetRecoilState(postDetailModalStatus);
 
   const handleGoBack = () => {
-    if (
-      location.pathname === '/write' ||
-      location.pathname.includes('/commentList')
-    ) {
-      navigate(-1);
-    } else {
-      setPostDetailModal(false);
-    }
+    navigate(-1);
   };
 
-  useEffect(() => {
-    if (location.pathname.includes('/commentList') && params.id) {
-      localStorage.setItem('previousPageUrl', params.id as string);
-    }
-  }, [location.pathname, params.id]);
-
   return (
-    <Box pathname={location.pathname === '/posts' ? 'true' : ''}>
+    <Box $pathname={location.pathname === '/posts' ? 'true' : ''}>
       <FlexBox
         $alignItems='center'
         $justifyContent='space-between'

@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CiHeart } from 'react-icons/ci';
 import { IoChatbubbleOutline } from 'react-icons/io5';
-import { useRecoilState } from 'recoil';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { postDetailModalStatus } from 'atom/post-detail-modal-atoms';
 import useIntersectionObserver from 'hook/use-intersection-observer';
 import { formattedNumber } from 'utils/formatted-number';
 import useFetchMyBookmark from '../hook/use-fetch-my-bookmark';
@@ -12,7 +11,6 @@ import useFetchMyBookmark from '../hook/use-fetch-my-bookmark';
 import FlexBox from 'components/common/flex-box';
 import Skeleton from 'components/common/skeleton';
 import Typography from 'components/common/typography';
-import PostDetailModal from 'components/post-detail-modal';
 
 const Container = styled.div`
   display: grid;
@@ -86,15 +84,10 @@ const SKELETONS = Array(10).fill(0);
 
 const MyPageBookMark = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const [postId, setPostId] = useState('');
 
   const ref = useRef<HTMLDivElement | null>(null);
   const pageRef = useIntersectionObserver(ref, {});
   const isPageEnd = !!pageRef?.isIntersecting; // 페이지 끝에도달
-
-  const [postDetailModal, setPostDetailModal] = useRecoilState(
-    postDetailModalStatus
-  );
 
   const {
     data: postsResponse,
@@ -143,42 +136,37 @@ const MyPageBookMark = () => {
         ))
       ) : (
         <>
-          {postDetailModal && <PostDetailModal postId={postId} />}
-
           {postsResponse?.pages?.map((data) =>
             data?.posts?.map((data) => (
-              <Box
-                key={data._id}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                onClick={() => {
-                  setPostDetailModal(true);
-                  setPostId(data?.post?._id);
-                }}
-              >
-                <Img src={data?.post?.images[0]} alt='post-img' />
-                {isHovered && (
-                  <HoverBox className='hover-box'>
-                    <FlexBox
-                      style={{ width: '100%', height: '100%' }}
-                      $alignItems='center'
-                      $justifyContent='center'
-                      $gap='4px'
-                    >
-                      {/* 좋아요 */}
-                      <CiHeart className='icons' />{' '}
-                      <span>
-                        {formattedNumber(data?.post?.postLikeCount || 0)}
-                      </span>
-                      {/* 댓글 */}
-                      <IoChatbubbleOutline className='icons chat-icon' />
-                      <span>
-                        {formattedNumber(data?.post?.postCommentCount || 0)}
-                      </span>
-                    </FlexBox>
-                  </HoverBox>
-                )}
-              </Box>
+              <Link to={`/post/${data?.post?._id}`} key={data._id}>
+                <Box
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                >
+                  <Img src={data?.post?.images[0]} alt='post-img' />
+                  {isHovered && (
+                    <HoverBox className='hover-box'>
+                      <FlexBox
+                        style={{ width: '100%', height: '100%' }}
+                        $alignItems='center'
+                        $justifyContent='center'
+                        $gap='4px'
+                      >
+                        {/* 좋아요 */}
+                        <CiHeart className='icons' />{' '}
+                        <span>
+                          {formattedNumber(data?.post?.postLikeCount || 0)}
+                        </span>
+                        {/* 댓글 */}
+                        <IoChatbubbleOutline className='icons chat-icon' />
+                        <span>
+                          {formattedNumber(data?.post?.postCommentCount || 0)}
+                        </span>
+                      </FlexBox>
+                    </HoverBox>
+                  )}
+                </Box>
+              </Link>
             ))
           )}
         </>
