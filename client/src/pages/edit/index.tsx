@@ -347,6 +347,7 @@ const EditPage = () => {
 
               <div className='relative'>
                 <TextArea
+                  wrap='hard'
                   autoComplete='on'
                   {...register('introduction', introductionValidation)}
                   placeholder={user?.introduction ? user?.introduction : '소개'}

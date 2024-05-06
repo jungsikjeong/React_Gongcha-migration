@@ -66,10 +66,10 @@ const Nickname = styled.h2`
 
 const Introduction = styled.div`
   max-width: 500px;
-
   text-align: left;
   margin: 0.5rem 0rem 1rem 4px;
   font-size: 14px;
+  white-space: pre;
 
   button {
     color: rgb(245, 245, 245);
@@ -152,6 +152,8 @@ const MyPage = () => {
       }
     }
   }, [tab1Ref, tab2Ref, query]);
+
+  console.log(user?.introduction);
 
   useEffect(() => {
     if (tab1Ref.current && tab2Ref.current) {

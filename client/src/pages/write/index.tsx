@@ -109,7 +109,6 @@ const WritePage = () => {
       }
     }
   };
-
   return (
     <Container>
       <Box>
