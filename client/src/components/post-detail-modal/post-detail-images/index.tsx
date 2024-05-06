@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-
-// todo: 모바일사이즈때 이미지가 너무 큰거같음
+import Images from './images';
 
 const ImageBox = styled.div`
   aspect-ratio: auto 3/4;
@@ -21,7 +20,13 @@ interface IPostDetailImagesProps {
 const PostDetailImages = ({ url, postLoading }: IPostDetailImagesProps) => {
   return (
     <ImageBox>
-      {postLoading ? '' : <Image src={url ? url[0] : ''} alt='post-img' />}
+      {postLoading ? (
+        ''
+      ) : url?.length === 0 ? (
+        <Image src={url[0]} alt='post-img' />
+      ) : (
+        <Images images={url} />
+      )}
     </ImageBox>
   );
 };
