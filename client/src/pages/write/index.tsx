@@ -1,14 +1,15 @@
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import ReactQuill from 'react-quill';
 import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { postFileUpload } from 'api/file-upload';
 import { fileObjectState } from 'atom/file-object-atoms';
 import 'react-quill/dist/quill.snow.css';
 import usePostWrite from './hook/use-post-write';
 
-import { postFileUpload } from 'api/file-upload';
 import Button from 'components/common/button';
 import PostHeader from 'components/common/post-header';
 import FileForm from 'components/file-form';
@@ -28,7 +29,7 @@ const Box = styled.div`
   z-index: 20;
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled(motion.div)`
   max-width: 500px;
   margin: 0 auto;
 `;
@@ -39,6 +40,8 @@ const StyledQuillWrapper = styled.div`
   padding-top: 1rem;
   border: 1px solid rgb(38, 38, 38);
   border-radius: 5px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+
   .quill {
     padding-top: 1.5rem;
     background-color: transparent;
@@ -109,14 +112,18 @@ const WritePage = () => {
 
   return (
     <Container>
-      <Wrapper>
-        <Box>
-          <PostHeader text={'게시물 작성'} />
-        </Box>
+      <Box>
+        <PostHeader text={'게시물 작성'} />
+      </Box>
 
+      <Wrapper
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <StyledQuillWrapper>
           <ReactQuill
-            placeholder={`당신의 공차를 공유하고 소개해주세요!\n(이미지는 하나 이상 업로드해주세요)`}
+            placeholder={`당신의 공차를 공유하고 소개해주세요!\n(이미지를 하나 이상 업로드해주세요)`}
             theme='snow'
             modules={modules}
             value={value}

@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import styled, { css } from 'styled-components';
 
 const Container = styled.div<{ profileimg: string }>`
-  z-index: 10;
+  z-index: 20;
   position: fixed;
   left: 0;
   top: 0;
