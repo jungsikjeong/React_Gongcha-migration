@@ -57,7 +57,7 @@ router.post('/', auth, async (req, res) => {
 
     if (images) {
       const newPost = new Post({
-        content: content || '',
+        contents: content || '',
         author: user._id,
         images: images,
       });

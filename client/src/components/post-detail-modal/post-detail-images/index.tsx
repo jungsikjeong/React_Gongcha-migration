@@ -22,7 +22,7 @@ const PostDetailImages = ({ url, postLoading }: IPostDetailImagesProps) => {
     <ImageBox>
       {postLoading ? (
         ''
-      ) : url?.length === 0 ? (
+      ) : url?.length === 1 ? (
         <Image src={url[0]} alt='post-img' />
       ) : (
         <Images images={url} />

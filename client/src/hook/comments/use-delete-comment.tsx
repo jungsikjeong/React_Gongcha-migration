@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import instance from 'api/instance';
 import { commentKey } from 'react-query-key/comment.keys';
+import { postDetailKey } from 'react-query-key/post.keys';
 import { toast } from 'react-toastify';
 
 interface IDeleteCommentProps {
@@ -25,6 +26,10 @@ const useDeleteComment = (postId: string) => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [commentKey.comment, postId],
+        refetchType: 'all',
+      });
+      queryClient.invalidateQueries({
+        queryKey: [postDetailKey.post],
         refetchType: 'all',
       });
     },

@@ -5,7 +5,6 @@ import { IUserInfo } from 'interface/auth';
 import { ICommentResponse } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
-import { FaShare } from 'react-icons/fa';
 import { FaBookmark } from 'react-icons/fa6';
 import { IoChatbubbleOutline } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
@@ -21,6 +20,7 @@ import PostHeader from 'components/common/post-header';
 import usePostLikePost from 'components/post-detail-modal/hook/use-post-like-post';
 import PostDetailImages from 'components/post-detail-modal/post-detail-images';
 import PostDetailLike from 'components/post-detail-modal/post-detail-like';
+import PostShare from '../post-share';
 
 const Container = styled.div`
   min-width: 335px;
@@ -47,11 +47,6 @@ const User = styled.div`
     object-fit: cover;
     flex-shrink: 0;
     margin-right: 10px;
-  }
-
-  .icon {
-    margin-left: auto;
-    cursor: pointer;
   }
 `;
 
@@ -154,7 +149,7 @@ const PostDetailContentsMobile = ({
     if (!user) {
       toast.warning('로그인이 필요한 서비스입니다.');
     } else {
-      updateLike({ postId: post?._id as string });
+      updateBookmark({ postId: post?._id as string });
     }
   };
   return (
@@ -173,9 +168,8 @@ const PostDetailContentsMobile = ({
 
             <div className='user-nickname'>{post?.author?.nickname}</div>
 
-            <div className='icon'>
-              <FaShare />
-            </div>
+            {/* 공유하기 버튼 */}
+            <PostShare post={post} />
           </>
         )}
       </User>

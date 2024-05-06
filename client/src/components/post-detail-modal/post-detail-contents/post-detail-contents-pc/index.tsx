@@ -5,7 +5,6 @@ import { IUserInfo } from 'interface/auth';
 import { ICommentResponse } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
 import { CiBookmark } from 'react-icons/ci';
-import { FaShare } from 'react-icons/fa';
 import { FaBookmark } from 'react-icons/fa6';
 import { IoChatbubbleOutline } from 'react-icons/io5';
 import { LuPlusCircle } from 'react-icons/lu';
@@ -23,6 +22,7 @@ import CommentSkeleton from 'components/comments/comment-skeleton';
 import FlexBox from 'components/common/flex-box';
 import PostDetailImages from 'components/post-detail-modal/post-detail-images';
 import PostDetailLike from 'components/post-detail-modal/post-detail-like';
+import PostShare from '../post-share';
 
 const Container = styled.div`
   /* max-width: 335px; */
@@ -49,11 +49,6 @@ const User = styled.div`
     object-fit: cover;
     flex-shrink: 0;
     margin-right: 10px;
-  }
-
-  .icon {
-    margin-left: auto;
-    cursor: pointer;
   }
 `;
 const ContentsWrap = styled.ul`
@@ -187,9 +182,8 @@ const PostDetailContentsPC = ({
 
             <div className='user-nickname'>{post?.author?.nickname}</div>
 
-            <div className='icon'>
-              <FaShare />
-            </div>
+            {/* 공유하기 버튼 */}
+            <PostShare post={post} />
           </User>
         )}
 
