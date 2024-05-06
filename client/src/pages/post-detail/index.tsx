@@ -3,27 +3,26 @@ import { IoMdClose } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
-import useFetchPostBookmark from 'components/post-detail-modal/hook/use-fetch-post-bookmark';
-import useFetchPostDetail from 'components/post-detail-modal/hook/use-fetch-post-detail';
-import useFetchPostLike from 'components/post-detail-modal/hook/use-fetch-post-like';
 import { useUser } from 'hook/auth/use-user';
+import useFetchPostBookmark from 'pages/post-detail/hook/use-fetch-post-bookmark';
+import useFetchPostDetail from 'pages/post-detail/hook/use-fetch-post-detail';
+import useFetchPostLike from 'pages/post-detail/hook/use-fetch-post-like';
 import useFetchCommentList from '../../hook/comments/use-fetch-comment-list';
 
-import PostDetailContentsMobile from 'components/post-detail-modal/post-detail-contents/post-detail-contents-mobile';
-import PostDetailContentsPC from 'components/post-detail-modal/post-detail-contents/post-detail-contents-pc';
+import FlexBox from 'components/common/flex-box';
+import PostDetailContentsMobile from './post-detail-contents/post-detail-contents-mobile';
+import PostDetailContentsPC from './post-detail-contents/post-detail-contents-pc';
 
 const fadeInAnimation = keyframes`
   0% {
     opacity: 0;
-    opacity: 0;
-     scale: 0;
+    scale: 0;
   }
   50% {
     opacity: 1;
     scale: 1.1;
   }
   100%{
-    
     scale: 1;
   }
   `;
@@ -60,10 +59,7 @@ const Container = styled.div`
 const Wrapper = styled.div<{ $boxheight: number }>`
   max-width: calc(100% - 64px - 64px);
   max-height: calc(100vh - 150px);
-  width: 100%;
   height: ${({ $boxheight }) => `${$boxheight}px`};
-  display: flex;
-  justify-content: center;
   transition: all 0.3s ease;
 
   @media (max-width: 768px) {
@@ -155,37 +151,39 @@ const PostDetailPage = () => {
     <EntireArea>
       <Container>
         <Wrapper $boxheight={boxHeight} ref={divRef}>
-          <Close
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            <IoMdClose />
-          </Close>
-          {isMobile ? (
-            <PostDetailContentsMobile
-              post={post}
-              commentListResponse={commentListResponse}
-              commentListLoading={commentListLoading}
-              postLoading={postLoading}
-              user={user}
-              isPostLike={isPostLike}
-              isBookmark={isBookmark}
-            />
-          ) : (
-            <PostDetailContentsPC
-              post={post}
-              user={user}
-              commentListResponse={commentListResponse}
-              commentListLoading={commentListLoading}
-              postLoading={postLoading}
-              fetchNext={fetchNext}
-              hasNextPage={hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              isPostLike={isPostLike}
-              isBookmark={isBookmark}
-            />
-          )}
+          <FlexBox $justifyContent='center' style={{ height: '100%' }}>
+            <Close
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              <IoMdClose />
+            </Close>
+            {isMobile ? (
+              <PostDetailContentsMobile
+                post={post}
+                commentListResponse={commentListResponse}
+                commentListLoading={commentListLoading}
+                postLoading={postLoading}
+                user={user}
+                isPostLike={isPostLike}
+                isBookmark={isBookmark}
+              />
+            ) : (
+              <PostDetailContentsPC
+                post={post}
+                user={user}
+                commentListResponse={commentListResponse}
+                commentListLoading={commentListLoading}
+                postLoading={postLoading}
+                fetchNext={fetchNext}
+                hasNextPage={hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                isPostLike={isPostLike}
+                isBookmark={isBookmark}
+              />
+            )}
+          </FlexBox>
         </Wrapper>
       </Container>
     </EntireArea>

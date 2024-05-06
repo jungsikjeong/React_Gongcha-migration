@@ -13,15 +13,15 @@ import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { commentFormStatus } from 'atom/comment-atoms';
-import usePostBookmark from 'components/post-detail-modal/hook/use-post-bookmark';
-import usePostLikePost from 'components/post-detail-modal/hook/use-post-like-post';
+import usePostBookmark from 'pages/post-detail/hook/use-post-bookmark';
+import usePostLikePost from 'pages/post-detail/hook/use-post-like-post';
 
 import CommentForm from 'components/comments/comment-form';
 import CommentList from 'components/comments/comment-list';
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import FlexBox from 'components/common/flex-box';
-import PostDetailImages from 'components/post-detail-modal/post-detail-images';
-import PostDetailLike from 'components/post-detail-modal/post-detail-like';
+import PostDetailImages from 'pages/post-detail/post-detail-images';
+import PostDetailLike from 'pages/post-detail/post-detail-like';
 import PostShare from '../post-share';
 
 const Container = styled.div`
