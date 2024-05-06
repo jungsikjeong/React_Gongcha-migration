@@ -26,7 +26,7 @@ const PostShare = ({ post }: IPostShareProps) => {
       Kakao.Share.sendCustom({
         templateId: 107624,
         templateArgs: {
-          post_id: `${post?._id}`,
+          post_id: `post/${post?._id}`,
           avatar: `${post?.author?.avatar}`,
           nickname: `${post?.author?.nickname}`,
           postImg: `${post?.images[0]}`,

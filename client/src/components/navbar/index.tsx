@@ -118,7 +118,7 @@ const Navbar = () => {
               공들여 <br />
               맛있는 차 <br />
               공차
-              <img src='./images/logo.png' alt='logo' />
+              <img src='/images/logo.png' alt='logo' />
             </h1>
           </Link>
         </Logo>

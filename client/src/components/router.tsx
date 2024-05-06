@@ -8,6 +8,7 @@ const HomePage = lazy(() => import('../pages/home'));
 const AboutPage = lazy(() => import('../pages/about'));
 const PostsPage = lazy(() => import('../pages/posts'));
 const CommentListPage = lazy(() => import('../pages/comment-list'));
+const PostDetailPage = lazy(() => import('../pages/post-detail'));
 const WritePage = lazy(() => import('../pages/write'));
 const MyPage = lazy(() => import('../pages/my-page'));
 const EditPage = lazy(() => import('../pages/edit'));
@@ -21,6 +22,7 @@ const Router = () => {
         <Route path='/about' element={<AboutPage />} />
         <Route path='/posts' element={<PostsPage />} />
         <Route path='/:id/commentList' element={<CommentListPage />} />
+        <Route path='/post/:id' element={<PostDetailPage />} />
 
         <Route element={<PrivateRoute />}>
           <Route path='/write' element={<WritePage />} />
