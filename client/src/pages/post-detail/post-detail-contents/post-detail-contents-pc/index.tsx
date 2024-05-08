@@ -25,7 +25,6 @@ import PostDetailLike from 'pages/post-detail/post-detail-like';
 import PostShare from '../post-share';
 
 const Container = styled.div`
-  /* max-width: 335px; */
   min-width: 335px;
   background-color: black;
 `;
@@ -75,15 +74,12 @@ const UserImage = styled.img`
 `;
 
 const Post = styled.div`
+  display: flex;
   width: 100%;
   max-width: 335px;
   font-size: 14px;
   line-height: 18px;
   gap: 5px;
-`;
-
-const Tag = styled.span`
-  color: rgb(224, 241, 255);
 `;
 
 const Footer = styled.div`
@@ -199,10 +195,6 @@ const PostDetailContentsPC = ({
                 <div
                   dangerouslySetInnerHTML={{ __html: post?.contents || '' }}
                 ></div>
-                <Tag>#MiuMiu </Tag>
-                <Tag>#MiuCrew </Tag>
-                <Tag>#미우미우 </Tag>
-                <Tag>#광고</Tag>
               </Post>
             </ContentsItem>
           )}

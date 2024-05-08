@@ -27,21 +27,6 @@ const Output = styled.div`
   left: 0;
   overflow-y: visible;
   box-sizing: border-box;
-  span.hashtag {
-    position: relative;
-    z-index: 10;
-    color: rgb(224, 241, 255);
-    font-weight: bold;
-  }
-  span.mention {
-    position: relative;
-    z-index: 10;
-    background: #69c;
-    color: white;
-    border-radius: 0.5em;
-    padding: 0 0.2em;
-    margin: 0 -0.2em;
-  }
 `;
 
 const Input = styled.div`

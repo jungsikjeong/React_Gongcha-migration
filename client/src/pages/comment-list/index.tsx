@@ -53,6 +53,7 @@ const Image = styled.img`
 `;
 
 const Post = styled.div`
+  display: flex;
   width: 100%;
   font-size: 14px;
   line-height: 18px;
@@ -61,10 +62,6 @@ const Post = styled.div`
   @media (max-width: 768px) {
     font-size: 12px;
   }
-`;
-
-const Tag = styled.span`
-  color: rgb(224, 241, 255);
 `;
 
 const skeletons = Array(12).fill(0);
@@ -101,14 +98,10 @@ const CommentListPage = () => {
               <>
                 <Image src={data?.author?.avatar} alt='' />
                 <Post>
-                  <b>{data?.author?.nickname}</b> 너무 행복했고 너무 너무
-                  좋았습니다. 여러분이있기에 제가 있었던것 같습니다! 아 너무
-                  좋아 행복해~ 나 날아갈것같아~~~~~~~~~~~~~~~~~~
-                  이야아!!!!!!!!!!!! 푸슈슈슈~~~~~
-                  <Tag>#MiuMiu </Tag>
-                  <Tag>#MiuCrew </Tag>
-                  <Tag>#미우미우 </Tag>
-                  <Tag>#광고</Tag>
+                  <b>{data?.author?.nickname}</b>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: data?.contents || '' }}
+                  ></div>
                 </Post>
               </>
             )}

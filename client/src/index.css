@@ -57,3 +57,20 @@ button {
 .relative {
   position: relative;
 }
+
+.hashtag {
+  position: relative;
+  z-index: 10;
+  color: rgb(224, 241, 255);
+  font-weight: bold;
+}
+
+.mention {
+  position: relative;
+  z-index: 10;
+  background: #69c;
+  color: white;
+  border-radius: 0.5em;
+  padding: 0 0.2em;
+  margin: 0 -0.2em;
+}

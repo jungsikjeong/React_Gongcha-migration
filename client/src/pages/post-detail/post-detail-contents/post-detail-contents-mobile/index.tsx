@@ -16,6 +16,7 @@ import { commentFormStatus } from 'atom/comment-atoms';
 import usePostBookmark from 'pages/post-detail/hook/use-post-bookmark';
 
 import CommentSkeleton from 'components/comments/comment-skeleton';
+import FlexBox from 'components/common/flex-box';
 import PostHeader from 'components/common/post-header';
 import usePostLikePost from 'pages/post-detail/hook/use-post-like-post';
 import PostDetailImages from 'pages/post-detail/post-detail-images';
@@ -85,10 +86,6 @@ const Post = styled.div`
     max-width: 100%;
     font-size: 12px;
   }
-`;
-
-const Tag = styled.span`
-  color: rgb(224, 241, 255);
 `;
 
 const Section = styled.section`
@@ -209,14 +206,12 @@ const PostDetailContentsMobile = ({
               개
             </b>
             <br />
-            <b>{post?.author?.nickname}</b>
-            <div
-              dangerouslySetInnerHTML={{ __html: post?.contents || '' }}
-            ></div>
-            <Tag>#MiuMiu </Tag>
-            <Tag>#MiuCrew </Tag>
-            <Tag>#미우미우 </Tag>
-            <Tag>#광고</Tag>
+            <FlexBox>
+              <b>{post?.author?.nickname}</b>&nbsp;
+              <div
+                dangerouslySetInnerHTML={{ __html: post?.contents || '' }}
+              ></div>
+            </FlexBox>
           </Post>
         </ContentsItem>
 

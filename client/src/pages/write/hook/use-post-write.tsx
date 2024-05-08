@@ -5,23 +5,32 @@ import { postsKey } from 'react-query-key/post.keys';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-interface IPostWrite {
+import usePostHashTag from './use-post-hashtag';
+
+interface IPostWriteProps {
   value: string;
   fileInfo: string[];
 }
 
-const postWrite = async ({ value, fileInfo }: IPostWrite) => {
+interface IUsePostWriteProps {
+  tags: string[];
+}
+
+const postWrite = async ({ value, fileInfo }: IPostWriteProps) => {
   const res = await instance.post('/api/posts', {
     content: value,
     images: fileInfo,
   });
 
-  return res;
+  return res.data;
 };
 
-const usePostWrite = () => {
-  const queryClient = useQueryClient();
+const usePostWrite = ({ tags }: IUsePostWriteProps) => {
   const navigate = useNavigate();
+
+  const { mutate: postHashtag } = usePostHashTag();
+
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: postWrite,
@@ -36,6 +45,12 @@ const usePostWrite = () => {
         queryKey: [myPageKey.myPosts],
         refetchType: 'all',
       });
+
+      const postId = data?._id;
+
+      if (tags.length !== 0 && postId) {
+        postHashtag({ tags, postId });
+      }
 
       toast.success('게시물이 작성되었습니다.');
       navigate('/posts');

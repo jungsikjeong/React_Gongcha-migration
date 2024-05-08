@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { postFileUpload } from 'api/file-upload';
 import { fileObjectState } from 'atom/file-object-atoms';
-import 'react-quill/dist/quill.snow.css';
+
 import usePostWrite from './hook/use-post-write';
 
 import Button from 'components/common/button';
@@ -58,7 +58,7 @@ const WritePage = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [fileObject, setFileObject] = useRecoilState(fileObjectState);
 
-  const { mutate, isPending: isWriting } = usePostWrite();
+  const { mutate: postWrite, isPending: isWriting } = usePostWrite({ tags });
 
   const onSubmit = async () => {
     if (fileObject.length === 0 || null) {
@@ -73,7 +73,8 @@ const WritePage = () => {
       const fileInfo = await postFileUpload({ formData });
 
       if (fileInfo && fileInfo.length !== 0) {
-        mutate({ value, fileInfo });
+        postWrite({ value, fileInfo });
+
         setFileObject([]);
       }
     }
