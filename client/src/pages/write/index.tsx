@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import ReactQuill from 'react-quill';
 import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -13,6 +12,7 @@ import usePostWrite from './hook/use-post-write';
 import Button from 'components/common/button';
 import PostHeader from 'components/common/post-header';
 import FileForm from 'components/file-form';
+import Editor from './editor';
 
 const Container = styled.div`
   background-color: black;
@@ -41,34 +41,6 @@ const StyledQuillWrapper = styled.div`
   border: 1px solid rgb(38, 38, 38);
   border-radius: 5px;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-
-  .quill {
-    padding-top: 1.5rem;
-    background-color: transparent;
-    color: white;
-    padding-bottom: 30px;
-  }
-  .ql-container {
-    border: none;
-  }
-  .ql-editor {
-    min-height: 150px;
-    max-height: 350px;
-    scrollbar-width: none;
-
-    @media (max-width: 375px) {
-      max-height: 250px;
-    }
-  }
-  .ql-container.ql-snow {
-    border: none;
-  }
-  // placeholder
-  .quill > .ql-container > .ql-editor.ql-blank::before {
-    font-style: normal;
-    font-size: 14px;
-    color: gray;
-  }
 `;
 
 const UploadBtn = styled(Button)<{ disabled: boolean }>`
@@ -83,13 +55,10 @@ const UploadBtn = styled(Button)<{ disabled: boolean }>`
 
 const WritePage = () => {
   const [value, setValue] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   const [fileObject, setFileObject] = useRecoilState(fileObjectState);
 
   const { mutate, isPending: isWriting } = usePostWrite();
-
-  const modules = {
-    toolbar: false,
-  };
 
   const onSubmit = async () => {
     if (fileObject.length === 0 || null) {
@@ -109,6 +78,7 @@ const WritePage = () => {
       }
     }
   };
+
   return (
     <Container>
       <Box>
@@ -121,12 +91,12 @@ const WritePage = () => {
         transition={{ duration: 0.5 }}
       >
         <StyledQuillWrapper>
-          <ReactQuill
-            placeholder={`당신의 공차를 공유하고 소개해주세요!\n(이미지를 하나 이상 업로드해주세요)`}
-            theme='snow'
-            modules={modules}
+          <Editor
+            placeholder={`당신의 공차를 공유하고 소개해주세요!<br/>(이미지를 하나 이상 업로드해주세요)`}
             value={value}
-            onChange={setValue}
+            setValue={setValue}
+            tags={tags}
+            setTags={setTags}
           />
 
           <FileForm />
