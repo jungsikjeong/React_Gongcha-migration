@@ -153,8 +153,6 @@ const MyPage = () => {
     }
   }, [tab1Ref, tab2Ref, query]);
 
-  console.log(user?.introduction);
-
   useEffect(() => {
     if (tab1Ref.current && tab2Ref.current) {
       if (query === '게시물') {
@@ -188,15 +186,17 @@ const MyPage = () => {
 
               <Introduction>
                 {showFullText ||
-                (user?.introduction && user?.introduction?.length <= MAX_CHARS)
-                  ? user?.introduction
-                  : user?.introduction.slice(0, MAX_CHARS) +
-                    '...' +
-                    (
-                      <button onClick={() => setShowFullText(true)}>
-                        더보기
-                      </button>
-                    )}
+                  (user?.introduction &&
+                    (user.introduction.length <= MAX_CHARS ? (
+                      user.introduction
+                    ) : (
+                      <>
+                        {user.introduction.slice(0, MAX_CHARS)}...
+                        <button onClick={() => setShowFullText(true)}>
+                          더보기
+                        </button>
+                      </>
+                    )))}
               </Introduction>
               <Link to={`/edit/${user?._id}`}>
                 <ProfileEdit type='button'>프로필 수정</ProfileEdit>
