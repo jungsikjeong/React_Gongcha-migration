@@ -104,7 +104,8 @@ const DesktopNavbar = () => {
           <Li variants={liVariants}>POSTS</Li>
         </Link>
 
-        {location.pathname === '/posts' && (
+        {(location.pathname === '/posts' ||
+          location.pathname.includes('/post')) && (
           <Li variants={liVariants} className='except'>
             <SearchBar />
           </Li>
