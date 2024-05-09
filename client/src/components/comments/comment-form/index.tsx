@@ -17,7 +17,8 @@ import FlexBox from 'components/common/flex-box';
 const Container = styled.div`
   margin-top: 1.5rem;
   border-top: 1px solid rgb(38, 38, 38);
-  padding: 0 16px;
+  padding: 0px 16px;
+
   @media (max-width: 768px) {
     padding: 0;
   }
@@ -30,6 +31,7 @@ const Form = styled.form`
   height: 100%;
   max-height: 50px;
   padding: 0.875rem 0.1rem;
+
   .spinner {
     width: 25px;
     height: 25px;
@@ -40,16 +42,15 @@ const Form = styled.form`
   }
 `;
 
-const Textarea = styled.textarea`
+const Textarea = styled.textarea<{ $iscontents: string }>`
   width: 100%;
-  min-height: 18px;
-  max-height: 50px;
+  height: 100%;
   resize: none;
   background-color: transparent;
   outline: none;
   border: none;
   color: rgb(245, 245, 245);
-  margin-top: 20px;
+  margin-top: ${({ $iscontents }) => ($iscontents ? '0px' : '20px')};
 
   &::placeholder {
     color: rgb(168, 168, 168);
@@ -185,6 +186,7 @@ const CommentForm = ({ post }: ICommentFormProps) => {
                 }}
                 value={contents}
                 ref={formRef}
+                $iscontents={contents ? 'true' : ''}
               />
 
               <PostBtn value={contents?.length !== 0 ? 'true' : ''}>

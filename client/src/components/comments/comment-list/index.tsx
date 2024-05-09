@@ -19,7 +19,6 @@ const CommentsItem = styled.li<{ $ispathname: boolean }>`
   margin-right: -2px;
   margin-top: 1rem;
   width: 100%;
-  height: 100%;
   max-width: ${({ $ispathname }) => ($ispathname ? '500px' : '335px')};
   font-size: 14px;
   line-height: 18px;

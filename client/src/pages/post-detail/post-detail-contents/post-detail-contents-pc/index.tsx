@@ -85,9 +85,7 @@ const Post = styled.div`
 const Footer = styled.div`
   width: 100%;
   border-top: 1px solid rgb(38, 38, 38);
-  /* padding: 6px 16px 8px; */
   padding-top: 6px;
-  padding-bottom: 8px;
   span {
     cursor: pointer;
     padding-top: 6px;
