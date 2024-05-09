@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { RiCloseLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
-import SearchBar from 'components/search-bar';
+import SearchBar from 'components/search';
 import MobileUser from './mobile-user';
 
 const Container = styled(motion.div)`

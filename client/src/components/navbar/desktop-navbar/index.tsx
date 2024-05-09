@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import SearchBar from 'components/search-bar';
+import SearchBar from 'components/search';
 import DesktopUser from './desktop-user';
 
 const Container = styled.div`
