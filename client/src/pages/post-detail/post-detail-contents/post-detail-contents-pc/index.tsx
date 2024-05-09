@@ -56,7 +56,6 @@ const ContentsWrap = styled.ul`
   overflow-y: scroll;
   padding: 16px;
   scrollbar-width: none;
-  background-color: black;
 `;
 
 const ContentsItem = styled.li`
@@ -86,7 +85,6 @@ const Footer = styled.div`
   width: 100%;
   border-top: 1px solid rgb(38, 38, 38);
   padding: 6px 16px 8px;
-  background-color: black;
   span {
     cursor: pointer;
     padding-top: 6px;

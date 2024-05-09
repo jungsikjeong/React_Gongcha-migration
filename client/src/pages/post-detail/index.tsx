@@ -61,6 +61,7 @@ const Wrapper = styled.div<{ $boxheight: number }>`
   max-height: calc(100vh - 150px);
   height: ${({ $boxheight }) => `${$boxheight}px`};
   transition: all 0.3s ease;
+  border: 1px solid rgb(38, 38, 38);
 
   @media (max-width: 768px) {
     max-width: initial;

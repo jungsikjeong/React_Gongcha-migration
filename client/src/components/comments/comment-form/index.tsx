@@ -14,14 +14,17 @@ import usePostReplyComment from './hook/use-post-reply-comment';
 
 import FlexBox from 'components/common/flex-box';
 
+const Container = styled.div`
+  margin-top: 1.5rem;
+  border-top: 1px solid rgb(38, 38, 38);
+`;
+
 const Form = styled.form`
   display: flex;
   align-items: center;
   width: 100%;
   height: 100%;
   max-height: 50px;
-  border-top: 1px solid rgb(38, 38, 38);
-  margin-top: 1.5rem;
   padding: 0.875rem 0.1rem;
   .spinner {
     width: 25px;
@@ -152,7 +155,7 @@ const CommentForm = ({ post }: ICommentFormProps) => {
     };
   }, [formRef, setIsReplyCommentStatus, submitComment]);
   return (
-    <>
+    <Container>
       {user ? (
         <Form onSubmit={onSubmit}>
           <Image src={user?.avatar} alt='' />
@@ -189,7 +192,7 @@ const CommentForm = ({ post }: ICommentFormProps) => {
       ) : (
         ''
       )}
-    </>
+    </Container>
   );
 };
 
