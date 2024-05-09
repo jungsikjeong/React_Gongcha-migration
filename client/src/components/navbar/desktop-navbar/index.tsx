@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
+import SearchBar from 'components/search-bar';
 import DesktopUser from './desktop-user';
 
 const Container = styled.div`
@@ -18,6 +19,10 @@ const Container = styled.div`
 const Ul = styled(motion.ul)`
   margin-left: 50px;
   font-weight: bold;
+
+  &li:not(:last-of-type):hover::after {
+    width: 100%;
+  }
 
   @media (max-width: 1024px) {
     margin-left: 9px;
@@ -59,7 +64,7 @@ const Li = styled(motion.li)`
     transition: 0.5s;
   }
 
-  &:hover::after {
+  &:not(.except):hover::after {
     width: 100%;
   }
 `;
@@ -98,6 +103,12 @@ const DesktopNavbar = () => {
         <Link to='/posts' onClick={() => window.scrollTo(0, 0)}>
           <Li variants={liVariants}>POSTS</Li>
         </Link>
+
+        {location.pathname === '/posts' && (
+          <Li variants={liVariants} className='except'>
+            <SearchBar />
+          </Li>
+        )}
 
         {location.pathname !== '/about' && <DesktopUser />}
       </Ul>

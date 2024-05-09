@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { RiCloseLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
+import SearchBar from 'components/search-bar';
 import MobileUser from './mobile-user';
 
 const Container = styled(motion.div)`
@@ -51,6 +52,7 @@ const Ul = styled(motion.ul)`
 `;
 
 const Li = styled(motion.li)`
+  width: 100px;
   position: relative;
   display: inline-block;
   padding: 8px 25px;
@@ -87,6 +89,14 @@ const Li = styled(motion.li)`
   }
 `;
 
+const SLink = styled(Link)``;
+
+const Box = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 4rem;
+`;
+
 interface IMobileNavbar {
   handleCloseMenu: (e: React.MouseEvent) => void;
 }
@@ -108,16 +118,27 @@ const MobileNavbar = ({ handleCloseMenu }: IMobileNavbar) => {
           onClick={handleCloseMenu}
         />
       </motion.div>
+      <Box>
+        <SearchBar />
+      </Box>
+
       <Ul>
-        <Link to='/' onClick={handleCloseMenu}>
-          <Li>HOME</Li>
-        </Link>
-        <Link to='/about' onClick={handleCloseMenu}>
-          <Li>ABOUT</Li>
-        </Link>
-        <Link to='/posts' onClick={handleCloseMenu}>
-          <Li>POSTS</Li>
-        </Link>
+        <Li>
+          <Link to='/' onClick={handleCloseMenu}>
+            HOME
+          </Link>
+        </Li>
+
+        <Li>
+          <Link to='/about' onClick={handleCloseMenu}>
+            ABOUT
+          </Link>
+        </Li>
+        <Li>
+          <Link to='/posts' onClick={handleCloseMenu}>
+            POSTS
+          </Link>
+        </Li>
 
         <MobileUser />
       </Ul>
