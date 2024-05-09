@@ -207,10 +207,14 @@ const PostDetailContentsMobile = ({
             </b>
             <br />
             <FlexBox>
-              <b>{post?.author?.nickname}</b>&nbsp;
-              <div
-                dangerouslySetInnerHTML={{ __html: post?.contents || '' }}
-              ></div>
+              <span>
+                <b>{post?.author?.nickname} </b>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: post?.contents || '',
+                  }}
+                ></span>
+              </span>
             </FlexBox>
           </Post>
         </ContentsItem>

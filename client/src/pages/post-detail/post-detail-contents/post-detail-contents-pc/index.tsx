@@ -195,10 +195,14 @@ const PostDetailContentsPC = ({
               <UserImage src={post?.author?.avatar} alt='userImage' />
 
               <Post>
-                <b>{post?.author?.nickname}</b>
-                <div
-                  dangerouslySetInnerHTML={{ __html: post?.contents || '' }}
-                ></div>
+                <span>
+                  <b>{post?.author?.nickname} </b>
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: post?.contents || '',
+                    }}
+                  ></span>
+                </span>
               </Post>
             </ContentsItem>
           )}

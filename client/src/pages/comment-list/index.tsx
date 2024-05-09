@@ -1,3 +1,5 @@
+import { formatDistance } from 'date-fns';
+import { ko } from 'date-fns/locale/ko';
 import { useCallback } from 'react';
 import { LuPlusCircle } from 'react-icons/lu';
 import { useParams } from 'react-router-dom';
@@ -39,7 +41,6 @@ const ContentsList = styled.ul`
 
 const ContentsItem = styled.li`
   display: flex;
-  align-items: start;
   padding-bottom: 10px;
 `;
 
@@ -55,6 +56,7 @@ const Image = styled.img`
 const Post = styled.div`
   display: flex;
   width: 100%;
+  height: 100%;
   font-size: 14px;
   line-height: 18px;
   gap: 5px;
@@ -62,6 +64,11 @@ const Post = styled.div`
   @media (max-width: 768px) {
     font-size: 12px;
   }
+`;
+
+const Time = styled.div`
+  color: rgb(168, 168, 168);
+  font-size: 12px;
 `;
 
 const skeletons = Array(12).fill(0);
@@ -97,12 +104,26 @@ const CommentListPage = () => {
             ) : (
               <>
                 <Image src={data?.author?.avatar} alt='' />
-                <Post>
-                  <b>{data?.author?.nickname}</b>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: data?.contents || '' }}
-                  ></div>
-                </Post>
+
+                <FlexBox $direction='column'>
+                  <Post>
+                    <span>
+                      <b>{data?.author?.nickname} </b>
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: data?.contents || '',
+                        }}
+                      ></span>
+                    </span>
+                  </Post>
+                  <Time>
+                    {data &&
+                      formatDistance(new Date(), new Date(data.date), {
+                        locale: ko as any,
+                      })}
+                    전
+                  </Time>
+                </FlexBox>
               </>
             )}
           </ContentsItem>

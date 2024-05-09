@@ -18,6 +18,9 @@ const Container = styled.div`
   margin-top: 1.5rem;
   border-top: 1px solid rgb(38, 38, 38);
   padding: 0 16px;
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 `;
 
 const Form = styled.form`
@@ -163,7 +166,7 @@ const CommentForm = ({ post }: ICommentFormProps) => {
           {isPending || replyCommentIsPending ? (
             <FlexBox $justifyContent='center' style={{ width: '100%' }}>
               <img
-                src='./spinner.svg'
+                src='/spinner.svg'
                 alt='spinner'
                 className='spinner'
                 style={{ zIndex: '999' }}
