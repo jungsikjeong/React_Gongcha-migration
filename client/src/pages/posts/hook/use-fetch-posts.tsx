@@ -14,6 +14,10 @@ interface IPostsResponse {
 }
 
 export const fetchPosts = async (pageParam: number, searchParams: string) => {
+  if (searchParams) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
   const res = await instance.get<IPostsResponse>(
     '/api/posts?/page=' + pageParam,
     {
@@ -24,7 +28,6 @@ export const fetchPosts = async (pageParam: number, searchParams: string) => {
       },
     }
   );
-
   const newResData = { ...res?.data };
 
   const newData: PostsDataType[] = [];
@@ -33,11 +36,10 @@ export const fetchPosts = async (pageParam: number, searchParams: string) => {
     newData.push({ ...item, className: cardSizeRandomFn() })
   );
   newResData.posts = newData;
-
   return newResData;
 };
 
-const useFetchPosts = (postId: string, searchParams: string) => {
+const useFetchPosts = (searchParams: string) => {
   const {
     fetchNextPage,
     isFetching,
@@ -47,18 +49,20 @@ const useFetchPosts = (postId: string, searchParams: string) => {
     data,
     error,
   } = useInfiniteQuery({
-    queryKey: [postsKey.posts],
+    queryKey: [postsKey.posts, searchParams],
     queryFn: ({ pageParam = 1 }) => fetchPosts(pageParam, searchParams),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      return lastPage.posts?.length > 0 ? lastPage.page + 1 : undefined;
+      return lastPage.posts?.length > 0 && lastPage.page !== lastPage.totalPage
+        ? lastPage.page + 1
+        : undefined;
     },
   });
 
   useEffect(() => {
     if (error) {
       console.log(error);
-      toast.error('댓글을 불러오는데 실패했습니다.');
+      toast.error('게시글을 불러오는데 실패했습니다.');
     }
   }, [error]);
 

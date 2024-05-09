@@ -12,7 +12,7 @@ const Bookmark = require('../../models/Bookmark');
 
 // @route   GET api/myPage
 // @desc    내가 작성한 게시물 모두 가져 오기
-// @access  Public
+// @access  Private
 router.get('/', auth, async (req, res) => {
   try {
     const page = parseInt(req.query.page || '1', 10);
@@ -40,7 +40,7 @@ router.get('/', auth, async (req, res) => {
 });
 // @route   GET api/myPage/bookmarks
 // @desc    내가 저장한 북마크 가져오기
-// @access  Public
+// @access  Private
 router.get('/bookmarks', auth, async (req, res) => {
   try {
     const page = parseInt(req.query.page || '1', 10);

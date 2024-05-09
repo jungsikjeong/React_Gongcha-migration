@@ -18,7 +18,7 @@ const Container = styled.div<{ $loader: string; $initialLoading: string }>`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  z-index: 9999;
+  /* z-index: 9999; */
 `;
 
 const LoaderWrapper = styled.div`

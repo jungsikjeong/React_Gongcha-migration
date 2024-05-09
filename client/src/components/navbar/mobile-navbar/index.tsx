@@ -11,7 +11,6 @@ const Container = styled(motion.div)`
   display: flex;
   flex: 1;
   align-items: center;
-
   .icon-bars {
     display: none;
   }
@@ -23,7 +22,8 @@ const Container = styled(motion.div)`
     background: rgba(0, 0, 0, 0.8);
     top: 0;
     right: 0;
-    position: absolute;
+    bottom: 0;
+    position: fixed;
     text-align: left;
     z-index: 2;
 
@@ -88,8 +88,6 @@ const Li = styled(motion.li)`
     width: 100%;
   }
 `;
-
-const SLink = styled(Link)``;
 
 const Box = styled.div`
   position: absolute;

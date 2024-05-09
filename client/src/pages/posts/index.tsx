@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import useIntersectionObserver from 'hook/use-intersection-observer';
@@ -58,11 +58,9 @@ const Image = styled.img`
 `;
 
 const PostsPage = () => {
-  const [postId, setPostId] = useState<string>(
-    localStorage.getItem('previousPageUrl') || ''
-  );
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [searchParams, setSearchParams] = useState('test'); // 임시
+  const query = searchParams.get('search') || '';
 
   const {
     data,
@@ -71,7 +69,7 @@ const PostsPage = () => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-  } = useFetchPosts(postId, searchParams);
+  } = useFetchPosts(query as string);
 
   const ref = useRef<HTMLDivElement | null>(null);
   const pageRef = useIntersectionObserver(ref, {});
@@ -99,59 +97,35 @@ const PostsPage = () => {
     };
   }, [fetchNext, isPageEnd, hasNextPage]);
 
-  useEffect(() => {
-    const previousPageUrl = localStorage.getItem('previousPageUrl');
-    if (previousPageUrl) {
-      setPostId(previousPageUrl);
-    }
-
-    // 새로고침 할 때도 제거
-    const onBeforeUnload = () => {
-      localStorage.removeItem('previousPageUrl');
-    };
-
-    window.addEventListener('beforeunload', onBeforeUnload);
-
-    return () => {
-      localStorage.removeItem('previousPageUrl');
-      window.removeEventListener('beforeunload', onBeforeUnload);
-    };
-  }, []);
-
   if (!isLoading && data?.pages[0].posts.length === 0) {
-    return <NotFound text={'아직 작성된 게시글이 없습니다..'} />;
+    return <NotFound text={'게시글이 없습니다..'} />;
   }
 
   return (
-    <Container>
-      {isLoading ? (
-        <Box>
-          <Loading />
-        </Box>
-      ) : (
-        <>
-          <Wrapper>
-            {data?.pages?.map((page) =>
-              page?.posts?.map((post) => (
-                <Card
-                  className={post.className}
-                  key={post._id}
-                  onClick={() => {
-                    setPostId(post._id);
-                  }}
-                >
-                  <Link to={`/post/${post?._id}`}>
-                    <Image src={post?.images[0]} />
-                  </Link>
-                </Card>
-              ))
-            )}
-          </Wrapper>
-        </>
-      )}
+    <>
+      <Container>
+        {isLoading ? (
+          <Box>
+            <Loading />
+          </Box>
+        ) : (
+          <>
+            <Wrapper>
+              {data?.pages?.map((page) =>
+                page?.posts?.map((post) => (
+                  <Card className={post.className} key={post._id}>
+                    <Link to={`/post/${post?._id}`}>
+                      <Image src={post?.images[0]} />
+                    </Link>
+                  </Card>
+                ))
+              )}
+            </Wrapper>
+          </>
+        )}
 
-      {(isFetching || isFetchingNextPage) && <Loading loader={true} />}
-
+        {(isFetching || isFetchingNextPage) && <Loading loader={true} />}
+      </Container>
       <div
         ref={ref}
         style={{
@@ -160,7 +134,7 @@ const PostsPage = () => {
           marginBottom: '40px',
         }}
       />
-    </Container>
+    </>
   );
 };
 

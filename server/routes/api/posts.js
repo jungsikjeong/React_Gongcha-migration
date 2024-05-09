@@ -9,6 +9,7 @@ const Post = require('../../models/Post');
 const PostLike = require('../../models/PostLike');
 const Bookmark = require('../../models/Bookmark');
 const User = require('../../models/User');
+const Hashtag = require('../../models/Hashtag');
 
 // @route   POST api/posts/upload
 // @desc    게시물 이미지 업로드
@@ -81,19 +82,68 @@ router.get('/', async (req, res) => {
     const limit = parseInt(req.query.limit);
     const skipPage = parseInt(page) - 1;
     const count = await Post.countDocuments(); // 현재 db에 저장된 게시물 갯수
+    const searchParams = req.query.searchParams;
 
-    const posts = await Post.find()
-      .sort({ date: -1 })
-      .skip(skipPage * 20)
-      .limit(limit)
-      .exec();
+    if (searchParams) {
+      // console.log(searchParams);
+      const agg = [
+        {
+          $search: {
+            index: 'hashtag',
+            text: {
+              query: searchParams,
+              path: {
+                wildcard: '*',
+              },
+            },
+          },
+        },
+        { $sort: { date: -1 } },
+        { $skip: skipPage },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: 'posts', // 게시물 컬렉션 이름
+            localField: 'post', // 현재 컬렉션의 post 필드
+            foreignField: '_id', // 게시물 컬렉션의 _id 필드
+            as: 'post',
+          },
+        },
+        {
+          $unwind: '$post', // 배열을 풀어줌
+        },
+        {
+          $facet: {
+            totalMatches: [{ $count: 'total' }],
+            findPosts: [{ $addFields: { totalMatches: '$total' } }], // findPosts 배열에 totalMatches 추가
+          },
+        },
+      ];
 
-    res.json({
-      page: parseInt(page),
-      posts: posts,
-      totalCount: count,
-      totalPage: Math.ceil(count / 10),
-    });
+      const results = await Hashtag.aggregate(agg);
+      const totalCount = results[0]?.totalMatches[0]?.total;
+      const postsArray = results[0]?.findPosts?.map((post) => post?.post);
+
+      res.json({
+        page: parseInt(page),
+        posts: postsArray,
+        totalCount: totalCount,
+        totalPage: Math.ceil(totalCount / 10),
+      });
+    } else {
+      const posts = await Post.find()
+        .sort({ date: -1 })
+        .skip(skipPage * 20)
+        .limit(limit)
+        .exec();
+
+      res.json({
+        page: parseInt(page),
+        posts: posts,
+        totalCount: count,
+        totalPage: Math.ceil(count / 10),
+      });
+    }
   } catch (err) {
     console.error(err.message);
 

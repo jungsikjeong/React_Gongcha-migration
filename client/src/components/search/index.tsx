@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Container = styled.div``;
@@ -46,10 +47,20 @@ const Input = styled.input<{ $isopen: string }>`
 `;
 
 const SearchBar = () => {
-  const [isOpen, setIsOpen] = useState(false); // Input 열림/닫힘 상태
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const query = searchParams.get('search') || '';
 
   const toggleSearch = () => {
     setIsOpen(!isOpen);
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchParams({
+      search: e.target.value,
+    });
   };
 
   return (
@@ -60,7 +71,9 @@ const SearchBar = () => {
       <Input
         type='text'
         $isopen={isOpen ? 'true' : ''}
-        placeholder='Search..'
+        placeholder='search...'
+        value={query ? query : ''}
+        onChange={(e) => onChange(e)}
       />
     </Container>
   );
