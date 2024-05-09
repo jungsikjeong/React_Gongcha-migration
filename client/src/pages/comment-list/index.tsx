@@ -13,6 +13,7 @@ import CommentList from 'components/comments/comment-list';
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import FlexBox from 'components/common/flex-box';
 import PostHeader from 'components/common/post-header';
+import Typography from 'components/common/typography';
 
 const Container = styled.div`
   min-width: 335px;
@@ -127,7 +128,7 @@ const CommentListPage = () => {
               </>
             )}
           </ContentsItem>
-          <FlexBox $direction='column'>
+          <FlexBox $direction='column' style={{ height: '100%' }}>
             {commentListLoading ? (
               <>
                 {skeletons.map((_, index) => (
@@ -139,14 +140,27 @@ const CommentListPage = () => {
             ) : (
               // 댓글 리스트
               <>
-                {commentListResponse?.pages?.map((data) =>
-                  data?.commentList?.map((comment) => (
-                    <CommentList
-                      postId={id}
-                      comment={comment}
-                      key={comment._id}
-                    />
-                  ))
+                {commentListResponse?.pages?.map((data, index) =>
+                  data?.commentList?.length !== 0 ? (
+                    data.commentList.map((comment) => (
+                      <CommentList
+                        postId={id}
+                        comment={comment}
+                        key={comment._id}
+                      />
+                    ))
+                  ) : (
+                    <FlexBox
+                      style={{ height: '100%' }}
+                      $justifyContent='center'
+                      $alignItems='center'
+                      $direction='column'
+                      key={index}
+                    >
+                      <Typography tag='h3'>아직 댓글이 없습니다.</Typography>
+                      <Typography tag='h5'>댓글을 남겨보세요.</Typography>
+                    </FlexBox>
+                  )
                 )}
 
                 {isFetching || isFetchingNextPage ? (

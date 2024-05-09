@@ -20,6 +20,7 @@ import CommentForm from 'components/comments/comment-form';
 import CommentList from 'components/comments/comment-list';
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import FlexBox from 'components/common/flex-box';
+import Typography from 'components/common/typography';
 import PostDetailImages from 'pages/post-detail/post-detail-images';
 import PostDetailLike from 'pages/post-detail/post-detail-like';
 import PostShare from '../post-share';
@@ -207,7 +208,7 @@ const PostDetailContentsPC = ({
             </ContentsItem>
           )}
 
-          <FlexBox $direction='column'>
+          <FlexBox $direction='column' style={{ height: '100%' }}>
             {commentListLoading ? (
               <>
                 {skeletons.map((_, index) => (
@@ -219,14 +220,27 @@ const PostDetailContentsPC = ({
             ) : (
               // 댓글 리스트
               <>
-                {commentListResponse?.pages?.map((data) =>
-                  data?.commentList?.map((comment) => (
-                    <CommentList
-                      postId={post?._id}
-                      comment={comment}
-                      key={comment._id}
-                    />
-                  ))
+                {commentListResponse?.pages?.map((data, index) =>
+                  data?.commentList?.length !== 0 ? (
+                    data.commentList.map((comment) => (
+                      <CommentList
+                        postId={post?._id}
+                        comment={comment}
+                        key={comment._id}
+                      />
+                    ))
+                  ) : (
+                    <FlexBox
+                      style={{ height: '100%' }}
+                      $justifyContent='center'
+                      $alignItems='center'
+                      $direction='column'
+                      key={index}
+                    >
+                      <Typography tag='h3'>아직 댓글이 없습니다.</Typography>
+                      <Typography tag='h5'>댓글을 남겨보세요.</Typography>
+                    </FlexBox>
+                  )
                 )}
 
                 {/* 더보기 버튼 눌렀을 시 로딩 */}
