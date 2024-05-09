@@ -84,7 +84,9 @@ const Post = styled.div`
 const Footer = styled.div`
   width: 100%;
   border-top: 1px solid rgb(38, 38, 38);
-  padding: 6px 16px 8px;
+  /* padding: 6px 16px 8px; */
+  padding-top: 6px;
+  padding-bottom: 8px;
   span {
     cursor: pointer;
     padding-top: 6px;
@@ -109,6 +111,10 @@ const Section = styled.section`
   .section-icons {
     cursor: pointer;
   }
+`;
+
+const Box = styled.div`
+  padding: 0 16px;
 `;
 
 const Time = styled.div`
@@ -249,43 +255,45 @@ const PostDetailContentsPC = ({
         </ContentsWrap>
 
         <Footer>
-          <Section>
-            {/* 게시글 좋아요 */}
-            <PostDetailLike
-              handlePostLike={handlePostLike}
-              isPostLike={isPostLike}
-            />
+          <Box>
+            <Section>
+              {/* 게시글 좋아요 */}
+              <PostDetailLike
+                handlePostLike={handlePostLike}
+                isPostLike={isPostLike}
+              />
 
-            <div
-              className='section-icons'
-              onClick={() => setCommentFormStatus(true)}
-            >
-              <IoChatbubbleOutline />
-            </div>
+              <div
+                className='section-icons'
+                onClick={() => setCommentFormStatus(true)}
+              >
+                <IoChatbubbleOutline />
+              </div>
 
-            {/* 게시글 북마크 */}
-            <div
-              className='bookmark section-icons'
-              onClick={handlePostBookmark}
-            >
-              {isBookmark ? <FaBookmark /> : <CiBookmark />}
-            </div>
-          </Section>
-          <span>
-            좋아요{' '}
-            {new Intl.NumberFormat('ko-KR').format(
-              (post?.postLikeCount as number) || 0
-            )}
-            개
-          </span>{' '}
-          <br />
-          <Time>
-            {post &&
-              formatDistance(new Date(), new Date(post.date), {
-                locale: ko as any,
-              })}
-            전
-          </Time>
+              {/* 게시글 북마크 */}
+              <div
+                className='bookmark section-icons'
+                onClick={handlePostBookmark}
+              >
+                {isBookmark ? <FaBookmark /> : <CiBookmark />}
+              </div>
+            </Section>
+            <span>
+              좋아요{' '}
+              {new Intl.NumberFormat('ko-KR').format(
+                (post?.postLikeCount as number) || 0
+              )}
+              개
+            </span>{' '}
+            <br />
+            <Time>
+              {post &&
+                formatDistance(new Date(), new Date(post.date), {
+                  locale: ko as any,
+                })}
+              전
+            </Time>
+          </Box>
           {/* 댓글 작성 폼 */}
           <CommentForm post={post} />
         </Footer>

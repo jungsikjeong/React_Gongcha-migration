@@ -17,6 +17,7 @@ import FlexBox from 'components/common/flex-box';
 const Container = styled.div`
   margin-top: 1.5rem;
   border-top: 1px solid rgb(38, 38, 38);
+  padding: 0 16px;
 `;
 
 const Form = styled.form`
