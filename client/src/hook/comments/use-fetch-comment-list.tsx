@@ -1,9 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import instance from 'api/instance';
 import { ICommentResponse } from 'interface/comment';
-import { useEffect } from 'react';
 import { commentKey } from 'react-query-key/comment.keys';
-import { toast } from 'react-toastify';
 
 const fetchCommentList = async (postId: string, pageParam: number) => {
   const res = await instance.get<ICommentResponse>(
@@ -39,13 +37,6 @@ const useFetchCommentList = (postId: string) => {
         : undefined;
     },
   });
-
-  useEffect(() => {
-    if (error) {
-      console.log(error);
-      toast.error('댓글을 불러오는데 실패했습니다.');
-    }
-  }, [error]);
 
   return {
     fetchNextPage,

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const ReplyComment = new mongoose.Schema({
+const ReplyCommentSchema = new mongoose.Schema({
   parentComment: {
     type: mongoose.Schema.Types.ObjectId,
     required: 'comment',
@@ -9,6 +9,11 @@ const ReplyComment = new mongoose.Schema({
   parentCommentUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
+    required: true,
+  },
+  post: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'post',
     required: true,
   },
   user: {
@@ -33,4 +38,4 @@ const ReplyComment = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('commentReply', ReplyComment);
+module.exports = mongoose.model('commentReply', ReplyCommentSchema);

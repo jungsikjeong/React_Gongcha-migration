@@ -98,7 +98,7 @@ const PostsPage = () => {
   }, [fetchNext, isPageEnd, hasNextPage]);
 
   if (!isLoading && data?.pages[0].posts.length === 0) {
-    return <NotFound text={'게시글이 없습니다..'} />;
+    return <NotFound text={'아직 작성된 게시글이 없습니다!'} />;
   }
 
   return (

@@ -4,11 +4,16 @@ const { check, validationResult } = require('express-validator');
 
 const auth = require('../../middleware/auth');
 const { imageUpload } = require('../../middleware/file-upload');
+const { S3, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 const Post = require('../../models/Post');
+const User = require('../../models/User');
+const Comment = require('../../models/Comment');
+const CommentLike = require('../../models/CommentLike');
+const ReplyComment = require('../../models/CommentReply');
+const CommentReplyLike = require('../../models/CommentReplyLike');
 const PostLike = require('../../models/PostLike');
 const Bookmark = require('../../models/Bookmark');
-const User = require('../../models/User');
 const Hashtag = require('../../models/Hashtag');
 
 // @route   POST api/posts/upload
@@ -175,58 +180,53 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// @route   DELETE api/posts/:id
+// @route   DELETE api/posts/:postId
 // @desc    게시글 지우기
 // @access  Private
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:postId', auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.postId);
     const user = await User.findById(req.user.id).select('-password');
 
     if (!post) {
       return res.status(404).json({ msg: '게시글이 없습니다.' });
     }
 
-    // aws s3 버킷에서 파일 삭제
-    const url = post.image.split('/'); // post에 저장된 image를 가져옴
-    const delFileName = url[url.length - 1];
-
-    const params = {
-      Bucket: 'gongcha',
-      Key: `uploadImage/${delFileName}`,
-    };
-
-    upload.s3.deleteObject(params, function (err, data) {
-      console.log(params);
-
-      if (err) {
-        console.log('aws image delete error');
-        console.log(err, err.stack);
-        return;
-      } else {
-        console.log('aws image delete success' + data);
-      }
-    });
-
     // check user
-    if (post.user.toString() !== req.user.id) {
+    if (post.author.toString() !== req.user.id) {
       return res.status(401).json({ msg: '게시글을 작성한 유저가 아닙니다.' });
     }
-    const userPost = user.posts.filter(
-      (post) => post._id.toString() !== req.params.id
-    );
-    // Get remove index
-    const removeIndex = user.posts
-      .map((post) => post._id.toString())
-      .indexOf(req.user.id);
 
-    user.posts.splice(removeIndex, 1);
+    // S3 객체 삭제
+    const s3Client = new S3();
 
-    await user.save();
-    await post.remove();
+    const deletePromises = post.images.map((imageUrl) => {
+      // URL에서 마지막 부분을 이미지 키로 뽑음
+      const imageKey = imageUrl.split('/').pop();
 
-    res.json({ msg: '게시글 삭제 완료' });
+      const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `postImages/${imageKey}`,
+        region: process.env.AWS_REGION,
+      };
+
+      return s3Client.send(new DeleteObjectCommand(params));
+    });
+
+    await Promise.all(deletePromises);
+
+    await Comment.deleteMany({ post: { $in: req.params.postId } });
+    await CommentLike.deleteMany({ post: { $in: req.params.postId } });
+    await ReplyComment.deleteMany({ post: { $in: req.params.postId } });
+    await CommentReplyLike.deleteMany({ post: { $in: req.params.postId } });
+    await PostLike.deleteMany({ post: { $in: req.params.postId } });
+    await Bookmark.deleteMany({ post: { $in: req.params.postId } });
+    await Hashtag.deleteMany({ post: { $in: req.params.postId } });
+    await post.deleteOne();
+
+    return res.status(204).json({ msg: '게시글 삭제 완료' });
   } catch (err) {
+    console.log(err);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: '게시글을 찾을 수 없습니다.' });
     }

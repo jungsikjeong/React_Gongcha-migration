@@ -417,7 +417,7 @@ const EditPage = () => {
               disabled={
                 isCompressLoading ||
                 Object.keys(errors).length !== 0 ||
-                !(nickname || introduction || password)
+                !(nickname || introduction || password || compressedImage)
                   ? true
                   : false
               }

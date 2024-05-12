@@ -1,9 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import instance from 'api/instance';
 import { IBookmarkResponse } from 'interface/bookmark';
-import { useEffect } from 'react';
 import { myPageKey } from 'react-query-key/my-page-keys';
-import { toast } from 'react-toastify';
 
 const fetchMyBookmark = async (
   pageParam: number
@@ -36,12 +34,6 @@ const useFetchMyBookmark = () => {
         : undefined;
     },
   });
-
-  useEffect(() => {
-    if (error) {
-      toast.error('게시글을 불러오는데 실패했습니다.');
-    }
-  }, [error]);
 
   return {
     fetchNextPage,

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const CommentReplyLike = new mongoose.Schema({
+const CommentReplyLikeSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
@@ -10,6 +10,11 @@ const CommentReplyLike = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'comment',
   },
+  post: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'post',
+    required: true,
+  },
   commentReply: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'commentReply',
@@ -17,4 +22,4 @@ const CommentReplyLike = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('commentReplyLike', CommentReplyLike);
+module.exports = mongoose.model('commentReplyLike', CommentReplyLikeSchema);

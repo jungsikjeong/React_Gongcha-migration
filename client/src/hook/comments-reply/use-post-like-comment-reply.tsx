@@ -7,13 +7,18 @@ import { toast } from 'react-toastify';
 interface IPostLikeCommentsProps {
   commentReplyId: string;
   parentCommentId: string;
+  postId: string;
 }
 const postLikeCommentReply = async ({
   commentReplyId,
   parentCommentId,
+  postId,
 }: IPostLikeCommentsProps) => {
   const res = await instance.put<IComment[]>(
-    `/api/reply/like/${commentReplyId}?parentCommentId=${parentCommentId}`
+    `/api/reply/like/${commentReplyId}?parentCommentId=${parentCommentId}`,
+    {
+      postId,
+    }
   );
 
   return res.data;

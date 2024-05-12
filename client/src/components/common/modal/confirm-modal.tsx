@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 
-import Button from './button';
+import Button from '../button';
 
 const fadeInAnimation = keyframes`
   0% {
@@ -29,7 +29,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 30;
+  z-index: 50;
   overflow: hidden;
 `;
 
@@ -54,6 +54,10 @@ const StyledButton = styled(Button)`
   &:last-child {
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
+  }
+
+  &:hover {
+    background-color: rgb(29, 29, 29);
   }
 `;
 

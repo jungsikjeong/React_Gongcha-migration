@@ -80,6 +80,7 @@ router.post('/comment/:comment_id', auth, async (req, res) => {
         parentComment: parentComment,
         parentCommentUser: parentComment.user,
         contents: contents || '',
+        post: postId,
         user: user._id,
       });
       const commentReply = await newCommentReply.save();
@@ -146,11 +147,11 @@ router.delete('/:commentReplyId', auth, async (req, res) => {
 // @desc    대댓글 좋아요 누르기
 // @access  Private
 router.put('/like/:commentReplyId', auth, async (req, res) => {
+  const { postId } = req.body;
+
   try {
     const commentReplyId = req.params.commentReplyId;
     const parentCommentId = req.query.parentCommentId;
-
-    const comment = await Comment.findById(commentReplyId);
 
     // 로그인 유져
     const user = await User.findById(req.user.id).select('-password');
@@ -160,6 +161,7 @@ router.put('/like/:commentReplyId', auth, async (req, res) => {
     // 해당 유저가 이미 해당 댓글에 대한 좋아요를 눌렀는지 확인
     const existingLike = await CommentReplyLike.findOne({
       user: user._id,
+      post: postId,
       commentReply: commentReplyId,
     });
 
@@ -181,6 +183,7 @@ router.put('/like/:commentReplyId', auth, async (req, res) => {
       const newCommentReplyLike = new CommentReplyLike({
         user: user._id,
         commentReply: commentReplyId,
+        post: postId,
         parentComment: parentCommentId,
       });
 

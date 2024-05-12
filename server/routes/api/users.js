@@ -172,6 +172,7 @@ router.post('/edit/profile', auth, async (req, res) => {
       const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: `avatarImages/${avatarKey}`,
+        region: process.env.AWS_REGION,
       };
 
       // S3 객체 삭제

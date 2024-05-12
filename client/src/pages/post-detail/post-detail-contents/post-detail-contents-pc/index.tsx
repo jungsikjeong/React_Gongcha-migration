@@ -4,13 +4,15 @@ import ko from 'date-fns/locale/ko';
 import { IUserInfo } from 'interface/auth';
 import { ICommentResponse } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
+import { toast } from 'react-toastify';
+import { useSetRecoilState } from 'recoil';
+import styled from 'styled-components';
+
+import { BsThreeDots } from 'react-icons/bs';
 import { CiBookmark } from 'react-icons/ci';
 import { FaBookmark } from 'react-icons/fa6';
 import { IoChatbubbleOutline } from 'react-icons/io5';
 import { LuPlusCircle } from 'react-icons/lu';
-import { toast } from 'react-toastify';
-import { useSetRecoilState } from 'recoil';
-import styled from 'styled-components';
 
 import { commentFormStatus } from 'atom/comment-atoms';
 import usePostBookmark from 'pages/post-detail/hook/use-post-bookmark';
@@ -20,10 +22,11 @@ import CommentForm from 'components/comments/comment-form';
 import CommentList from 'components/comments/comment-list';
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import FlexBox from 'components/common/flex-box';
+import VariousModal from 'components/common/modal/various-modal';
 import Typography from 'components/common/typography';
 import PostDetailImages from 'pages/post-detail/post-detail-images';
 import PostDetailLike from 'pages/post-detail/post-detail-like';
-import PostShare from '../post-share';
+import { useState } from 'react';
 
 const Container = styled.div`
   min-width: 335px;
@@ -116,6 +119,11 @@ const Box = styled.div`
   padding: 0 16px;
 `;
 
+const Icon = styled.div`
+  cursor: pointer;
+  margin-left: auto;
+`;
+
 const Time = styled.div`
   color: rgb(168, 168, 168);
   font-size: 12px;
@@ -148,6 +156,8 @@ const PostDetailContentsPC = ({
   isPostLike,
   isBookmark,
 }: IPostDetailContents) => {
+  const [isVariousModalOpen, setIsVariousModalOpen] = useState(false);
+
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
 
   const { mutate: updateLike } = usePostLikePost(post?._id as string, user);
@@ -171,6 +181,15 @@ const PostDetailContentsPC = ({
 
   return (
     <>
+      {isVariousModalOpen && (
+        <VariousModal
+          text='삭제하기'
+          text2='수정하기'
+          post={post}
+          handleCancel={() => setIsVariousModalOpen(false)}
+        />
+      )}
+
       <PostDetailImages postLoading={postLoading} url={post?.images} />
       <Container>
         {postLoading ? (
@@ -181,8 +200,9 @@ const PostDetailContentsPC = ({
 
             <div className='user-nickname'>{post?.author?.nickname}</div>
 
-            {/* 공유하기 버튼 */}
-            <PostShare post={post} />
+            <Icon onClick={() => setIsVariousModalOpen(true)}>
+              <BsThreeDots />
+            </Icon>
           </User>
         )}
 

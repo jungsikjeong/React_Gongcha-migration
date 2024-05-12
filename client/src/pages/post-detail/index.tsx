@@ -10,6 +10,7 @@ import useFetchPostLike from 'pages/post-detail/hook/use-fetch-post-like';
 import useFetchCommentList from '../../hook/comments/use-fetch-comment-list';
 
 import FlexBox from 'components/common/flex-box';
+import NotFound from 'components/not-found';
 import PostDetailContentsMobile from './post-detail-contents/post-detail-contents-mobile';
 import PostDetailContentsPC from './post-detail-contents/post-detail-contents-pc';
 
@@ -89,9 +90,11 @@ const PostDetailPage = () => {
 
   const { user } = useUser();
 
-  const { data: post, isLoading: postLoading } = useFetchPostDetail(
-    params.id as string
-  );
+  const {
+    data: post,
+    isLoading: postLoading,
+    error,
+  } = useFetchPostDetail(params.id as string);
   const { data: isPostLike } = useFetchPostLike(params.id as string);
   const { data: isBookmark } = useFetchPostBookmark(params.id as string);
   const {
@@ -148,6 +151,10 @@ const PostDetailPage = () => {
     };
   }, []);
 
+  if (error) {
+    return <NotFound />;
+  }
+
   return (
     <EntireArea>
       <Container>
@@ -160,6 +167,7 @@ const PostDetailPage = () => {
             >
               <IoMdClose />
             </Close>
+
             {isMobile ? (
               <PostDetailContentsMobile
                 post={post}

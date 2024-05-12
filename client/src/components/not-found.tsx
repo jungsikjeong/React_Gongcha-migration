@@ -61,7 +61,7 @@ const NotFound = ({ text }: INotFound) => {
             <span className='longshadow'>
               4<span className='o'>0</span>4
             </span>
-            <span>Not Found...</span>
+            <span>페이지를 찾을 수 없습니다..</span>
           </Text>
 
           <GoBack onClick={goBack}>Go back</GoBack>

@@ -2,13 +2,13 @@ import { replyCommentStatus, replyCommentUserStatus } from 'atom/comment-atoms';
 import { useUser } from 'hook/auth/use-user';
 import { CommentReplyTypes } from 'interface/comment';
 import { useCallback, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
 import styled from 'styled-components';
 
-import ConfirmModal from 'components/common/confirm-modal';
 import FlexBox from 'components/common/flex-box';
+import ConfirmModal from 'components/common/modal/confirm-modal';
 import useDeleteCommentReply from 'hook/comments-reply/use-delete-comment-reply';
 import usePostLikeCommentReply from 'hook/comments-reply/use-post-like-comment-reply';
 import { FcLike } from 'react-icons/fc';
@@ -73,6 +73,7 @@ interface ICommentReplyItemProps {
   commentReplyItem: CommentReplyTypes;
 }
 const CommentReplyItem = ({ commentReplyItem }: ICommentReplyItemProps) => {
+  const params = useParams();
   const { user } = useUser();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
@@ -104,7 +105,11 @@ const CommentReplyItem = ({ commentReplyItem }: ICommentReplyItemProps) => {
       const parentCommentId = commentReplyItem.parentComment;
       const commentReplyId = commentReplyItem._id;
 
-      replyLikeMutate({ commentReplyId, parentCommentId });
+      replyLikeMutate({
+        commentReplyId,
+        parentCommentId,
+        postId: params.id as string,
+      });
     }
   }, [commentReplyItem, replyLikeMutate]);
 

@@ -11,8 +11,8 @@ import useDeleteComment from 'hook/comments/use-delete-comment';
 import usePostLikeComment from 'hook/comments/use-post-like-comment';
 import styled from 'styled-components';
 
-import ConfirmModal from 'components/common/confirm-modal';
 import FlexBox from 'components/common/flex-box';
+import ConfirmModal from 'components/common/modal/confirm-modal';
 import CommentReply from '../comment-reply';
 
 const CommentsItem = styled.li<{ $ispathname: boolean }>`

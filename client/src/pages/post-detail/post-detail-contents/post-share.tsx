@@ -1,11 +1,21 @@
 import { PostsDataType } from 'interface/posts';
 import { useEffect } from 'react';
-import { FaShare } from 'react-icons/fa';
 import styled from 'styled-components';
 
-const Button = styled.div`
-  margin-left: auto;
-  cursor: pointer;
+import Button from 'components/common/button';
+
+const StyledButton = styled(Button)`
+  font-weight: 700;
+  background-color: rgb(38, 38, 38);
+  width: 250px;
+  min-height: 48px;
+  padding: 4px 8px;
+  border-bottom: 1px solid rgb(54, 54, 54);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgb(29, 29, 29);
+  }
 `;
 
 declare global {
@@ -53,15 +63,14 @@ const PostShare = ({ post }: IPostShareProps) => {
   }, []);
 
   return (
-    <>
-      <Button
-        onClick={() => {
-          shareKakao();
-        }}
-      >
-        <FaShare />
-      </Button>
-    </>
+    <StyledButton
+      type='button'
+      onClick={() => {
+        shareKakao();
+      }}
+    >
+      공유하기
+    </StyledButton>
   );
 };
 
