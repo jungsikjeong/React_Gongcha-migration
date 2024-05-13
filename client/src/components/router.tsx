@@ -11,7 +11,7 @@ const CommentListPage = lazy(() => import('../pages/comment-list'));
 const PostDetailPage = lazy(() => import('../pages/post-detail'));
 const WritePage = lazy(() => import('../pages/write'));
 const MyPage = lazy(() => import('../pages/my-page'));
-const EditPage = lazy(() => import('../pages/edit'));
+const ProfileEditPage = lazy(() => import('../pages/edit'));
 const NotFound = lazy(() => import('./not-found'));
 
 const Router = () => {
@@ -27,7 +27,7 @@ const Router = () => {
         <Route element={<PrivateRoute />}>
           <Route path='/write' element={<WritePage />} />
           <Route path='/myPage' element={<MyPage />} />
-          <Route path='/edit/:id' element={<EditPage />} />
+          <Route path='/edit/:id' element={<ProfileEditPage />} />
         </Route>
 
         {/* 경로 외에 곳으로 갔을때 */}

@@ -214,7 +214,7 @@ const SButton = styled(Button)<{ disabled: boolean }>`
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 `;
 
-const EditPage = () => {
+const ProfileEditPage = () => {
   const navigate = useNavigate();
   const { user } = useUser();
 
@@ -435,4 +435,4 @@ const EditPage = () => {
   );
 };
 
-export default EditPage;
+export default ProfileEditPage;
