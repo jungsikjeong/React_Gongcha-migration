@@ -65,9 +65,7 @@ const PostEditPage = () => {
   const [deleteImages, setDeleteImages] = useState<string[]>([]); // 기존 이미지중에서 삭제한거
 
   const { data, isLoading } = useFetchPostDetail(params?.id as string);
-  const { mutate: editWrite, isPending: isWriting } = useEditWrite({
-    tags,
-  });
+  const { mutate: editWrite, isPending: isWriting } = useEditWrite();
 
   const onSubmit = async () => {
     let updateImageUrl: string[] = [];
@@ -113,6 +111,7 @@ const PostEditPage = () => {
 
       editWrite({
         value,
+        hashtags: tags,
         fileInfo: updateImageUrl.length === 0 ? data?.images : updateImageUrl,
         postId: data?._id,
       });
@@ -123,6 +122,7 @@ const PostEditPage = () => {
   };
   useEffect(() => {
     if (data) {
+      setTags(data?.hashtags);
       setValue(data.contents);
     }
   }, [data]);

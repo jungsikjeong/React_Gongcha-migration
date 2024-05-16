@@ -5,32 +5,31 @@ import { postDetailKey, postsKey } from 'react-query-key/post.keys';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import useEditHashTag from './use-edit-hashtag';
-
 interface IEditWriteProps {
   value: string;
   fileInfo: string[];
   postId: string;
+  hashtags: string[];
 }
 
-interface IUseEditWriteProps {
-  tags: string[];
-}
-
-const editWrite = async ({ value, fileInfo, postId }: IEditWriteProps) => {
+const editWrite = async ({
+  value,
+  fileInfo,
+  postId,
+  hashtags,
+}: IEditWriteProps) => {
   const res = await instance.put('/api/posts', {
     content: value,
     images: fileInfo,
+    hashtags: hashtags,
     postId: postId,
   });
 
   return res.data;
 };
 
-const useEditWrite = ({ tags }: IUseEditWriteProps) => {
+const useEditWrite = () => {
   const navigate = useNavigate();
-
-  const { mutate: editHashtag } = useEditHashTag();
 
   const queryClient = useQueryClient();
 
@@ -51,12 +50,6 @@ const useEditWrite = ({ tags }: IUseEditWriteProps) => {
         queryKey: [myPageKey.myPosts],
         refetchType: 'all',
       });
-
-      const postId = data?._id;
-
-      if (tags.length !== 0 && postId) {
-        editHashtag({ tags, postId });
-      }
 
       toast.success('게시물이 수정되었습니다.');
       navigate(`/post/${data?._id}`);

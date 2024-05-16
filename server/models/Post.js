@@ -20,6 +20,11 @@ const PostSchema = new Schema({
     type: Number,
     default: 0,
   },
+  hashtags: [
+    {
+      type: String,
+    },
+  ],
 
   date: {
     type: Date,

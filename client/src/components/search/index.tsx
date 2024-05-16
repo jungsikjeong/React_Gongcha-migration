@@ -71,7 +71,7 @@ const SearchBar = () => {
       <Input
         type='text'
         $isopen={isOpen ? 'true' : ''}
-        placeholder='search...'
+        placeholder='tag search...'
         value={query ? query : ''}
         onChange={(e) => onChange(e)}
       />

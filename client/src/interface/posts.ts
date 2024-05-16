@@ -6,6 +6,7 @@ export type PostsDataType = {
   contents: string;
   date: string;
   images: string[];
+  hashtags: string[];
   postCommentCount: number;
   postLikeCount: number;
   __v: number;

@@ -14,14 +14,12 @@ const ReplyComment = require('../../models/CommentReply');
 const CommentReplyLike = require('../../models/CommentReplyLike');
 const PostLike = require('../../models/PostLike');
 const Bookmark = require('../../models/Bookmark');
-const Hashtag = require('../../models/Hashtag');
 
 // @route   put api/posts/upload
 // @desc    게시물 이미지 삭제
 // @access  Private
 router.put('/upload', auth, async (req, res) => {
   const { images } = req.body;
-  console.log(images);
 
   // S3 객체 삭제
   const s3Client = new S3();
@@ -85,7 +83,7 @@ router.post(
 // @desc    게시물 작성
 // @access  Private
 router.post('/', auth, async (req, res) => {
-  const { content, images } = req.body;
+  const { content, images, tags } = req.body;
 
   try {
     const user = await User.findById(req.user.id).select('-password');
@@ -99,6 +97,7 @@ router.post('/', auth, async (req, res) => {
         contents: content || '',
         author: user._id,
         images: images,
+        hashtags: tags ? tags : [],
       });
 
       const post = await newPost.save();
@@ -115,8 +114,7 @@ router.post('/', auth, async (req, res) => {
 // @desc    게시물 수정
 // @access  Private
 router.put('/', auth, async (req, res) => {
-  const { content, images, postId } = req.body;
-
+  const { content, images, postId, hashtags } = req.body;
   try {
     const user = await User.findById(req.user.id).select('-password');
     let post = await Post.findById(postId);
@@ -132,18 +130,23 @@ router.put('/', auth, async (req, res) => {
     const updatedFields = {};
 
     if (content) {
-      updatedFields.content = content;
+      updatedFields.contents = content;
     }
 
     if (images) {
       updatedFields.images = images;
+    }
+    if (hashtags) {
+      updatedFields.hashtags = hashtags;
+    } else if (hashtags.length === 0 || !hashtags) {
+      updatedFields.hashtags = [];
     }
 
     post = await Post.findByIdAndUpdate(
       postId,
       { $set: updatedFields },
       { new: true }
-    );
+    ).exec();
 
     res.json(post);
   } catch (err) {
@@ -164,51 +167,91 @@ router.get('/', async (req, res) => {
     const searchParams = req.query.searchParams;
 
     if (searchParams) {
-      // console.log(searchParams);
-      const agg = [
+      const searchAgg = [
         {
           $search: {
-            index: 'hashtag',
+            index: 'hashtags',
             text: {
               query: searchParams,
-              path: {
-                wildcard: '*',
-              },
+              path: 'hashtags',
             },
           },
         },
         { $sort: { date: -1 } },
         { $skip: skipPage },
         { $limit: limit },
-        {
-          $lookup: {
-            from: 'posts', // 게시물 컬렉션 이름
-            localField: 'post', // 현재 컬렉션의 post 필드
-            foreignField: '_id', // 게시물 컬렉션의 _id 필드
-            as: 'post',
-          },
-        },
-        {
-          $unwind: '$post', // 배열을 풀어줌
-        },
-        {
-          $facet: {
-            totalMatches: [{ $count: 'total' }],
-            findPosts: [{ $addFields: { totalMatches: '$total' } }], // findPosts 배열에 totalMatches 추가
-          },
-        },
       ];
 
-      const results = await Hashtag.aggregate(agg);
-      const totalCount = results[0]?.totalMatches[0]?.total;
-      const postsArray = results[0]?.findPosts?.map((post) => post?.post);
+      const countAgg = [
+        {
+          $search: {
+            index: 'hashtags',
+            text: {
+              query: searchParams,
+              path: 'hashtags',
+            },
+          },
+        },
+        { $count: 'total_count' },
+      ];
+
+      const [results, countResult] = await Promise.all([
+        Post.aggregate(searchAgg),
+        Post.aggregate(countAgg),
+      ]);
+
+      const total_count =
+        countResult.length > 0 ? countResult[0].total_count : 0;
 
       res.json({
         page: parseInt(page),
-        posts: postsArray,
-        totalCount: totalCount,
-        totalPage: Math.ceil(totalCount / 10),
+        posts: results,
+        totalCount: total_count,
+        totalPage: Math.ceil(total_count / 10),
       });
+      //   {
+      //     $search: {
+      //       index: 'hashtag',
+      //       text: {
+      //         query: searchParams,
+      //         path: {
+      //           wildcard: '*',
+      //         },
+      //       },
+      //     },
+      //   },
+      //   { $sort: { date: -1 } },
+      //   { $skip: skipPage },
+      //   { $limit: limit },
+      //   {
+      //     $lookup: {
+      //       from: 'posts', // 게시물 컬렉션 이름
+      //       localField: 'post', // 현재 컬렉션의 post 필드
+      //       foreignField: '_id', // 게시물 컬렉션의 _id 필드
+      //       as: 'post',
+      //     },
+      //   },
+      //   {
+      //     $unwind: '$post', // 배열을 풀어줌
+      //   },
+      //   {
+      //     $facet: {
+      //       totalMatches: [{ $count: 'total' }],
+      //       findPosts: [{ $addFields: { totalMatches: '$total' } }], // findPosts 배열에 totalMatches 추가
+      //     },
+      //   },
+      // ];
+
+      // const results = await Hashtag.aggregate(agg);
+      // const totalCount = results[0]?.totalMatches[0]?.total;
+      // const postsArray = results[0]?.findPosts?.map((post) => post?.post);
+
+      // res.json({
+      //   page: parseInt(page),
+      //   posts: postsArray,
+      //   totalCount: totalCount,
+      //   totalPage: Math.ceil(totalCount / 10),
+      // });
     } else {
       const posts = await Post.find()
         .sort({ date: -1 })
@@ -295,7 +338,6 @@ router.delete('/:postId', auth, async (req, res) => {
     await CommentReplyLike.deleteMany({ post: { $in: req.params.postId } });
     await PostLike.deleteMany({ post: { $in: req.params.postId } });
     await Bookmark.deleteMany({ post: { $in: req.params.postId } });
-    await Hashtag.deleteMany({ post: { $in: req.params.postId } });
     await post.deleteOne();
 
     return res.status(204).json({ msg: '게시글 삭제 완료' });

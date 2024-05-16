@@ -58,7 +58,7 @@ const WritePage = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [fileObject, setFileObject] = useRecoilState(fileObjectState);
 
-  const { mutate: postWrite, isPending: isWriting } = usePostWrite({ tags });
+  const { mutate: postWrite, isPending: isWriting } = usePostWrite();
 
   const onSubmit = async () => {
     if (fileObject.length === 0 || null) {
@@ -73,7 +73,7 @@ const WritePage = () => {
       const fileInfo = await postFileUpload({ formData });
 
       if (fileInfo && fileInfo.length !== 0) {
-        postWrite({ value, fileInfo });
+        postWrite({ value, fileInfo, tags });
 
         setFileObject([]);
       }
