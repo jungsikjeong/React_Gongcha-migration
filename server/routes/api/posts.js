@@ -129,11 +129,21 @@ router.put('/', auth, async (req, res) => {
       return res.status(400).json({ msg: '이미지를 먼저 업로드해주세요' });
     }
 
-    post.contents = content || '';
-    post.author = user._id;
-    post.images = images;
+    const updatedFields = {};
 
-    post = await post.save();
+    if (content) {
+      updatedFields.content = content;
+    }
+
+    if (images) {
+      updatedFields.images = images;
+    }
+
+    post = await Post.findByIdAndUpdate(
+      postId,
+      { $set: updatedFields },
+      { new: true }
+    );
 
     res.json(post);
   } catch (err) {

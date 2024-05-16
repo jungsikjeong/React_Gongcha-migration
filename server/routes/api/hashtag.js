@@ -46,7 +46,15 @@ router.put('/', auth, async (req, res) => {
     const hashtag = await Hashtag.findOne({ post: postId });
 
     if (!hashtag) {
-      return res.status(400).json({ msg: '해당하는 해시태그가 없습니다.' });
+      const newHashtags = new Hashtag({
+        user: req.user.id,
+        post: postId,
+        hashtags: tags,
+      });
+
+      const hashtags = await newHashtags.save();
+
+      return res.json(hashtags);
     }
 
     if (hashtag) {
