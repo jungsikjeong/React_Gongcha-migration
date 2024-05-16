@@ -33,4 +33,31 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
+// @route   PUT api/hashTag
+// @desc    해시태그 변경
+// @access  Private
+router.put('/', auth, async (req, res) => {
+  const { tags, postId } = req.body;
+
+  try {
+    if (!postId) {
+      return res.status(400).json({ msg: '게시글이 없습니다.' });
+    }
+    const hashtag = await Hashtag.findOne({ post: postId });
+
+    if (!hashtag) {
+      return res.status(400).json({ msg: '해당하는 해시태그가 없습니다.' });
+    }
+
+    if (hashtag) {
+      hashtag.hashtags = tags;
+      await hashtag.save();
+      res.json(hashtag);
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;

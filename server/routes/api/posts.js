@@ -16,6 +16,39 @@ const PostLike = require('../../models/PostLike');
 const Bookmark = require('../../models/Bookmark');
 const Hashtag = require('../../models/Hashtag');
 
+// @route   put api/posts/upload
+// @desc    게시물 이미지 삭제
+// @access  Private
+router.put('/upload', auth, async (req, res) => {
+  const { images } = req.body;
+  console.log(images);
+
+  // S3 객체 삭제
+  const s3Client = new S3();
+
+  const deletePromises = images.map((imageUrl) => {
+    // URL에서 마지막 부분을 이미지 키로 뽑음
+    const imageKey = imageUrl.split('/').pop();
+
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `postImages/${imageKey}`,
+      region: process.env.AWS_REGION,
+    };
+
+    return s3Client.send(new DeleteObjectCommand(params));
+  });
+
+  await Promise.all(deletePromises);
+
+  return res.status(200).json({ msg: 'ok' });
+  try {
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route   POST api/posts/upload
 // @desc    게시물 이미지 업로드
 // @access  Private
@@ -72,6 +105,37 @@ router.post('/', auth, async (req, res) => {
 
       res.json(post);
     }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   PUT api/posts
+// @desc    게시물 수정
+// @access  Private
+router.put('/', auth, async (req, res) => {
+  const { content, images, postId } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    let post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(400).json({ msg: '게시글이 없습니다.' });
+    }
+
+    if (!images) {
+      return res.status(400).json({ msg: '이미지를 먼저 업로드해주세요' });
+    }
+
+    post.contents = content || '';
+    post.author = user._id;
+    post.images = images;
+
+    post = await post.save();
+
+    res.json(post);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

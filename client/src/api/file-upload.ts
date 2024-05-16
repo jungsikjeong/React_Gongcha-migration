@@ -2,6 +2,31 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { getToken } from 'utils/token.localstorage';
 
+export const deleteFile = async ({ images }: { images: string[] }) => {
+  try {
+    const token = getToken();
+
+    const res = await axios.put<string[]>(
+      '/api/posts/upload',
+      { images },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error: any) {
+    console.log(error);
+
+    if (error?.response?.status === 401) {
+      toast.error('파일 삭제 중 에러가 발생했습니다. 다시 시도해주세요');
+      window.location.reload();
+    }
+  }
+};
+
 export const postFileUpload = async ({ formData }: { formData: FormData }) => {
   try {
     const token = getToken();

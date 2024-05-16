@@ -2,6 +2,7 @@ import ImageCropper from 'components/common/image-cropper';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
+import { toast } from 'react-toastify';
 import uuid from 'react-uuid';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -52,7 +53,17 @@ const CloseButton = styled(motion.button)`
   }
 `;
 
-const FileForm = () => {
+interface IFileFormProps {
+  oldImages?: string[] | undefined;
+  deleteImages?: string[] | undefined;
+  setDeleteImages?: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const FileForm = ({
+  deleteImages,
+  oldImages,
+  setDeleteImages,
+}: IFileFormProps) => {
   const [uploadImage, setUploadImage] = useState<string | null>(null);
   const [uuId, setUuId] = useState<string>('');
   const [compressedImages, setCompressedImages] = useState<string[]>([]);
@@ -62,6 +73,9 @@ const FileForm = () => {
   const [fileObject, setFileObject] = useRecoilState(fileObjectState);
 
   const handleUploadImage = (image: string) => {
+    if (fileObject.length >= 5) {
+      return toast.error('이미지는 최대 다섯개까지만 올려주세요!');
+    }
     setUuId(uuid());
     setUploadImage(image);
   };
@@ -81,12 +95,21 @@ const FileForm = () => {
     const newImage = [...compressedImages, imageUrl];
     setCompressedImages(newImage);
   };
-  const handleCompressImageDelete = (index: number) => {
+
+  const handleImageDelete = (index: number) => {
     const updatedImages = [...compressedImages];
     const updatedFileObject = [...fileObject];
+    // Blob 객체가 아니면 deleteImg 객체에 추가하기
+    if (!((updatedImages[index] as any) instanceof Blob)) {
+      if (setDeleteImages) {
+        const deleteImgs = Array.isArray(deleteImages) ? [...deleteImages] : [];
+        deleteImgs.push(updatedImages[index]);
+        setDeleteImages(deleteImgs);
+      }
+    }
 
-    updatedFileObject.splice(index, 1);
     updatedImages.splice(index, 1);
+    updatedFileObject.splice(index, 1);
 
     setCompressedImages(updatedImages);
     setFileObject(updatedFileObject);
@@ -97,6 +120,13 @@ const FileForm = () => {
       handleCompressImage();
     }
   }, [uploadImage, uuId]);
+  // 기존에 업로드된 이미지의 url 가져옴
+  useEffect(() => {
+    if (oldImages) {
+      setCompressedImages([...oldImages]);
+      setFileObject([...oldImages]);
+    }
+  }, [oldImages]);
 
   return (
     <Container>
@@ -104,7 +134,7 @@ const FileForm = () => {
         {compressedImages.length === 1 && !isCompressLoading ? (
           <div style={{ position: 'relative' }}>
             <CloseButton
-              onClick={() => handleCompressImageDelete(0)}
+              onClick={() => handleImageDelete(0)}
               whileTap={{ scale: 0.8 }}
               transition={{ duration: 0.2 }}
             >
@@ -115,7 +145,7 @@ const FileForm = () => {
         ) : compressedImages.length > 1 && !isCompressLoading ? (
           <ImgSwiper
             images={compressedImages}
-            handleCompressImageDelete={handleCompressImageDelete}
+            handleCompressImageDelete={handleImageDelete}
           />
         ) : (
           <Cover>{isCompressLoading && '이미지 압축 중..'}</Cover>

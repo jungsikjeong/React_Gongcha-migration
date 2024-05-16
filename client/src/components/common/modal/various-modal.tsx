@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
 import { PostsDataType } from 'interface/posts';
@@ -47,7 +48,7 @@ const Wrapper = styled.div`
   animation: ${fadeInAnimation} 0.3s ease-in-out;
 `;
 
-const StyledButton = styled(Button)`
+const StyledButton = styled(Button)<{ $danger?: string; $last?: string }>`
   font-weight: 700;
   background-color: rgb(38, 38, 38);
   width: 250px;
@@ -55,19 +56,24 @@ const StyledButton = styled(Button)`
   padding: 4px 8px;
   border-bottom: 1px solid rgb(54, 54, 54);
   transition: all 0.3s ease;
+  border-bottom-left-radius: ${({ $last }) => ($last ? '12px' : '0px')};
+  border-bottom-right-radius: ${({ $last }) => ($last ? '12px' : '0px')};
+  color: ${({ $danger }) => ($danger ? 'rgb(237, 73, 86)' : '#fff')};
+
   &:first-child {
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
-    color: rgb(237, 73, 86);
-  }
-  &:last-child {
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
   }
 
   &:hover {
     background-color: rgb(29, 29, 29);
   }
+`;
+
+const SLink = styled(Link)`
+  background-color: rgb(38, 38, 38);
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
 `;
 
 interface IVariousModalProps {
@@ -110,19 +116,29 @@ const VariousModal = ({
           handleCancel={() => setIsConfirmModalOpen(false)}
         />
       )}
+
       <Container>
         <Wrapper>
           {user?._id === post?.author?._id && user && (
-            <StyledButton
-              type='button'
-              onClick={() => setIsConfirmModalOpen(true)}
-            >
-              {text}
-            </StyledButton>
+            <>
+              <StyledButton
+                type='button'
+                onClick={() => setIsConfirmModalOpen(true)}
+                $danger='true'
+              >
+                {text}
+              </StyledButton>
+
+              <SLink to={`/post/edit/${post?._id}`}>
+                <StyledButton type='button'>{text2}</StyledButton>
+              </SLink>
+            </>
           )}
-          <StyledButton type='button'>{text2}</StyledButton>
+
+          {/* 공유하기 버튼 */}
           <PostShare post={post} />
-          <StyledButton type='button' onClick={handleCancel}>
+
+          <StyledButton type='button' onClick={handleCancel} $last={'true'}>
             취소
           </StyledButton>
         </Wrapper>

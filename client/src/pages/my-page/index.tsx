@@ -198,7 +198,7 @@ const MyPage = () => {
                       </>
                     )))}
               </Introduction>
-              <Link to={`/edit/${user?._id}`}>
+              <Link to={`/myPage/edit/${user?._id}`}>
                 <ProfileEdit type='button'>프로필 수정</ProfileEdit>
               </Link>
             </>
