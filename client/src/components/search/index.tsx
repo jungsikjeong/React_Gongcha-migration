@@ -52,7 +52,6 @@ const SearchBar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const query = searchParams.get('search') || '';
-
   const toggleSearch = () => {
     setIsOpen(!isOpen);
   };
@@ -65,12 +64,15 @@ const SearchBar = () => {
 
   return (
     <Container>
-      <SearchIcon onClick={toggleSearch} $isopen={isOpen ? 'true' : ''}>
+      <SearchIcon
+        onClick={toggleSearch}
+        $isopen={isOpen || query ? 'true' : ''}
+      >
         <FaSearch />
       </SearchIcon>
       <Input
         type='text'
-        $isopen={isOpen ? 'true' : ''}
+        $isopen={isOpen || query ? 'true' : ''}
         placeholder='tag search...'
         value={query ? query : ''}
         onChange={(e) => onChange(e)}
