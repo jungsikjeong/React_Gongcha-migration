@@ -17,7 +17,6 @@ app.use(morgan('dev'));
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/posts', require('./routes/api/posts'));
-app.use('/api/hashtag', require('./routes/api/hashtag'));
 app.use('/api/myPage', require('./routes/api/myPage'));
 app.use('/api/comment', require('./routes/api/comment'));
 app.use('/api/reply', require('./routes/api/reply-comment'));
