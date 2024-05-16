@@ -61,25 +61,6 @@ const Editor = ({
   tags,
   setTags,
 }: IEditorProps) => {
-  // const inputRef = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   // When the component mounts or the value changes,
-  //   // move the cursor to the end of the input.
-  //   if (inputRef.current) {
-  //     inputRef.current.innerHTML = value;
-
-  //     const range = document.createRange();
-  //     const selection = window.getSelection();
-  //     if (selection) {
-  //       range.selectNodeContents(inputRef.current);
-  //       range.collapse(false);
-  //       selection.removeAllRanges();
-  //       selection.addRange(range);
-  //     }
-  //   }
-  // }, []);
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.keyCode === 13) {
       e.preventDefault();
@@ -127,9 +108,7 @@ const Editor = ({
         '<span>$1</span>'
       );
 
-    if (hashTags) {
-      setTags(hashTags);
-    }
+    setTags(hashTags ? hashTags : []);
 
     setValue(str);
   };

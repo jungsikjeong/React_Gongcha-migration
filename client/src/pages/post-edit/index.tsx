@@ -126,6 +126,7 @@ const PostEditPage = () => {
       setValue(data.contents);
     }
   }, [data]);
+
   return (
     <Container>
       {isLoading ? (
