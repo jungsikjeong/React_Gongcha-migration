@@ -53,7 +53,6 @@ const textVariants = {
 };
 
 const HomePage = () => {
-  console.log(process.env.REACT_APP_API_BASE_URL);
   return (
     <Container initial='hidden' animate='visible' exit='hidden'>
       <BannerTitle>

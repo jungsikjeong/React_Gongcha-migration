@@ -4,11 +4,22 @@ const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const path = require('path');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const app = express();
 
+const options = [
+  cors({
+    origin: '*',
+    methods: '*',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  }),
+];
+
 connectDB();
 
+app.use(options);
 app.use(cookieParser());
 app.use(express.json({ extended: false }));
 app.use(morgan('dev'));
