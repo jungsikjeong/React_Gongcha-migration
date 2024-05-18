@@ -30,11 +30,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
   // 모든 자바스크립트와 css 파일 같은 static한 파일들은 이곳에서 처리가 된다.
-  app.use(express.static('client/build'));
+  app.use(express.static('/build'));
 
   // 모든 라우트를 위한 index.html을 보기 위해서 client', 'build', 'index.html'를 본다.
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client', 'build', 'index.html'));
+    res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
   });
 }
 
