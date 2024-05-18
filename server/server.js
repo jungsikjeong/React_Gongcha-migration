@@ -27,15 +27,12 @@ app.use('/api/reply', require('./routes/api/reply-comment'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Serve static assets if in production
-// 프론트엔드를 위한 코드 (헤로쿠가 바라보는 코드)
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
   // 모든 자바스크립트와 css 파일 같은 static한 파일들은 이곳에서 처리가 된다.
-  // 헤로쿠는 이 client/build폴더를 보게됨
   app.use(express.static('client/build'));
 
   // 모든 라우트를 위한 index.html을 보기 위해서 client', 'build', 'index.html'를 본다.
-  // 이역시 헤로쿠는 이 코드를본다.
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../client', 'build', 'index.html'));
   });

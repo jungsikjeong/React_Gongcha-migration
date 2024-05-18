@@ -26,4 +26,6 @@ AWS_REGION= ..
 AWS_BUCKET_NAME= ..
 ```
 
-3. client / server 폴더 각각 npm install후 실행해주세요!
+3. client/.env파일에서 REACT_APP_API_BASE_URL=자신의 로컬번호 를 입력해주세요
+
+4. client / server 폴더 각각 npm install후 실행해주세요!
