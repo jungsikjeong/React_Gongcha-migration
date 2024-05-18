@@ -2,12 +2,13 @@
   "name": "react_gongcha-migration",
   "version": "1.0.0",
   "description": "오늘도 공차하세요! 프로젝트 마이그레이션",
-  "main": "index.js",
+  "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
     "backend": "nodemon server/server.js",
     "frontend": "npm run start --prefix client",
-    "dev": "concurrently \"npm run backend\" \"npm run start --prefix client\""
+    "dev": "concurrently \"npm run backend\" \"npm run start --prefix client\"",
+    "build": "npm run client-build"
   },
   "author": "정중식",
   "license": "ISC",
