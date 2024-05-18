@@ -8,18 +8,17 @@ const cors = require('cors');
 
 const app = express();
 
-const options = [
-  cors({
-    origin: '*',
-    methods: '*',
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-  }),
-];
+const corsOptions = {
+  origin:
+    'https://port-0-react-gongcha-migration-ss7z32llwcg7ke3.sel5.cloudtype.app/',
+  methods: '*',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
 
 connectDB();
 
-app.use(options);
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json({ extended: false }));
 app.use(morgan('dev'));
