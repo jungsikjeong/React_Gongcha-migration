@@ -57,7 +57,7 @@ const AboutPage = () => {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Section $bgurl={'./images/about/about-img01.jpg'}>
+      <Section $bgurl={'/images/about/about-img01.jpg'}>
         <div className='Section-text'>
           <h1>공차는 고민합니다.</h1>
           <br />
@@ -75,7 +75,7 @@ const AboutPage = () => {
       </Section>
 
       <Section
-        $bgurl={'./images/about/about-img02.jpg'}
+        $bgurl={'/images/about/about-img02.jpg'}
         style={{ marginTop: '5rem' }}
       >
         <div className='Section-text'>
@@ -97,7 +97,7 @@ const AboutPage = () => {
       </Section>
 
       <Section
-        $bgurl={'./images/about/about-img03.jpg'}
+        $bgurl={'/images/about/about-img03.jpg'}
         style={{ marginTop: '5rem' }}
       >
         <div className='Section-text'>
@@ -118,7 +118,7 @@ const AboutPage = () => {
       </Section>
 
       <Section
-        $bgurl={'./images/about/about-img04.jpg'}
+        $bgurl={'/images/about/about-img04.jpg'}
         style={{ marginTop: '5rem', height: '40rem' }}
       >
         <div className='Section-text'>

@@ -6,7 +6,7 @@ const Container = styled(motion.div)`
   height: 100vh;
   position: relative;
   background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)),
-    url('./images/background.jpg');
+    url('/images/background.jpg');
   background-position: center;
   background-size: cover;
   overflow: hidden;
