@@ -80,7 +80,7 @@ const Spinner = styled.div`
   justify-content: center;
 `;
 
-const SKELETONS = Array(10).fill(0);
+const SKELETONS = Array(9).fill(0);
 
 const MyPageBookMark = () => {
   const [isHovered, setIsHovered] = useState(false);

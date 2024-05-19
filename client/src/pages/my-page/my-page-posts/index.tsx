@@ -81,7 +81,7 @@ const Spinner = styled.div`
   justify-content: center;
 `;
 
-const SKELETONS = Array(10).fill(0);
+const SKELETONS = Array(9).fill(0);
 
 const MyPagePosts = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -132,10 +132,9 @@ const MyPagePosts = () => {
       </Typography>
     );
   }
-  const t = true;
   return (
     <Container>
-      {t ? (
+      {isLoading ? (
         SKELETONS.map((data, index) => (
           <SkeletonBox width='100%' height='350px' key={index} />
         ))
