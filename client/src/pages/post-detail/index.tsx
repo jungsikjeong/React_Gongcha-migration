@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
 import { useUser } from 'hook/auth/use-user';
@@ -86,6 +86,7 @@ const Close = styled.div`
 const PostDetailPage = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [boxHeight, setBoxHeight] = useState(window.innerWidth / 1.5);
@@ -115,6 +116,14 @@ const PostDetailPage = () => {
       console.log(res.error);
     }
   }, [fetchNextPage]);
+
+  const handleClose = () => {
+    if (location.key === 'default') {
+      navigate('/posts');
+    } else {
+      navigate(-1);
+    }
+  };
 
   useEffect(() => {
     // 모달이 열릴 때 배경 스크롤 비활성화
@@ -164,7 +173,7 @@ const PostDetailPage = () => {
           <FlexBox $justifyContent='center' style={{ height: '100%' }}>
             <Close
               onClick={() => {
-                navigate(-1);
+                handleClose();
               }}
             >
               <IoMdClose />
