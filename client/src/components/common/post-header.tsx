@@ -41,7 +41,11 @@ const PostHeader = ({ text }: { text: string }) => {
   const location = useLocation();
 
   const handleGoBack = () => {
-    navigate(-1);
+    if (location.key === 'default') {
+      navigate('/posts');
+    } else {
+      navigate(-1);
+    }
   };
 
   return (

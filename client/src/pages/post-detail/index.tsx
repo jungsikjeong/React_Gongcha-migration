@@ -131,12 +131,12 @@ const PostDetailPage = () => {
 
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.keyCode === 27) {
-        navigate(-1);
+        handleClose();
       }
     };
     const handleOutsideClose = (e: MouseEvent) => {
       if (divRef.current && !divRef.current.contains(e.target as Node)) {
-        navigate(-1);
+        handleClose();
       }
     };
 
