@@ -4,7 +4,7 @@ import Images from './images';
 const ImageBox = styled.div`
   aspect-ratio: auto 3/4;
   background-color: black;
-  /* height: 100%; */
+  max-height: 100%;
 `;
 
 const Image = styled.img`

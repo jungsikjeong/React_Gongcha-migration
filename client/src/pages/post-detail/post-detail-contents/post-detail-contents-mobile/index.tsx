@@ -4,6 +4,8 @@ import { ko } from 'date-fns/locale/ko';
 import { IUserInfo } from 'interface/auth';
 import { ICommentResponse } from 'interface/comment';
 import { PostsDataType } from 'interface/posts';
+import { useState } from 'react';
+import { BsThreeDots } from 'react-icons/bs';
 import { CiBookmark } from 'react-icons/ci';
 import { FaBookmark } from 'react-icons/fa6';
 import { IoChatbubbleOutline } from 'react-icons/io5';
@@ -17,11 +19,11 @@ import usePostBookmark from 'pages/post-detail/hook/use-post-bookmark';
 
 import CommentSkeleton from 'components/comments/comment-skeleton';
 import FlexBox from 'components/common/flex-box';
+import VariousModal from 'components/common/modal/various-modal';
 import PostHeader from 'components/common/post-header';
 import usePostLikePost from 'pages/post-detail/hook/use-post-like-post';
 import PostDetailImages from 'pages/post-detail/post-detail-images';
 import PostDetailLike from 'pages/post-detail/post-detail-like';
-import PostShare from '../post-share';
 
 const Container = styled.div`
   min-width: 335px;
@@ -110,6 +112,11 @@ const Bottom = styled.div`
   font-size: 12px;
 `;
 
+const Icon = styled.div`
+  cursor: pointer;
+  margin-left: auto;
+`;
+
 interface IPostDetailContents {
   post: PostsDataType | undefined;
   commentListResponse: InfiniteData<ICommentResponse, unknown> | undefined;
@@ -129,6 +136,7 @@ const PostDetailContentsMobile = ({
   isPostLike,
   isBookmark,
 }: IPostDetailContents) => {
+  const [isVariousModalOpen, setIsVariousModalOpen] = useState(false);
   const setCommentFormStatus = useSetRecoilState(commentFormStatus);
 
   const { mutate: updateLike } = usePostLikePost(post?._id as string, user);
@@ -150,89 +158,104 @@ const PostDetailContentsMobile = ({
     }
   };
   return (
-    <Container>
-      <PostHeader text='게시물' />
-      <User>
-        {postLoading ? (
-          <CommentSkeleton />
-        ) : (
-          <>
-            <img
-              className='user-image'
-              src={post?.author?.avatar}
-              alt='userImage'
-            />
+    <>
+      {isVariousModalOpen && (
+        <VariousModal
+          text='삭제하기'
+          text2='수정하기'
+          post={post}
+          handleCancel={() => setIsVariousModalOpen(false)}
+        />
+      )}
 
-            <div className='user-nickname'>{post?.author?.nickname}</div>
+      <Container>
+        <PostHeader text='게시물' />
+        <User>
+          {postLoading ? (
+            <CommentSkeleton />
+          ) : (
+            <>
+              <img
+                className='user-image'
+                src={post?.author?.avatar}
+                alt='userImage'
+              />
 
-            {/* 공유하기 버튼 */}
-            <PostShare post={post} />
-          </>
-        )}
-      </User>
-      <PostDetailImages url={post?.images} postLoading={postLoading} />
-      <ContentsWrap>
-        <ContentsItem>
-          <Section>
-            {/* 게시글 좋아요 */}
-            <PostDetailLike
-              handlePostLike={handlePostLike}
-              isPostLike={isPostLike}
-            />
+              <div className='user-nickname'>{post?.author?.nickname}</div>
 
-            <Link
-              to={`/${post?._id}/commentList`}
-              onClick={() => setCommentFormStatus(true)}
-            >
-              <div className='section-icons'>
-                <IoChatbubbleOutline />
+              <Icon onClick={() => setIsVariousModalOpen(true)}>
+                <BsThreeDots />
+              </Icon>
+            </>
+          )}
+        </User>
+
+        {/* 게시글 이미지 */}
+        <PostDetailImages url={post?.images} postLoading={postLoading} />
+
+        <ContentsWrap>
+          <ContentsItem>
+            <Section>
+              {/* 게시글 좋아요 */}
+              <PostDetailLike
+                handlePostLike={handlePostLike}
+                isPostLike={isPostLike}
+              />
+
+              <Link
+                to={`/${post?._id}/commentList`}
+                onClick={() => setCommentFormStatus(true)}
+              >
+                <div className='section-icons'>
+                  <IoChatbubbleOutline />
+                </div>
+              </Link>
+
+              <div
+                className='bookmark section-icons'
+                onClick={handlePostBookmark}
+              >
+                {isBookmark ? <FaBookmark /> : <CiBookmark />}
               </div>
-            </Link>
+            </Section>
 
-            <div
-              className='bookmark section-icons'
-              onClick={handlePostBookmark}
-            >
-              {isBookmark ? <FaBookmark /> : <CiBookmark />}
-            </div>
-          </Section>
+            <Post>
+              <b>
+                좋아요{' '}
+                {new Intl.NumberFormat('ko-KR').format(
+                  (post?.postLikeCount as number) || 0
+                )}
+                개
+              </b>
+              <br />
+              <FlexBox>
+                <span>
+                  <b>{post?.author?.nickname} </b>
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: post?.contents || '',
+                    }}
+                  ></span>
+                </span>
+              </FlexBox>
+            </Post>
+          </ContentsItem>
 
-          <Post>
-            <b>
-              좋아요{' '}
-              {new Intl.NumberFormat('ko-KR').format(
-                (post?.postLikeCount as number) || 0
-              )}
-              개
-            </b>
-            <br />
-            <FlexBox>
-              <span>
-                <b>{post?.author?.nickname} </b>
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: post?.contents || '',
-                  }}
-                ></span>
-              </span>
-            </FlexBox>
-          </Post>
-        </ContentsItem>
-
-        <Link to={`/${post?._id}/commentList`}>
+          <Link to={`/${post?._id}/commentList`}>
+            <Bottom>
+              댓글 {commentListResponse?.pages[0].totalCount}개 모두 보기
+            </Bottom>
+          </Link>
           <Bottom>
-            댓글 {commentListResponse?.pages[0].totalCount}개 모두 보기
+            {post &&
+              formatDistance(new Date(), new Date(post.date), {
+                locale: ko as any,
+              })}
+            전
           </Bottom>
-        </Link>
-        <Bottom>
-          {post &&
-            formatDistance(new Date(), new Date(post.date), {
-              locale: ko as any,
-            })}
-          전
-        </Bottom>
-      </ContentsWrap>
-    </Container>
+        </ContentsWrap>
+      </Container>
+    </>
   );
 };
 
