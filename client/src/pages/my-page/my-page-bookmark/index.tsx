@@ -9,7 +9,7 @@ import { formattedNumber } from 'utils/formatted-number';
 import useFetchMyBookmark from '../hook/use-fetch-my-bookmark';
 
 import FlexBox from 'components/common/flex-box';
-import Skeleton from 'components/common/skeleton';
+import SkeletonBox from 'components/common/skeleton/skeleton-box';
 import Typography from 'components/common/typography';
 
 const Container = styled.div`
@@ -132,7 +132,7 @@ const MyPageBookMark = () => {
     <Container>
       {isLoading ? (
         SKELETONS.map((data, index) => (
-          <Skeleton width='100%' height='350px' key={index} />
+          <SkeletonBox width='100%' height='350px' key={index} />
         ))
       ) : (
         <>

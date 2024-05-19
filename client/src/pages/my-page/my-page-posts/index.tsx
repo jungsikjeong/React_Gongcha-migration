@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CiHeart } from 'react-icons/ci';
 import { IoChatbubbleOutline } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import useIntersectionObserver from 'hook/use-intersection-observer';
@@ -8,9 +9,8 @@ import { formattedNumber } from 'utils/formatted-number';
 import useFetchMyPosts from '../hook/use-fetch-my-posts';
 
 import FlexBox from 'components/common/flex-box';
-import Skeleton from 'components/common/skeleton';
+import SkeletonBox from 'components/common/skeleton/skeleton-box';
 import Typography from 'components/common/typography';
-import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   display: grid;
@@ -64,6 +64,7 @@ const HoverBox = styled.div`
     }
   }
 `;
+
 const Img = styled.img`
   width: 100%;
   height: 100%;
@@ -84,7 +85,6 @@ const SKELETONS = Array(10).fill(0);
 
 const MyPagePosts = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const [postId, setPostId] = useState('');
 
   const ref = useRef<HTMLDivElement | null>(null);
   const pageRef = useIntersectionObserver(ref, {});
@@ -132,12 +132,12 @@ const MyPagePosts = () => {
       </Typography>
     );
   }
-
+  const t = true;
   return (
     <Container>
-      {isLoading ? (
+      {t ? (
         SKELETONS.map((data, index) => (
-          <Skeleton width='100%' height='350px' key={index} />
+          <SkeletonBox width='100%' height='350px' key={index} />
         ))
       ) : (
         <>

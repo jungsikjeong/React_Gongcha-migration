@@ -1,5 +1,5 @@
 import FlexBox from 'components/common/flex-box';
-import Skeleton from 'components/common/skeleton';
+import Skeleton from 'components/common/skeleton/skeleton';
 
 const CommentSkeleton = () => {
   return (

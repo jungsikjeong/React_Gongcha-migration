@@ -6,7 +6,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Button from 'components/common/button';
-import Skeleton from 'components/common/skeleton';
+import Skeleton from 'components/common/skeleton/skeleton';
 import MyPageBookMark from './my-page-bookmark';
 import MyPagePosts from './my-page-posts';
 
