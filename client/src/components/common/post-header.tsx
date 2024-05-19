@@ -13,6 +13,7 @@ const Box = styled.div<{ $pathname: string }>`
   left: 0;
   right: 0;
   top: 0;
+  z-index: 10;
 
   &::before {
     background-color: rgb(54, 54, 54);

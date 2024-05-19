@@ -69,6 +69,7 @@ const Wrapper = styled.div<{ $boxheight: number }>`
     max-height: initial;
     width: 100%;
     height: 100%;
+    border: none;
   }
 `;
 

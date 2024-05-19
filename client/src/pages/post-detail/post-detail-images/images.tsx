@@ -47,7 +47,7 @@ const BtnWrap = styled.div`
     border-radius: 50%;
   }
 
-  @media (max-width: 375px) {
+  @media (max-width: 500px) {
     display: none;
   }
 `;
