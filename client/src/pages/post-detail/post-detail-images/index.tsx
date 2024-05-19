@@ -5,6 +5,7 @@ const ImageBox = styled.div`
   aspect-ratio: auto 3/4;
   background-color: black;
   max-height: 100%;
+  margin: 0 auto;
 `;
 
 const Image = styled.img`
