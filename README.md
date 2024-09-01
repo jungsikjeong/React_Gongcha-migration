@@ -1,3 +1,8 @@
+# 이 프로젝트는 마이그레이션된 프로젝트입니다.
+
+기존의 [프로젝트](https://github.com/jungsikjeong/React_Gongcha)를 마이그레이션 하였습니다.
+
+
 테스트를 하고싶으시면, 다음의 순서를 따라주세요.
 
 1. server/config/dev.js 파일을 생성해주시고 mongodb를 연결해주세요.
